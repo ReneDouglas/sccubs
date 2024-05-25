@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+    <title>Test</title>
+</head>
+<body>
+    <nav>
+        <ul class="menu" th:fragment="menu">
+            <li><a href="#cadastrar-usuario">Cadastrar Usuário</a></li>
+            <li><a href="#cadastrar-paciente">Cadastrar Paciente</a></li>
+            <li><a href="#consultar-pacientes">Consultar Pacientes</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

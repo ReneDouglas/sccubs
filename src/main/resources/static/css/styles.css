@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+}
+
+.menu li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.menu a:hover {
+    text-decoration: underline;
+}
