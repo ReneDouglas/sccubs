@@ -27,7 +27,6 @@ public class SystemUserController {
         return "login";
     }
 
-
     @GetMapping("/registration")
     public String getRegistrationPage(Model model) {
         model.addAttribute("user", new SystemUser());
