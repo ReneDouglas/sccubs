@@ -41,8 +41,8 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(authConfig -> {
             authConfig.requestMatchers("/", "/css/**", "/registration", "/logout", "/login", "/login-error")
                     .permitAll();
-            authConfig.requestMatchers(HttpMethod.GET, "/user").hasAnyAuthority("ADMIN", "USER");
-            authConfig.requestMatchers(HttpMethod.GET, "/admin").hasAuthority("ADMIN");
+            authConfig.requestMatchers(HttpMethod.GET, "/user").hasAnyRole("ADMIN", "USER");
+            authConfig.requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN");
             authConfig.anyRequest().authenticated();
         }).formLogin(login -> {
             login.loginPage("/login");
