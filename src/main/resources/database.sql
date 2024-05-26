@@ -1,3 +1,5 @@
+-- VERSÃO 1.0.0
+
 create database sccubs;
 
 use sccubs;
@@ -31,3 +33,30 @@ create table system_users_roles(
                                    foreign key (id_system_user) references system_users(id),
                                    foreign key (id_system_role) references system_roles(id)
 );
+-- -- -- -- -- --
+-- VERSÃO 1.1.0
+-- -- -- -- -- --
+
+create table city_hall(
+                          id bigint primary key auto_increment,
+                          name varchar(255) not null,
+                          creation_date datetime(6) not null,
+                          creation_user varchar(255) not null,
+                          update_date datetime(6),
+                          update_user varchar(255)
+);
+
+create table health_center(
+                              id bigint primary key auto_increment,
+                              name varchar(255) not null,
+                              neighborhood varchar(200) not null,
+                              creation_date datetime(6) not null,
+                              creation_user varchar(255) not null,
+                              update_date datetime(6),
+                              update_user varchar(255)
+);
+-- -- -- -- -- --
+-- VERSÃO 1.1.1
+-- -- -- -- -- --
+
+alter table system_users add active boolean not null after `email`;

@@ -2,6 +2,7 @@ package br.com.tecsus.sccubs.config;
 
 import br.com.tecsus.sccubs.services.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -39,10 +41,10 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authConfig -> {
-            authConfig.requestMatchers("/", "/css/**", "/registration", "/logout", "/login", "/login-error")
+            authConfig.requestMatchers("/", "/css/**", "/registration", "/logout", "/login", "/login-error", "/error")
                     .permitAll();
-            authConfig.requestMatchers(HttpMethod.GET, "/user").hasAnyRole("ADMIN", "USER");
-            authConfig.requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN");
+            authConfig.requestMatchers(HttpMethod.GET, "/user")/*.hasAnyRole("ADMIN", "USER")*/;
+            authConfig.requestMatchers(HttpMethod.GET, "/admin")/*.hasRole("ADMIN")*/;
             authConfig.anyRequest().authenticated();
         }).formLogin(login -> {
             login.loginPage("/login");
@@ -50,11 +52,12 @@ public class WebSecurityConfig {
             login.failureUrl("/login-error");
         }).logout(logout -> {
             //logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
-            logout.logoutSuccessUrl("/");
+            logout.logoutSuccessUrl("/login");
             logout.permitAll();
             logout.deleteCookies("JSESSIONID");
             logout.invalidateHttpSession(true);
-        }).csrf(AbstractHttpConfigurer::disable).httpBasic(withDefaults());;
+        }).csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(withDefaults());
 
         /*http
                 .authorizeHttpRequests((requests) -> requests

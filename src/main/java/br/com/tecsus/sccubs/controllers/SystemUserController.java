@@ -41,11 +41,13 @@ public class SystemUserController {
         return "redirect:/login?sucess";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/admin")
     public String getAdminPage() {
         return "admin";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/user")
     public String getUserPage() {
         return "user";

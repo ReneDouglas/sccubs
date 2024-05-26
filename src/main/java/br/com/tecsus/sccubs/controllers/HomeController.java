@@ -10,4 +10,9 @@ public class HomeController {
     public String getHomePage(){
         return "home";
     }
+
+    @GetMapping("/error")
+    public String getError() {
+        return "error";
+    }
 }
