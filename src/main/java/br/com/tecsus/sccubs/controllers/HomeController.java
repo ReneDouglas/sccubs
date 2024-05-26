@@ -15,4 +15,14 @@ public class HomeController {
     public String getError() {
         return "error";
     }
+
+    @GetMapping("/expired")
+    public String getExpired() {
+        return "expired";
+    }
+
+    @GetMapping("/invalid")
+    public String getInvalid() {
+        return "invalid";
+    }
 }

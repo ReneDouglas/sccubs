@@ -27,9 +27,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.*;
 
 @Configuration
 @EnableWebSecurity
@@ -41,7 +44,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authConfig -> {
-            authConfig.requestMatchers("/", "/css/**", "/registration", "/logout", "/login", "/login-error", "/error")
+            authConfig.requestMatchers("/", "/css/**", "/registration", "/logout", "/login", "/login-error", "/error", "/expired", "/invalid")
                     .permitAll();
             authConfig.requestMatchers(HttpMethod.GET, "/user")/*.hasAnyRole("ADMIN", "USER")*/;
             authConfig.requestMatchers(HttpMethod.GET, "/admin")/*.hasRole("ADMIN")*/;
@@ -54,10 +57,17 @@ public class WebSecurityConfig {
             //logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
             logout.logoutSuccessUrl("/login");
             logout.permitAll();
-            logout.deleteCookies("JSESSIONID");
+            //logout.deleteCookies("JSESSIONID");
+            logout.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES)));
             logout.invalidateHttpSession(true);
         }).csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(withDefaults());
+                .httpBasic(withDefaults())
+                .sessionManagement(session -> {
+                    session.sessionConcurrency(concurrency -> {
+                        concurrency.maximumSessions(1).expiredUrl("/expired")/*.maxSessionsPreventsLogin(true)*/;
+                    });
+                    session.invalidSessionUrl("/invalid"); // quando a sessão expira após um tempo (30 min)
+                });
 
         /*http
                 .authorizeHttpRequests((requests) -> requests
@@ -91,6 +101,11 @@ public class WebSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 
     // Método importante para 'fazer enxergar' o userDetailsService
