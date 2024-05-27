@@ -60,3 +60,7 @@ create table health_center(
 -- -- -- -- -- --
 
 alter table system_users add active boolean not null after `email`;
+alter table system_roles add title varchar(150) not null after `role`;
+alter table system_roles add root boolean not null after `description`;
+alter table system_users modify column active tinyint(1) DEFAULT 1 NOT NULL;
+alter table system_users modify column username varchar(100) not null unique;

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{fragments/template :: head}"></head>
 <body>
-<p th:if="${loginError}" class="error">Wrong user or password</p>
+<p th:if="${error}" class="error">Wrong user or password</p>
 <form th:action="@{/login}" method="post">
     <input name="username" type="text" placeholder="Username">
     <input name="password" type="password" placeholder="Password">

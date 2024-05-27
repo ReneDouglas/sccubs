@@ -2,24 +2,31 @@ package br.com.tecsus.sccubs.services;
 
 import br.com.tecsus.sccubs.entities.SystemRole;
 import br.com.tecsus.sccubs.entities.SystemUser;
+import br.com.tecsus.sccubs.enums.SystemMessages;
+import br.com.tecsus.sccubs.enums.Roles;
 import br.com.tecsus.sccubs.repositories.SystemRoleRepository;
 import br.com.tecsus.sccubs.repositories.SystemUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import java.util.*;
-
+@Slf4j
 @Service
-public class SystemUserService extends InMemoryUserDetailsManager /*implements UserDetailsService*/ {
+public class SystemUserService implements UserDetailsService {
 
     @Autowired
     private SystemUserRepository systemUserRepository;
@@ -50,16 +57,32 @@ public class SystemUserService extends InMemoryUserDetailsManager /*implements U
         return new User(uname, password, grantedAuthorities);
     }
 
-    public SystemUser register(SystemUser user) {
+    public String registerNotAdminUser(SystemUser user) throws Exception {
+
+        SystemRole role = systemRoleRepository.findById(user.getSelectedRoleId())
+                .orElseThrow(() -> {
+                    log.error("Erro ao encontrar role [id = {}]", user.getSelectedRoleId());
+                    return new Exception("Erro ao cadastrar usuário.");
+                });
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        Optional<SystemRole> role = systemRoleRepository.findByRole("ADMINISTRADOR");
-        user.setRoles(List.of(role.get()));
-        user.setName("Teste teste");
-        user.setCreationUser("test");
+        user.setRoles(List.of(role));
         user.setCreationDate(new Date());
-        user.setEmail("teste@gmail.com");
+        user.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        user.setActive(true);
 
-        return systemUserRepository.save(user);
+        try {
+            systemUserRepository.save(user);
+            log.info("Usuário cadastrado com sucesso.");
+            return SystemMessages.SUCCESS_01.getCode();
+        } catch (DataIntegrityViolationException e) {
+            log.error("Erro ao cadastrar usuário: {}", e.getMessage());
+            return SystemMessages.ERROR_02.getCode();
+        }
+
+    }
+
+    public List<SystemRole> getRolesNotAdmin() {
+        return systemRoleRepository.findByRoleNot(Roles.ROLE_ADMIN.toString());
     }
 }
