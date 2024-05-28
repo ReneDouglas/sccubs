@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{fragments/template :: head}"></head>
+<body>
+    <nav th:replace="~{fragments/template :: menu}"></nav>
+    <h1>System Users</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Login</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Perfil</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iteração sobre a lista de usuários -->
+        <tr th:each="user : ${systemUsers}">
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+            <td>
+                <select>
+                    <option th:each="role : ${user.roles}" th:text="${role.title}"></option>
+                </select>
+            </td>
+            <td th:text="${user.active ? 'Sim' : 'Não'}"></td>
+            <td>
+                <!--<a th:href="@{/user/to-edit(id=${user.id})}">Editar</a>
+
+                <a th:href="@{/user/delete(id=${user.id})}">Deletar</a>-->
+                <form th:action="@{/user/to-edit}" method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${user.id}" />
+                    <button type="submit">Editar</button>
+                </form>
+                <form th:action="@{/user/delete}" method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${user.id}" />
+                    <button type="submit">Deletar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

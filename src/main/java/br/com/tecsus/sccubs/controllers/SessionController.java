@@ -5,13 +5,18 @@ import br.com.tecsus.sccubs.enums.SystemMessages;
 import br.com.tecsus.sccubs.services.SystemUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 
 @Slf4j
@@ -23,6 +28,11 @@ public class SessionController {
 
     @GetMapping("/login")
     public String getLoginPage() {
+        return "sessionManagement/login";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
         return "sessionManagement/login";
     }
 
@@ -49,36 +59,60 @@ public class SessionController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/user")
-    public String getRegistrationPage(Model model, @RequestParam(value = "msg", required = false) String msg) {
+    public String getRegistrationPage(Model model) {
 
-        if (msg != null) {
-            model.addAttribute("message", SystemMessages.getDescription(msg));
-        }
         model.addAttribute("systemUser", new SystemUser());
-        model.addAttribute("rolesList", systemUserService.getRolesNotAdmin());
-        return "sessionManagement/registration";
+        model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotGestao());
+        return "sessionManagement/systemUsers-insert";
 
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping("/user/update")
-    public String updateSystemUser() {
-        return null;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/user/create")
-    public String registerSystemUser(@ModelAttribute SystemUser user) {
+    public String registerSystemUser(@ModelAttribute SystemUser user, RedirectAttributes redirectAttributes) {
 
         try {
-            String msg = systemUserService.registerNotAdminUser(user);
-            return "redirect:/user?msg=%s".formatted(msg);
-        } catch (Exception e) {
-            return "redirect:/user?msg=%s".formatted(SystemMessages.ERROR_01.getCode());
+            systemUserService.registerNotAdminUser(user);
+            redirectAttributes.addFlashAttribute("message", "Usuário cadastrado com sucesso.");
+            log.info("Cadastro de usuário realizado com sucesso.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("message", "Usuário já cadastrado no sistema.");
+            log.error("Usuário já cadastrado: {}", e.getMessage());
+        }catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Erro ao cadastrar usuário.");
+            log.error("Erro ao cadastrar usuário: {}", e.getMessage());
         }
-        //systemUserService.register(user);
-        //System.out.println(user.toString());
-        //return "redirect:/login?sucess";
+        //return new RedirectView("/user");
+        return "redirect:/user";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("/users")
+    public String listSystemUsers(Model model) {
+
+        model.addAttribute("systemUsers", systemUserService.findAllUsersByCreationUser());
+        return "sessionManagement/systemUsers-list";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping("/user/to-edit")
+    public String requestUpdateSystemUser(@RequestParam("id") Long id, Model model) {
+
+        model.addAttribute("systemUser", systemUserService.findSystemUserById(id));
+        model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotGestao());
+        return "sessionManagement/systemUsers-insert";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping("/user/update")
+    public String updateSystemUser(@ModelAttribute SystemUser user, RedirectAttributes redirectAttributes) {
+        return null;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping("/user/delete")
+    public String deleteSystemUser(@RequestParam("id") Long id) {
+        return null;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")

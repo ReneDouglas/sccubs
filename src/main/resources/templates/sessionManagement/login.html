@@ -3,11 +3,14 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{fragments/template :: head}"></head>
 <body>
-<p th:if="${error}" class="error">Wrong user or password</p>
-<form th:action="@{/login}" method="post">
-    <input name="username" type="text" placeholder="Username">
-    <input name="password" type="password" placeholder="Password">
-    <input type="submit" value="Log in">
-</form>
+    <p th:if="${error}" class="error">Wrong user or password</p>
+    <form th:action="@{/login}" method="post">
+        <input name="username" type="text" placeholder="Username">
+        <input name="password" type="password" placeholder="Password">
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+        <input type="submit" value="Log in">
+    </form>
 </body>
 </html>

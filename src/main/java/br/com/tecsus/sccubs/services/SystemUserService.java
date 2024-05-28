@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +59,7 @@ public class SystemUserService implements UserDetailsService {
         return new User(uname, password, grantedAuthorities);
     }
 
-    public String registerNotAdminUser(SystemUser user) throws Exception {
+    public void registerNotAdminUser(SystemUser user) throws Exception {
 
         SystemRole role = systemRoleRepository.findById(user.getSelectedRoleId())
                 .orElseThrow(() -> {
@@ -71,18 +73,32 @@ public class SystemUserService implements UserDetailsService {
         user.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
         user.setActive(true);
 
-        try {
+        /*try {
             systemUserRepository.save(user);
             log.info("Usuário cadastrado com sucesso.");
             return SystemMessages.SUCCESS_01.getCode();
         } catch (DataIntegrityViolationException e) {
             log.error("Erro ao cadastrar usuário: {}", e.getMessage());
             return SystemMessages.ERROR_02.getCode();
-        }
+        }*/
+        systemUserRepository.save(user);
 
     }
 
     public List<SystemRole> getRolesNotAdmin() {
         return systemRoleRepository.findByRoleNot(Roles.ROLE_ADMIN.toString());
+    }
+
+    public List<SystemRole> getRolesNotAdminAndNotGestao() {
+        return systemRoleRepository.findByRoleNotIn(List.of(Roles.ROLE_ADMIN.toString(), Roles.ROLE_SMS.toString()));
+    }
+
+    public List<SystemUser> findAllUsersByCreationUser() {
+        return systemUserRepository.findAllByCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    @Transactional(readOnly = true)
+    public SystemUser findSystemUserById(Long id) {
+        return systemUserRepository.findById(id).get();
     }
 }
