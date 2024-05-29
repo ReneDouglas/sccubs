@@ -6,7 +6,7 @@
 <body>
     <nav th:replace="~{fragments/template :: menu}"></nav>
     <h1>System Users</h1>
-    <table border="1">
+    <table>
         <thead>
         <tr>
             <th>Login</th>
@@ -30,14 +30,11 @@
             </td>
             <td th:text="${user.active ? 'Sim' : 'Não'}"></td>
             <td>
-                <!--<a th:href="@{/user/to-edit(id=${user.id})}">Editar</a>
-
-                <a th:href="@{/user/delete(id=${user.id})}">Deletar</a>-->
-                <form th:action="@{/user/to-edit}" method="post" style="display:inline;">
+                <form th:action="@{/systemUser-insert}" method="post" style="display:inline;">
                     <input type="hidden" name="id" th:value="${user.id}" />
                     <button type="submit">Editar</button>
                 </form>
-                <form th:action="@{/user/delete}" method="post" style="display:inline;">
+                <form th:action="@{/systemUser-list/delete}" method="post" style="display:inline;">
                     <input type="hidden" name="id" th:value="${user.id}" />
                     <button type="submit">Deletar</button>
                 </form>
@@ -45,6 +42,6 @@
         </tr>
         </tbody>
     </table>
-
+    <p th:if="${message}" th:text="${message}"></p>
 </body>
 </html>

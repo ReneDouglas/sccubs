@@ -6,13 +6,15 @@
 <head th:fragment="head">
     <meta charset="UTF-8">
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
-    <title>Test</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>SCCUBS</title>
 </head>
 <body>
     <nav th:fragment="menu">
         <ul class="menu">
-            <li><a href="/user">Cadastrar Usuário</a></li>
-            <li><a href="/users">Consultar Usuários</a></li>
+            <li><a href="/systemUser-insert">Cadastrar Usuário</a></li>
+            <li><a href="/systemUser-list">Consultar Usuários</a></li>
             <li><a href="#cadastrar-paciente">Cadastrar Paciente</a></li>
             <li><a href="#consultar-pacientes">Consultar Pacientes</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>

@@ -2,13 +2,11 @@ package br.com.tecsus.sccubs.services;
 
 import br.com.tecsus.sccubs.entities.SystemRole;
 import br.com.tecsus.sccubs.entities.SystemUser;
-import br.com.tecsus.sccubs.enums.SystemMessages;
 import br.com.tecsus.sccubs.enums.Roles;
 import br.com.tecsus.sccubs.repositories.SystemRoleRepository;
 import br.com.tecsus.sccubs.repositories.SystemUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,14 +28,16 @@ import java.util.Set;
 @Service
 public class SystemUserService implements UserDetailsService {
 
-    @Autowired
-    private SystemUserRepository systemUserRepository;
+    private final SystemUserRepository systemUserRepository;
+    private final SystemRoleRepository systemRoleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private SystemRoleRepository systemRoleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public SystemUserService(SystemUserRepository systemUserRepository, SystemRoleRepository systemRoleRepository, PasswordEncoder passwordEncoder) {
+        this.systemUserRepository = systemUserRepository;
+        this.systemRoleRepository = systemRoleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, BadCredentialsException {
@@ -47,7 +47,7 @@ public class SystemUserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não cadastrado."));
 
         String uname = systemUser.getUsername();
-        String password = systemUser.getPassword(); /*passwordEncoder.encode(systemUser.getPassword());*/
+        String password = systemUser.getPassword();
         List<String> authorities = systemUser.getRoles().stream().map(SystemRole::getRole).toList();
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
@@ -59,30 +59,38 @@ public class SystemUserService implements UserDetailsService {
         return new User(uname, password, grantedAuthorities);
     }
 
-    public void registerNotAdminUser(SystemUser user) throws Exception {
+    public void registerNotAdminSystemUser(SystemUser systemUser) throws Exception {
 
-        SystemRole role = systemRoleRepository.findById(user.getSelectedRoleId())
+        SystemRole role = systemRoleRepository.findById(systemUser.getSelectedRoleId())
                 .orElseThrow(() -> {
-                    log.error("Erro ao encontrar role [id = {}]", user.getSelectedRoleId());
+                    log.error("[insert user] Erro ao encontrar role [id = {}]", systemUser.getSelectedRoleId());
                     return new Exception("Erro ao cadastrar usuário.");
                 });
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(List.of(role));
-        user.setCreationDate(new Date());
-        user.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
-        user.setActive(true);
+        systemUser.setPassword(passwordEncoder.encode(systemUser.getPassword()));
+        systemUser.setRoles(Set.of(role));
+        systemUser.setCreationDate(new Date());
+        systemUser.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        systemUser.setActive(true);
 
-        /*try {
-            systemUserRepository.save(user);
-            log.info("Usuário cadastrado com sucesso.");
-            return SystemMessages.SUCCESS_01.getCode();
-        } catch (DataIntegrityViolationException e) {
-            log.error("Erro ao cadastrar usuário: {}", e.getMessage());
-            return SystemMessages.ERROR_02.getCode();
-        }*/
-        systemUserRepository.save(user);
+        systemUserRepository.save(systemUser);
 
+    }
+
+    public void updateNotAdminSystemUser(SystemUser systemUser) throws Exception {
+
+        SystemRole role = systemRoleRepository.findById(systemUser.getSelectedRoleId())
+                .orElseThrow(() -> {
+                    log.error("[update user] Erro ao encontrar role [id = {}]", systemUser.getSelectedRoleId());
+                    return new Exception("Erro ao cadastrar usuário.");
+                });
+
+        systemUser.setPassword(passwordEncoder.encode(systemUser.getPassword()));
+        systemUser.setUpdateUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        systemUser.setRoles(Set.of(role));
+        systemUser.setUpdateDate(new Date());
+
+        systemUserRepository.save(systemUser);
     }
 
     public List<SystemRole> getRolesNotAdmin() {
@@ -100,5 +108,13 @@ public class SystemUserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public SystemUser findSystemUserById(Long id) {
         return systemUserRepository.findById(id).get();
+    }
+
+    public void deleteNotAdminSystemUser(Long id) throws Exception{
+        SystemUser systemUser = systemUserRepository.findById(id).orElseThrow(() -> {
+            log.error("Usuário [id = {}] não encontrado.", id);
+            return new Exception("Erro ao deletar usuário.");
+        });
+        systemUserRepository.delete(systemUser);
     }
 }

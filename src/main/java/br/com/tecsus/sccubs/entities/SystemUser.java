@@ -3,11 +3,9 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
+import java.io.Serializable;
+import java.util.*;
 
 
 @Getter
@@ -42,16 +40,29 @@ public class SystemUser implements Serializable {
     @Column(name = "update_user")
     private String updateUser;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinTable(name = "system_users_roles",
             joinColumns = @JoinColumn(name = "id_system_user"),
             inverseJoinColumns = @JoinColumn(name = "id_system_role"))
-    private List<SystemRole> roles = new ArrayList<>();
+    private Set<SystemRole> roles = new HashSet<>();
 
     @Transient
     private Long selectedRoleId;
 
     public SystemUser(){
+    }
+
+    public Boolean findRole(Long id) {
+        for (SystemRole systemRole : roles) {
+            if (Objects.equals(systemRole.getId(), id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Long getFirstRole() {
+        return roles.stream().iterator().next().getId();
     }
 
 }

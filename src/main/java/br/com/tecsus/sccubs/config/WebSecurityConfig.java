@@ -1,6 +1,9 @@
 package br.com.tecsus.sccubs.config;
 
+import br.com.tecsus.sccubs.repositories.SystemRoleRepository;
+import br.com.tecsus.sccubs.repositories.SystemUserRepository;
 import br.com.tecsus.sccubs.services.SystemUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,14 +32,27 @@ import static org.springframework.security.web.header.writers.ClearSiteDataHeade
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
+    private SystemUserRepository systemUserRepository;
+    private SystemRoleRepository systemRoleRepository;
+
+    @Autowired
+    public void setSystemRoleRepository(SystemRoleRepository systemRoleRepository) {
+        this.systemRoleRepository = systemRoleRepository;
+    }
+
+    @Autowired
+    public void setSystemUserRepository(SystemUserRepository systemUserRepository) {
+        this.systemUserRepository = systemUserRepository;
+    }
+
     // authorization
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authConfig -> {
             authConfig.requestMatchers(PUBLIC_MATCHERS).permitAll();
-            authConfig.requestMatchers("/user/**");
-            authConfig.requestMatchers("/users");
+            authConfig.requestMatchers("/systemUser-insert/**");
+            authConfig.requestMatchers("/systemUser-list/**");
             authConfig.anyRequest().authenticated();
         });
         http.formLogin(login -> {
@@ -64,7 +80,7 @@ public class WebSecurityConfig {
     // authentication
     @Bean
     public UserDetailsService userDetailsService(){
-        return new SystemUserService();
+        return new SystemUserService(systemUserRepository, systemRoleRepository, passwordEncoder());
     }
 
     @Bean

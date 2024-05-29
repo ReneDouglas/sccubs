@@ -3,10 +3,9 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.collection.spi.PersistentSet;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Getter
@@ -37,10 +36,11 @@ public class SystemRole implements Serializable {
     @Column(name = "update_user")
     private String updateUser;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<SystemUser> users = new ArrayList<>();
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
+    private Set<SystemUser> users = new HashSet<>();
 
     public SystemRole() {
     }
+
 
 }

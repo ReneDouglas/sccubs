@@ -1,7 +1,6 @@
 package br.com.tecsus.sccubs.controllers;
 
 import br.com.tecsus.sccubs.entities.SystemUser;
-import br.com.tecsus.sccubs.enums.SystemMessages;
 import br.com.tecsus.sccubs.services.SystemUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,22 +8,23 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 
 @Slf4j
 @Controller
 public class SessionController {
 
+    private final SystemUserService systemUserService;
+
     @Autowired
-    private SystemUserService systemUserService;
+    public SessionController(SystemUserService systemUserService) {
+        this.systemUserService = systemUserService;
+    }
 
     @GetMapping("/login")
     public String getLoginPage() {
@@ -32,12 +32,12 @@ public class SessionController {
     }
 
     @GetMapping("/logout")
-    public String logout() {
+    public String getLogoutPage() {
         return "sessionManagement/login";
     }
 
     @GetMapping("/login-error")
-    public String loginError(Model model) {
+    public String getLoginErrorPage(Model model) {
         model.addAttribute("loginError", true);
         return "sessionManagement/login";
     }
@@ -48,31 +48,31 @@ public class SessionController {
     }
 
     @GetMapping("/error")
-    public String getError() {
+    public String getErrorPage() {
         return "error2";
     }
 
     @GetMapping("/expired")
-    public String getExpired() {
+    public String getExpiredPage() {
         return "sessionManagement/expired";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/user")
-    public String getRegistrationPage(Model model) {
+    @GetMapping("/systemUser-insert")
+    public String getSystemUserInsertPage(Model model) {
 
         model.addAttribute("systemUser", new SystemUser());
         model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotGestao());
-        return "sessionManagement/systemUsers-insert";
+        return "sessionManagement/systemUser-insert";
 
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping("/user/create")
-    public String registerSystemUser(@ModelAttribute SystemUser user, RedirectAttributes redirectAttributes) {
+    @PostMapping("/systemUser-insert/create")
+    public String registerSystemUser(@ModelAttribute SystemUser systemUser, RedirectAttributes redirectAttributes) {
 
         try {
-            systemUserService.registerNotAdminUser(user);
+            systemUserService.registerNotAdminSystemUser(systemUser);
             redirectAttributes.addFlashAttribute("message", "Usuário cadastrado com sucesso.");
             log.info("Cadastro de usuário realizado com sucesso.");
         } catch (DataIntegrityViolationException e) {
@@ -83,36 +83,56 @@ public class SessionController {
             log.error("Erro ao cadastrar usuário: {}", e.getMessage());
         }
         //return new RedirectView("/user");
-        return "redirect:/user";
+        return "redirect:/systemUser-insert";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/users")
-    public String listSystemUsers(Model model) {
+    @GetMapping("/systemUser-list")
+    public String getSystemUserListPage(Model model) {
 
         model.addAttribute("systemUsers", systemUserService.findAllUsersByCreationUser());
-        return "sessionManagement/systemUsers-list";
+        return "sessionManagement/systemUser-list";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping("/user/to-edit")
-    public String requestUpdateSystemUser(@RequestParam("id") Long id, Model model) {
+    @PostMapping("/systemUser-insert")
+    public String getSystemUserInsertPageToUpdate(@RequestParam("id") Long id, Model model) {
 
         model.addAttribute("systemUser", systemUserService.findSystemUserById(id));
         model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotGestao());
-        return "sessionManagement/systemUsers-insert";
+        return "sessionManagement/systemUser-insert";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping("/user/update")
-    public String updateSystemUser(@ModelAttribute SystemUser user, RedirectAttributes redirectAttributes) {
-        return null;
+    @PostMapping("/systemUser-insert/update")
+    public String updateSystemUser(@ModelAttribute SystemUser systemUser, RedirectAttributes redirectAttributes) {
+
+        try {
+            systemUserService.updateNotAdminSystemUser(systemUser);
+            redirectAttributes.addFlashAttribute("message", "Usuário atualizado com sucesso.");
+            log.info("Usuário atualizado com sucesso.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Erro ao atualizar usuário.");
+            log.error("Erro ao atualizar usuário: {}", e.getMessage());
+        }
+        //return new RedirectView("/user");
+        return "redirect:/systemUser-insert";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping("/user/delete")
-    public String deleteSystemUser(@RequestParam("id") Long id) {
-        return null;
+    @PostMapping("/systemUser-list/delete")
+    public String deleteSystemUser(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+
+        try {
+            systemUserService.deleteNotAdminSystemUser(id);
+            redirectAttributes.addFlashAttribute("message", "Usuário deletado com sucesso.");
+            log.info("Usuário deletado com sucesso.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Erro ao deletar usuário.");
+            log.error("Erro ao deletar usuário: {}", e.getMessage());
+        }
+
+        return "redirect:/systemUser-list";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
