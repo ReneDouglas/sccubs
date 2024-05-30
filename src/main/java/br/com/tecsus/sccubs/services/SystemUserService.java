@@ -5,6 +5,7 @@ import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.enums.Roles;
 import br.com.tecsus.sccubs.repositories.SystemRoleRepository;
 import br.com.tecsus.sccubs.repositories.SystemUserRepository;
+import br.com.tecsus.sccubs.security.SystemUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,10 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -46,7 +49,27 @@ public class SystemUserService implements UserDetailsService {
                 .findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não cadastrado."));
 
-        String uname = systemUser.getUsername();
+        /*List<String> authorities = systemUser.getRoles().stream().map(SystemRole::getRole).toList();
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+
+        authorities.forEach((role) -> {
+            GrantedAuthority auth = new SimpleGrantedAuthority(role);
+            grantedAuthorities.add(auth);
+        });*/
+
+        return new SystemUserDetails(
+                systemUser.getUsername(),
+                systemUser.getPassword(),
+                systemUser.getRoles().stream().map(SystemRole::getRole).map(SimpleGrantedAuthority::new).collect(Collectors.toSet()),
+                systemUser.getName(),
+                systemUser.getEmail(),
+                systemUser.getActive(),
+                (systemUser.getCityHall() != null) ? systemUser.getCityHall().getId() : null,
+                (systemUser.getCityHall() != null) ? systemUser.getCityHall().getName() : null,
+                (systemUser.getBasicHealthUnit() != null) ? systemUser.getBasicHealthUnit().getId() : null
+                );
+
+        /*String uname = systemUser.getUsername();
         String password = systemUser.getPassword();
         List<String> authorities = systemUser.getRoles().stream().map(SystemRole::getRole).toList();
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
@@ -55,8 +78,7 @@ public class SystemUserService implements UserDetailsService {
             GrantedAuthority auth = new SimpleGrantedAuthority(role);
             grantedAuthorities.add(auth);
         });
-
-        return new User(uname, password, grantedAuthorities);
+        return new User(uname, password, grantedAuthorities);*/
     }
 
     public void registerNotAdminSystemUser(SystemUser systemUser) throws Exception {
@@ -109,6 +131,7 @@ public class SystemUserService implements UserDetailsService {
     public SystemUser findSystemUserById(Long id) {
         return systemUserRepository.findById(id).get();
     }
+
 
     public void deleteNotAdminSystemUser(Long id) throws Exception{
         SystemUser systemUser = systemUserRepository.findById(id).orElseThrow(() -> {

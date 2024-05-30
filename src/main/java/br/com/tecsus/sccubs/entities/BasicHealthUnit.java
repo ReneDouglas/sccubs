@@ -3,24 +3,29 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.Serializable;
-import java.util.*;
-
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "system_roles")
-public class SystemRole implements Serializable {
+@Table(name = "basic_health_units")
+public class BasicHealthUnit implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String role;
-    private String title;
-    private String description;
-    private Boolean root;
+
+    private String name;
+    private String neighborhood;
+
+    @ManyToOne
+    @JoinColumn(name = "id_city_hall")
+    private CityHall cityHall;
+
+    @OneToMany(mappedBy = "basicHealthUnit", cascade = CascadeType.ALL)
+    private List<SystemUser> systemUsers;
 
     @Column(name = "creation_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -36,11 +41,6 @@ public class SystemRole implements Serializable {
     @Column(name = "update_user")
     private String updateUser;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
-    private Set<SystemUser> users = new HashSet<>();
-
-    public SystemRole() {
+    public BasicHealthUnit() {
     }
-
-
 }

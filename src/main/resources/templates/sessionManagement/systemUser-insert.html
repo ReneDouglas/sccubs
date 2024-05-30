@@ -27,6 +27,15 @@
             <input type="email" id="email" th:field="*{email}" name="email" required>
         </div>
         <br>
+        <!--<div>
+            <label for="basicHealthUnit">UBS:</label>
+            <select id="basicHealthUnit" name="basicHealthUnit" >
+                <option th:each="role : ${rolesList}"
+                        th:value="${role.id}"
+                        th:text="${role.title}"
+                        th:selected="*{roles.isEmpty()} ? ${role.id} == 2 : ${role.id} == *{getFirstRole()}"></option>
+            </select>
+        </div>-->
         <div>
             <label for="selectedRoleId">Perfil:</label>
             <select id="selectedRoleId" name="selectedRoleId" >

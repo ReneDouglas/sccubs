@@ -1,11 +1,13 @@
 package br.com.tecsus.sccubs.controllers;
 
 import br.com.tecsus.sccubs.entities.SystemUser;
+import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.SystemUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,16 +16,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+
 
 @Slf4j
 @Controller
 public class SessionController {
 
     private final SystemUserService systemUserService;
+    private final BasicHealthUnitService basicHealthUnitService;
 
     @Autowired
-    public SessionController(SystemUserService systemUserService) {
+    public SessionController(SystemUserService systemUserService, BasicHealthUnitService basicHealthUnitService) {
         this.systemUserService = systemUserService;
+        this.basicHealthUnitService = basicHealthUnitService;
     }
 
     @GetMapping("/login")
@@ -63,15 +69,19 @@ public class SessionController {
 
         model.addAttribute("systemUser", new SystemUser());
         model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotGestao());
+        /*model.addAttribute("basicHealthUnits", basicHealthUnitService
+                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());*/
         return "sessionManagement/systemUser-insert";
 
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/systemUser-insert/create")
-    public String registerSystemUser(@ModelAttribute SystemUser systemUser, RedirectAttributes redirectAttributes) {
+    public String registerSystemUser(@ModelAttribute SystemUser systemUser,
+                                     RedirectAttributes redirectAttributes) {
 
         try {
+
             systemUserService.registerNotAdminSystemUser(systemUser);
             redirectAttributes.addFlashAttribute("message", "Usuário cadastrado com sucesso.");
             log.info("Cadastro de usuário realizado com sucesso.");
@@ -105,7 +115,8 @@ public class SessionController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/systemUser-insert/update")
-    public String updateSystemUser(@ModelAttribute SystemUser systemUser, RedirectAttributes redirectAttributes) {
+    public String updateSystemUser(@ModelAttribute SystemUser systemUser,
+                                   RedirectAttributes redirectAttributes) {
 
         try {
             systemUserService.updateNotAdminSystemUser(systemUser);

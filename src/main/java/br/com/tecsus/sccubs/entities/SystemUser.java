@@ -3,6 +3,10 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.*;
@@ -26,6 +30,20 @@ public class SystemUser implements Serializable {
     private String email;
     private Boolean active;
 
+    @ManyToOne
+    @JoinColumn(name = "id_basic_health_unit")
+    private BasicHealthUnit basicHealthUnit;
+
+    @ManyToOne
+    @JoinColumn(name = "id_city_hall")
+    private CityHall cityHall;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
+    @JoinTable(name = "system_users_roles",
+            joinColumns = @JoinColumn(name = "id_system_user"),
+            inverseJoinColumns = @JoinColumn(name = "id_system_role"))
+    private Set<SystemRole> roles = new HashSet<>();
+
     @Column(name = "creation_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -39,12 +57,6 @@ public class SystemUser implements Serializable {
 
     @Column(name = "update_user")
     private String updateUser;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
-    @JoinTable(name = "system_users_roles",
-            joinColumns = @JoinColumn(name = "id_system_user"),
-            inverseJoinColumns = @JoinColumn(name = "id_system_role"))
-    private Set<SystemRole> roles = new HashSet<>();
 
     @Transient
     private Long selectedRoleId;

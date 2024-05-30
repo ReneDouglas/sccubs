@@ -1,4 +1,4 @@
-package br.com.tecsus.sccubs.config;
+package br.com.tecsus.sccubs.security;
 
 public final class UrlPatternConfig {
 

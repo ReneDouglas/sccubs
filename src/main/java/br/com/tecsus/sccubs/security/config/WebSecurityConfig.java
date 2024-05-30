@@ -1,4 +1,4 @@
-package br.com.tecsus.sccubs.config;
+package br.com.tecsus.sccubs.security.config;
 
 import br.com.tecsus.sccubs.repositories.SystemRoleRepository;
 import br.com.tecsus.sccubs.repositories.SystemUserRepository;
@@ -23,7 +23,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
-import static br.com.tecsus.sccubs.config.UrlPatternConfig.*;
+import static br.com.tecsus.sccubs.security.UrlPatternConfig.*;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.*;
 
