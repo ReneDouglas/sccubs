@@ -17,21 +17,20 @@ public class CityHall implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private Boolean active;
 
     @OneToMany(mappedBy = "cityHall", cascade = CascadeType.ALL)
     private List<BasicHealthUnit> basicHealthUnits = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cityHall", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cityHall", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<SystemUser> systemUsers = new ArrayList<>();
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @Column(name = "creation_user")
+    @Column(name = "creation_user", updatable=false)
     private String creationUser;
 
     @Column(name = "update_date")

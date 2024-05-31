@@ -27,15 +27,15 @@
             <input type="email" id="email" th:field="*{email}" name="email" required>
         </div>
         <br>
-        <!--<div>
+        <div>
             <label for="basicHealthUnit">UBS:</label>
             <select id="basicHealthUnit" name="basicHealthUnit" >
-                <option th:each="role : ${rolesList}"
-                        th:value="${role.id}"
-                        th:text="${role.title}"
-                        th:selected="*{roles.isEmpty()} ? ${role.id} == 2 : ${role.id} == *{getFirstRole()}"></option>
+                <option th:each="ubs : ${basicHealthUnits}"
+                        th:value="${ubs.id}"
+                        th:text="${ubs.name}"
+                        th:selected="*{basicHealthUnit == null} ? ${ubs.id} == 1 : ${ubs.id} == *{basicHealthUnit.id}"></option>
             </select>
-        </div>-->
+        </div>
         <div>
             <label for="selectedRoleId">Perfil:</label>
             <select id="selectedRoleId" name="selectedRoleId" >
@@ -45,7 +45,13 @@
                         th:selected="*{roles.isEmpty()} ? ${role.id} == 2 : ${role.id} == *{getFirstRole()}"></option>
             </select>
         </div>
-        <br>
+        <div th:if="*{id}">
+            <label for="active">Ativo:</label>
+            <select id="active" name="active" >
+                <option th:value="true" th:text="'Sim'" th:selected="*{active} == true"></option>
+                <option th:value="false" th:text="'Não'" th:selected="*{active} == false"></option>
+            </select>
+        </div>
         <input type="hidden" id="id" th:field="*{id} "/>
         <div>
             <button type="submit">Enviar</button>

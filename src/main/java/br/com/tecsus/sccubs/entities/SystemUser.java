@@ -3,11 +3,6 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -16,13 +11,21 @@ import java.util.*;
 @Setter
 @Entity
 @Table(name = "system_users")
+@NamedEntityGraph(name = "SystemUserGraph",
+        attributeNodes =
+                {       // Adicione relacionamentos que devem ser inicializados com esta entidade
+                        @NamedAttributeNode("roles"),
+                        @NamedAttributeNode("basicHealthUnit"),
+                        @NamedAttributeNode("cityHall")
+                }
+)
 public class SystemUser implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, updatable=false)
     private String username;
 
     private String password;
@@ -38,17 +41,17 @@ public class SystemUser implements Serializable {
     @JoinColumn(name = "id_city_hall")
     private CityHall cityHall;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH})
+    @ManyToMany
     @JoinTable(name = "system_users_roles",
             joinColumns = @JoinColumn(name = "id_system_user"),
             inverseJoinColumns = @JoinColumn(name = "id_system_role"))
     private Set<SystemRole> roles = new HashSet<>();
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @Column(name = "creation_user")
+    @Column(name = "creation_user", updatable=false)
     private String creationUser;
 
     @Column(name = "update_date")

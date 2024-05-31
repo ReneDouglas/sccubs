@@ -2,6 +2,8 @@ package br.com.tecsus.sccubs.services;
 
 import br.com.tecsus.sccubs.entities.BasicHealthUnit;
 import br.com.tecsus.sccubs.repositories.BasicHealthUnitRepository;
+import br.com.tecsus.sccubs.security.SystemUserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +17,13 @@ public class BasicHealthUnitService {
         this.basicHealthUnitRepository = basicHealthUnitRepository;
     }
 
-    public List<BasicHealthUnit> findBasicHealthUnitsByCityHallOfLoggedSystemUser(String loggedUser) {
-        return basicHealthUnitRepository.findByCityHallId(1l);
+    public List<BasicHealthUnit> findBasicHealthUnitsByCityHallOfLoggedSystemUser() {
+
+        SystemUserDetails systemUserDetails = (SystemUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (systemUserDetails.getCityHallId() != null) {
+            return basicHealthUnitRepository.findByCityHallId(systemUserDetails.getCityHallId());
+        }
+        return basicHealthUnitRepository.findByCityHallId(1L);
     }
 }

@@ -13,6 +13,7 @@
             <th>Nome</th>
             <th>Email</th>
             <th>Perfil</th>
+            <th>UBS</th>
             <th>Ativo</th>
             <th>Ações</th>
         </tr>
@@ -28,6 +29,7 @@
                     <option th:each="role : ${user.roles}" th:text="${role.title}"></option>
                 </select>
             </td>
+            <td th:text="${user.basicHealthUnit.name}"></td>
             <td th:text="${user.active ? 'Sim' : 'Não'}"></td>
             <td>
                 <form th:action="@{/systemUser-insert}" method="post" style="display:inline;">

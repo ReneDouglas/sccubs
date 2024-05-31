@@ -3,7 +3,6 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -22,11 +21,11 @@ public class SystemRole implements Serializable {
     private String description;
     private Boolean root;
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @Column(name = "creation_user")
+    @Column(name = "creation_user", updatable=false)
     private String creationUser;
 
     @Column(name = "update_date")
@@ -36,7 +35,7 @@ public class SystemRole implements Serializable {
     @Column(name = "update_user")
     private String updateUser;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "roles")
     private Set<SystemUser> users = new HashSet<>();
 
     public SystemRole() {

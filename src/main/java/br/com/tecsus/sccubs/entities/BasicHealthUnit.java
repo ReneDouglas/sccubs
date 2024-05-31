@@ -24,14 +24,14 @@ public class BasicHealthUnit implements Serializable {
     @JoinColumn(name = "id_city_hall")
     private CityHall cityHall;
 
-    @OneToMany(mappedBy = "basicHealthUnit", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "basicHealthUnit", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<SystemUser> systemUsers;
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @Column(name = "creation_user")
+    @Column(name = "creation_user", updatable=false)
     private String creationUser;
 
     @Column(name = "update_date")

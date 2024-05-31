@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.security.Principal;
 
 
 @Slf4j
@@ -63,19 +60,19 @@ public class SessionController {
         return "sessionManagement/expired";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/systemUser-insert")
     public String getSystemUserInsertPage(Model model) {
 
         model.addAttribute("systemUser", new SystemUser());
-        model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotGestao());
-        /*model.addAttribute("basicHealthUnits", basicHealthUnitService
-                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());*/
+        model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotManagement());
+        model.addAttribute("basicHealthUnits", basicHealthUnitService
+                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
         return "sessionManagement/systemUser-insert";
 
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/systemUser-insert/create")
     public String registerSystemUser(@ModelAttribute SystemUser systemUser,
                                      RedirectAttributes redirectAttributes) {
@@ -96,7 +93,7 @@ public class SessionController {
         return "redirect:/systemUser-insert";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/systemUser-list")
     public String getSystemUserListPage(Model model) {
 
@@ -104,16 +101,19 @@ public class SessionController {
         return "sessionManagement/systemUser-list";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/systemUser-insert")
     public String getSystemUserInsertPageToUpdate(@RequestParam("id") Long id, Model model) {
 
         model.addAttribute("systemUser", systemUserService.findSystemUserById(id));
-        model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotGestao());
+        model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotManagement());
+        model.addAttribute("basicHealthUnits", basicHealthUnitService
+                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
+
         return "sessionManagement/systemUser-insert";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/systemUser-insert/update")
     public String updateSystemUser(@ModelAttribute SystemUser systemUser,
                                    RedirectAttributes redirectAttributes) {
@@ -130,7 +130,7 @@ public class SessionController {
         return "redirect:/systemUser-insert";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/systemUser-list/delete")
     public String deleteSystemUser(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
 
