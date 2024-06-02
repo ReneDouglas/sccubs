@@ -3,10 +3,15 @@ package br.com.tecsus.sccubs.controllers;
 import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.SystemUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +19,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 @Slf4j
@@ -46,7 +57,7 @@ public class SessionController {
     }
 
     @GetMapping("/")
-    public String getHomePage(){
+    public String getHomePage() {
         return "home";
     }
 
@@ -85,7 +96,7 @@ public class SessionController {
         } catch (DataIntegrityViolationException e) {
             redirectAttributes.addFlashAttribute("message", "Usuário já cadastrado no sistema.");
             log.error("Usuário já cadastrado: {}", e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Erro ao cadastrar usuário.");
             log.error("Erro ao cadastrar usuário: {}", e.getMessage());
         }
@@ -95,10 +106,64 @@ public class SessionController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/systemUser-list")
-    public String getSystemUserListPage(Model model) {
+    public String getSystemUserListPage(Model model,
+                                        @ModelAttribute SystemUser systemUser,
+                                        @RequestParam(value = "page", defaultValue = "0",required = false) int currentPage,
+                                        @RequestParam(value = "size", defaultValue = "5",required = false) int pageSize,
+                                        HttpServletRequest request) {
 
-        model.addAttribute("systemUsers", systemUserService.findAllUsersByCreationUser());
-        return "sessionManagement/systemUser-list";
+        Page<SystemUser> systemUsersPage;
+        int totalPages;
+
+        model.addAttribute("systemUser", new SystemUser());
+        model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotManagement());
+        model.addAttribute("basicHealthUnits", basicHealthUnitService
+                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
+
+        systemUser.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        systemUser.setName(systemUser.getName() == null || systemUser.getName().isEmpty() ? null : systemUser.getName());
+        systemUser.setUsername(systemUser.getUsername() == null || systemUser.getUsername().isEmpty() ? null : systemUser.getUsername());
+
+        systemUsersPage = systemUserService
+                .findAllUsersByCreationUserPaginated(systemUser, PageRequest.of(currentPage, pageSize, Sort.Direction.valueOf("DESC"), "creationDate"));
+        model.addAttribute("systemUsersPage", systemUsersPage);
+
+        totalPages = systemUsersPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        if("searchRequest".equals(request.getHeader("X-Requested-With"))) {
+            return "sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable";
+        } else {
+            return "sessionManagement/systemUser-list";
+        }
+
+    }
+
+    @GetMapping("/systemUser-list/search")
+    public String searchSystemUsers(@ModelAttribute SystemUser systemUser,
+                                    @RequestParam("page") Optional<Integer> page,
+                                    @RequestParam("size") Optional<Integer> size,
+                                    Model model) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+
+        Page<SystemUser> systemUsersPage = systemUserService.findAllUsersByCreationUserPaginated(systemUser, PageRequest.of(currentPage - 1, pageSize));
+        model.addAttribute("systemUsersPage", systemUsersPage);
+
+        int totalPages = systemUsersPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "sessionManagement/sessionFragments/systemUserList-datatable :: systemUserDatatable";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")

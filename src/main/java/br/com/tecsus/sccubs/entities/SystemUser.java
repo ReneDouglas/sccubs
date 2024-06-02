@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -49,14 +50,14 @@ public class SystemUser implements Serializable {
 
     @Column(name = "creation_date", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @Column(name = "creation_user", updatable=false)
     private String creationUser;
 
     @Column(name = "update_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updateDate;
+    private LocalDateTime updateDate;
 
     @Column(name = "update_user")
     private String updateUser;
@@ -78,6 +79,14 @@ public class SystemUser implements Serializable {
 
     public Long getFirstRole() {
         return roles.stream().iterator().next().getId();
+    }
+
+    public String getUsername() {
+        return username == null || username.isEmpty() ? null : username;
+    }
+
+    public String getName() {
+        return name == null || name.isEmpty() ? null : name;
     }
 
 }

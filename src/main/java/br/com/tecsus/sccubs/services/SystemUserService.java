@@ -8,6 +8,8 @@ import br.com.tecsus.sccubs.repositories.SystemUserRepository;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +19,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -68,7 +71,7 @@ public class SystemUserService implements UserDetailsService {
 
         systemUser.setPassword(passwordEncoder.encode(systemUser.getPassword()));
         systemUser.setRoles(Set.of(role));
-        systemUser.setCreationDate(new Date());
+        systemUser.setCreationDate(LocalDateTime.now());
         systemUser.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
         systemUser.setActive(true);
 
@@ -87,7 +90,7 @@ public class SystemUserService implements UserDetailsService {
         systemUser.setPassword(passwordEncoder.encode(systemUser.getPassword()));
         systemUser.setUpdateUser(SecurityContextHolder.getContext().getAuthentication().getName());
         systemUser.setRoles(Set.of(role));
-        systemUser.setUpdateDate(new Date());
+        systemUser.setUpdateDate(LocalDateTime.now());
         systemUser.setActive(systemUser.getActive());
 
         systemUserRepository.save(systemUser);
@@ -103,6 +106,13 @@ public class SystemUserService implements UserDetailsService {
 
     public List<SystemUser> findAllUsersByCreationUser() {
         return systemUserRepository.findAllByCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    public Page<SystemUser> findAllUsersByCreationUserPaginated(SystemUser systemUser, PageRequest pageRequest) {
+
+        //Example<SystemUser> entitySystemUser = Example.of(systemUser);
+        //return systemUserRepository.findAll(entitySystemUser, pageRequest);
+        return systemUserRepository.findSystemUsersPaginated(systemUser, pageRequest);
     }
 
     @Transactional(readOnly = true)

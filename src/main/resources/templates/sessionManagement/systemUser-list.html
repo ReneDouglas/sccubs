@@ -6,44 +6,141 @@
 <body>
     <nav th:replace="~{fragments/template :: menu}"></nav>
     <h1>System Users</h1>
-    <table>
-        <thead>
-        <tr>
-            <th>Login</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Perfil</th>
-            <th>UBS</th>
-            <th>Ativo</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- Iteração sobre a lista de usuários -->
-        <tr th:each="user : ${systemUsers}">
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.name}"></td>
-            <td th:text="${user.email}"></td>
-            <td>
-                <select>
-                    <option th:each="role : ${user.roles}" th:text="${role.title}"></option>
-                </select>
-            </td>
-            <td th:text="${user.basicHealthUnit.name}"></td>
-            <td th:text="${user.active ? 'Sim' : 'Não'}"></td>
-            <td>
-                <form th:action="@{/systemUser-insert}" method="post" style="display:inline;">
-                    <input type="hidden" name="id" th:value="${user.id}" />
-                    <button type="submit">Editar</button>
-                </form>
-                <form th:action="@{/systemUser-list/delete}" method="post" style="display:inline;">
-                    <input type="hidden" name="id" th:value="${user.id}" />
-                    <button type="submit">Deletar</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <p th:if="${message}" th:text="${message}"></p>
+    <div id="search-panel">
+        <div th:replace="~{sessionManagement/sessionFragments/systemUserList-search :: systemUser-search}"></div>
+    </div>
+    <hr style="height: 2px; background-color: #333; width: 70%; margin: 20px auto 20px 0;">
+    <div id="datatable-panel">
+        <div th:replace="~{sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable}"></div>
+        <p th:if="${message}" th:text="${message}"></p>
+    </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchForm = document.getElementById("searchForm");
+        const pageSizeSelect = document.getElementById("pageSize");
+        const prevPageLink = document.getElementById("prevPage");
+        const nextPageLink = document.getElementById("nextPage");
+        //const currentPageSpan = document.getElementById("currentPage");
+        let page = 0;
+
+        function updateTable(queryString) {
+            fetch(`/systemUser-list?${queryString}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "searchRequest"
+                }
+            })
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const htmlDocument = parser.parseFromString(data, "text/html");
+                    const newTableBody = htmlDocument.querySelector("#systemUserDatatable tbody");
+                    const oldTableBody = document.querySelector("#systemUserDatatable tbody");
+                    oldTableBody.parentNode.replaceChild(newTableBody, oldTableBody);
+
+                    const newPagination = htmlDocument.querySelector(".pagination");
+                    const oldPagination = document.querySelector(".pagination");
+                    oldPagination.parentNode.replaceChild(newPagination, oldPagination);
+
+                    addEventListenersToSelects(); // Re-adiciona listeners aos novos selects
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function addEventListenersToSelects() {
+            document.querySelectorAll("#systemUserDatatable select").forEach(select => {
+                select.addEventListener("change", function() {
+                    // Atualiza os valores no formulário sem enviar AJAX
+                    const formData = new FormData(searchForm);
+                    const queryString = new URLSearchParams(formData).toString();
+                    const pageSize = pageSizeSelect.value;
+
+                    // Aqui atualizamos o queryString com o valor atual do formulário
+                    updateFormValues(queryString, pageSize);
+                });
+            });
+        }
+
+        function updateFormValues(queryString, pageSize) {
+            // Apenas atualiza os valores do formulário
+            const formData = new FormData(searchForm);
+            for (const [key, value] of new URLSearchParams(queryString)) {
+                if (formData.has(key)) {
+                    formData.set(key, value);
+                } else {
+                    formData.append(key, value);
+                }
+            }
+        }
+
+        searchForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(searchForm);
+            const queryString = new URLSearchParams(formData).toString();
+            const pageSize = pageSizeSelect.value;
+
+            updateTable(`${queryString}&size=${pageSize}&page=0`);
+        });
+
+        pageSizeSelect.addEventListener("change", function(event) {
+
+            if (event.target.id === "pageSize") { // aparentemnte não precisa desse if. Ver pageSizeSelect
+                const formData = new FormData(searchForm);
+                const queryString = new URLSearchParams(formData).toString();
+                const pageSize = pageSizeSelect.value;
+
+                updateTable(`${queryString}&size=${pageSize}&page=${page}`); // page=0
+            }
+
+        });
+
+        function addPaginationListeners() {
+            document.getElementById("prevPage").addEventListener("click", function(event) {
+                event.preventDefault();
+                if (this.hasAttribute("disabled")) return;
+
+                const formData = new FormData(searchForm);
+                const queryString = new URLSearchParams(formData).toString();
+                const pageSize = pageSizeSelect.value;
+                const currentPage = parseInt(document.getElementById("currentPage").textContent) - 1;
+                page = currentPage - 1;
+
+                updateTable(`${queryString}&size=${pageSize}&page=${page}`);
+            });
+
+            document.getElementById("nextPage").addEventListener("click", function(event) {
+                event.preventDefault();
+                if (this.hasAttribute("disabled")) return;
+
+                const formData = new FormData(searchForm);
+                const queryString = new URLSearchParams(formData).toString();
+                const pageSize = pageSizeSelect.value;
+                const currentPage = parseInt(document.getElementById("currentPage").textContent) - 1;
+                page = currentPage + 1;
+
+                updateTable(`${queryString}&size=${pageSize}&page=${page}`);
+            });
+        }
+
+        /*document.addEventListener("click", function(event) {
+            if (event.target.id === "prevPage" || event.target.id === "nextPage") {
+                event.preventDefault();
+
+                const formData = new FormData(searchForm);
+                const queryString = new URLSearchParams(formData).toString();
+                const pageSize = pageSizeSelect.value;
+                const currentPage = parseInt(document.getElementById("currentPage").textContent) - 1;
+                console.log(currentPage);
+                page = event.target.id === "prevPage" ? currentPage - 1 : currentPage + 1; // aqui era uma const local
+
+                updateTable(`${queryString}&size=${pageSize}&page=${page}`);
+            }
+        });*/
+
+        addEventListenersToSelects(); // Inicialmente adiciona listeners aos selects
+        addPaginationListeners(); // Inicialmente adiciona listeners aos links de paginação
+    });
+</script>
 </html>

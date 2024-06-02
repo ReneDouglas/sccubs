@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:replace="~{fragments/template :: head}"></head>
+<body>
+    <div th:fragment="systemUser-datatable">
+        <table id="systemUserDatatable">
+            <thead>
+            <tr>
+                <th>Login</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Perfil</th>
+                <th>UBS</th>
+                <th>Ativo</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Iteração sobre a lista de usuários -->
+            <tr th:each="user, iStat : ${systemUsersPage.content}"
+                th:style="${iStat.odd}? 'font-weight: bold;'"
+                th:alt-title="${iStat.even}? 'even' : 'odd'">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                    <select>
+                        <option th:each="role : ${user.roles}" th:text="${role.title}"></option>
+                    </select>
+                </td>
+                <td th:text="${user.basicHealthUnit.name}"></td>
+                <td th:text="${user.active ? 'Sim' : 'Não'}"></td>
+                <td>
+                    <form th:action="@{/systemUser-insert}" method="post" style="display:inline;">
+                        <input type="hidden" name="id" th:value="${user.id}"/>
+                        <button type="submit">Editar</button>
+                    </form>
+                    <form th:action="@{/systemUser-list/delete}" method="post" style="display:inline;">
+                        <input type="hidden" name="id" th:value="${user.id}"/>
+                        <button type="submit">Deletar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div>
+            <label for="pageSize">Linhas por página:</label>
+            <select id="pageSize">
+                <option value="5" th:selected="${systemUsersPage.size == 5}">5</option>
+                <option value="10" th:selected="${systemUsersPage.size == 10}">10</option>
+                <option value="15" th:selected="${systemUsersPage.size == 15}">15</option>
+                <option value="30" th:selected="${systemUsersPage.size == 30}">30</option>
+            </select>
+        </div>
+        <div class="pagination">
+            <a href="#" id="prevPage" th:disabled="${!systemUsersPage.hasPrevious()}">Anterior</a>
+            <span>Página <span id="currentPage" th:text="${systemUsersPage.number + 1}">1</span> de <span th:text="${systemUsersPage.totalPages}">1</span></span>
+            <a href="#" id="nextPage" th:disabled="${!systemUsersPage.hasNext()}">Próximo</a>
+        </div>
+    </div>
+</body>
+</html>

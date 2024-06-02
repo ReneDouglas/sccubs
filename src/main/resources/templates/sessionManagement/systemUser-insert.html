@@ -48,8 +48,8 @@
         <div th:if="*{id}">
             <label for="active">Ativo:</label>
             <select id="active" name="active" >
-                <option th:value="true" th:text="'Sim'" th:selected="*{active} == true"></option>
-                <option th:value="false" th:text="'Não'" th:selected="*{active} == false"></option>
+                <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
+                <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
             </select>
         </div>
         <input type="hidden" id="id" th:field="*{id} "/>

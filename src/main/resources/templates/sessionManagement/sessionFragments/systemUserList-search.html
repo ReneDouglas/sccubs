@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:replace="~{fragments/template :: head}"></head>
+<body>
+    <div th:fragment="systemUser-search">
+        <form id="searchForm" th:action="@{/systemUser-list}" th:object="${systemUser}" th:method="get">
+            <label for="username">Login:</label>
+            <input type="text" id="username" th:field="*{username}" name="username">
+
+            <label for="name">Nome:</label>
+            <input type="text" id="name" th:field="*{name}" name="name">
+
+            <label for="basicHealthUnit">UBS:</label>
+            <select id="basicHealthUnit" name="basicHealthUnit">
+                <option th:value="${null}">Selecione</option>
+                <option th:each="ubs : ${basicHealthUnits}"
+                        th:value="${ubs.id}"
+                        th:text="${ubs.name}">
+
+                </option>
+            </select>
+
+            <label for="selectedRoleId">Perfil:</label>
+            <select id="selectedRoleId" name="selectedRoleId">
+                <option th:value="${null}">Selecione</option>
+                <option th:each="role : ${rolesList}"
+                        th:value="${role.id}"
+                        th:text="${role.title}">
+                </option>
+            </select>
+
+            <label for="active">Ativo:</label>
+            <select id="active" name="active">
+                <option th:value="${null}">Selecione</option>
+                <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
+                <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
+            </select>
+
+            <button type="submit">Pesquisar</button>
+        </form>
+    </div>
+</body>
+</html>
