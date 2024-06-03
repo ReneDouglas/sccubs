@@ -144,27 +144,45 @@ public class SessionController {
 
     }
 
-    @GetMapping("/systemUser-list/search")
-    public String searchSystemUsers(@ModelAttribute SystemUser systemUser,
-                                    @RequestParam("page") Optional<Integer> page,
-                                    @RequestParam("size") Optional<Integer> size,
-                                    Model model) {
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
+    @GetMapping("/tutorials")
+    public String getSystemUserListPageTest(Model model, @RequestParam(required = false) String keyword,
+                                        @ModelAttribute SystemUser systemUser,
+                                        @RequestParam(value = "page", defaultValue = "0",required = false) int page,
+                                        @RequestParam(value = "size", defaultValue = "5",required = false) int size,
+                                        HttpServletRequest request) {
 
-        Page<SystemUser> systemUsersPage = systemUserService.findAllUsersByCreationUserPaginated(systemUser, PageRequest.of(currentPage - 1, pageSize));
-        model.addAttribute("systemUsersPage", systemUsersPage);
+        Page<SystemUser> systemUsersPage;
+        List<SystemUser> suList;
 
-        int totalPages = systemUsersPage.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
+        int totalPages;
 
-        return "sessionManagement/sessionFragments/systemUserList-datatable :: systemUserDatatable";
+        model.addAttribute("systemUser", new SystemUser());
+        model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotManagement());
+        model.addAttribute("basicHealthUnits", basicHealthUnitService
+                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
+
+        systemUser.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        systemUser.setName(systemUser.getName());
+        systemUser.setUsername(systemUser.getUsername());
+
+        systemUsersPage = systemUserService
+                .findAllUsersByCreationUserPaginated(systemUser, PageRequest.of(page, size, Sort.Direction.valueOf("DESC"), "creationDate"));
+
+        suList = systemUsersPage.getContent();
+
+        model.addAttribute("systemUsersPage", suList);
+        model.addAttribute("currentPage", systemUsersPage.getNumber() + 1);
+        model.addAttribute("totalItems", systemUsersPage.getTotalElements());
+        model.addAttribute("totalPages", systemUsersPage.getTotalPages());
+        model.addAttribute("pageSize", size);
+
+        return "sessionManagement/systemUser-listV2";
+
+
     }
+
+
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/systemUser-insert")

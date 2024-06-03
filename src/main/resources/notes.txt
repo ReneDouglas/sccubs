@@ -1,0 +1,5 @@
+*** Versões ***
+node.js=20.14.0
+npm=10.7.0
+java(amazon-corretto)=17
+mysql=5~8

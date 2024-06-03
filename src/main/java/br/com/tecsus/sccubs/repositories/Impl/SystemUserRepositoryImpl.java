@@ -28,6 +28,7 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         StringBuilder jpql = new StringBuilder();
 
         jpql.append("SELECT su.id FROM SystemUser su ");
+        jpql.append("LEFT JOIN su.roles r ");
         jpql.append("WHERE su.creationUser = :creationUser ");
 
         if (attrIsNotNull(systemUser.getUsername())) {
@@ -40,7 +41,9 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
             jpql.append("AND su.basicHealthUnit.id = :ubsId ");
         }
         if (attrIsNotNull(systemUser.getSelectedRoleId())) {
-            jpql.append("AND su.roles.id = :roleId ");
+            jpql.append("AND r.id = :roleId ");
+            //jpql.append("AND su.roles.id = :roleId ");
+            //jpql.append("AND :roleId IN (SELECT r.id FROM su.roles r) ");
         }
         if (attrIsNotNull(systemUser.getActive())) {
             jpql.append("AND su.active = :active ");

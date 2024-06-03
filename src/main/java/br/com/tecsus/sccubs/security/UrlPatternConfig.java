@@ -10,7 +10,8 @@ public final class UrlPatternConfig {
             "/login-error",
             "/logout",
             "/error",
-            "/expired"
+            "/expired",
+            "/webjars/**"
     };
 
 }

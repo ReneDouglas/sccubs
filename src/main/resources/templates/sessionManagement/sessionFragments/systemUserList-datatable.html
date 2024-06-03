@@ -54,11 +54,17 @@
                 <option value="30" th:selected="${systemUsersPage.size == 30}">30</option>
             </select>
         </div>
-        <div class="pagination">
-            <a href="#" id="prevPage" th:disabled="${!systemUsersPage.hasPrevious()}">Anterior</a>
-            <span>Página <span id="currentPage" th:text="${systemUsersPage.number + 1}">1</span> de <span th:text="${systemUsersPage.totalPages}">1</span></span>
-            <a href="#" id="nextPage" th:disabled="${!systemUsersPage.hasNext()}">Próximo</a>
+        <div id="pagination">
+            <a href="" id="prevPage" th:disabled="${!systemUsersPage.hasPrevious()}" onclick="goToPreviousPage(event)">Anterior</a>
+            <span>Página <span id="currentPage" th:text="${systemUsersPage.number + 1}" >1</span> de <span th:text="${systemUsersPage.totalPages}">1</span></span>
+            <a href="" id="nextPage" th:disabled="${!systemUsersPage.hasNext()}" onclick="goToNextPage(event)">Próximo</a>
         </div>
     </div>
+
+    <a th:fragment="paging(pageNum, label, tooltip)" class="page-link"
+       th:href="@{'/tutorials?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} + 'page=' + ${pageNum} + '&size=' + ${pageSize}}"
+       th:title="${tooltip}" rel="tooltip">
+        [[${label}]]
+    </a>
 </body>
 </html>
