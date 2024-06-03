@@ -1,5 +1,11 @@
 *** Versões ***
 node.js=20.14.0
 npm=10.7.0
-java(amazon-corretto)=17
-mysql=5~8
+java(amazon-corretto)=17.0.11
+mysql=5.7~8
+
+*** cmd postcss ***
+Utilizar para criar o arquivo style.build.tailwind.css (produção):
+npm run build:postcss
+Utilizar para desenvolvimento local:
+npm run watch:postcss

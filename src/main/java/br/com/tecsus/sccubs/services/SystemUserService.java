@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -109,9 +108,6 @@ public class SystemUserService implements UserDetailsService {
     }
 
     public Page<SystemUser> findAllUsersByCreationUserPaginated(SystemUser systemUser, PageRequest pageRequest) {
-
-        //Example<SystemUser> entitySystemUser = Example.of(systemUser);
-        //return systemUserRepository.findAll(entitySystemUser, pageRequest);
         return systemUserRepository.findSystemUsersPaginated(systemUser, pageRequest);
     }
 
@@ -119,7 +115,6 @@ public class SystemUserService implements UserDetailsService {
     public SystemUser findSystemUserById(Long id) {
         return systemUserRepository.findById(id).get();
     }
-
 
     @Transactional
     public void deleteNotAdminSystemUser(Long id) throws Exception{

@@ -3,6 +3,7 @@ package br.com.tecsus.sccubs.repositories.Impl;
 import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.repositories.SystemUserRepositoryCustom;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,43 +43,27 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         }
         if (attrIsNotNull(systemUser.getSelectedRoleId())) {
             jpql.append("AND r.id = :roleId ");
-            //jpql.append("AND su.roles.id = :roleId ");
-            //jpql.append("AND :roleId IN (SELECT r.id FROM su.roles r) ");
         }
         if (attrIsNotNull(systemUser.getActive())) {
             jpql.append("AND su.active = :active ");
         }
 
         TypedQuery<Long> systemUsersIdQuery = em.createQuery(jpql.toString(), Long.class);
-        systemUsersIdQuery.setParameter("creationUser", systemUser.getCreationUser());
-
-        if (attrIsNotNull(systemUser.getUsername())) {
-            systemUsersIdQuery.setParameter("username", systemUser.getUsername());
-        }
-        if (attrIsNotNull(systemUser.getName())) {
-            systemUsersIdQuery.setParameter("name", systemUser.getName());
-        }
-        if (attrIsNotNull(systemUser.getBasicHealthUnit())) {
-            systemUsersIdQuery.setParameter("ubsId", systemUser.getBasicHealthUnit().getId());
-        }
-        if (attrIsNotNull(systemUser.getSelectedRoleId())) {
-            systemUsersIdQuery.setParameter("roleId", systemUser.getSelectedRoleId());
-        }
-        if (attrIsNotNull(systemUser.getActive())) {
-            systemUsersIdQuery.setParameter("active", systemUser.getActive());
-        }
+        attachParameters(systemUsersIdQuery, systemUser);
 
         systemUsersIdQuery.setFirstResult(page.getPageNumber() * page.getPageSize());
         systemUsersIdQuery.setMaxResults(page.getPageSize());
-
         var systemUsersIds = systemUsersIdQuery.getResultList();
 
-        long totalCountSystemUsers = systemUsersIds.size() < page.getPageSize()
-                ? page.getPageSize()
-                : (long) em.createQuery(
-                        jpql.toString().replace("su.id", "count(su.id)"))
-                            .setParameter("creationUser", systemUser.getCreationUser())
-                        .getSingleResult();
+        long totalCountSystemUsers = 0;
+
+        if (systemUsersIds.size() < page.getPageSize()) {
+            page.getPageSize();
+        } else {
+            Query count = em.createQuery(jpql.toString().replace("su.id", "count(su.id)"));
+            attachParameters(count, systemUser);
+            totalCountSystemUsers = (long) count.getSingleResult();
+        }
 
         TypedQuery<SystemUser> systemUsersQuery = em.createQuery("""
                                          SELECT su FROM SystemUser su
@@ -91,6 +76,27 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         List<SystemUser> systemUsers = systemUsersQuery.getResultList();
 
         return new PageImpl<>(systemUsers, page, totalCountSystemUsers);
+    }
+
+    private void attachParameters(Query query, SystemUser systemUser) {
+
+        query.setParameter("creationUser", systemUser.getCreationUser());
+
+        if (attrIsNotNull(systemUser.getUsername())) {
+            query.setParameter("username", systemUser.getUsername());
+        }
+        if (attrIsNotNull(systemUser.getName())) {
+            query.setParameter("name", systemUser.getName());
+        }
+        if (attrIsNotNull(systemUser.getBasicHealthUnit())) {
+            query.setParameter("ubsId", systemUser.getBasicHealthUnit().getId());
+        }
+        if (attrIsNotNull(systemUser.getSelectedRoleId())) {
+            query.setParameter("roleId", systemUser.getSelectedRoleId());
+        }
+        if (attrIsNotNull(systemUser.getActive())) {
+            query.setParameter("active", systemUser.getActive());
+        }
     }
 
     private Boolean attrIsNotNull(Object attr){
