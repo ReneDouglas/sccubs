@@ -81,6 +81,10 @@ public class SystemUser implements Serializable {
         return roles.stream().iterator().next().getId();
     }
 
+    public String getFirstRoleTitle() {
+        return roles.stream().iterator().next().getTitle();
+    }
+
     public String getUsername() {
         return username == null || username.isEmpty() ? null : username;
     }

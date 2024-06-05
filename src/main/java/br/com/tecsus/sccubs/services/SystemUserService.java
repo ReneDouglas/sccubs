@@ -113,7 +113,7 @@ public class SystemUserService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public SystemUser findSystemUserById(Long id) {
-        return systemUserRepository.findById(id).get();
+        return systemUserRepository.findById(id).orElse(null);
     }
 
     @Transactional

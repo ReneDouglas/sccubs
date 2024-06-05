@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:replace="~{fragments/template :: head}"></head>
+<body>
+    <table th:fragment="systemUsersUBStable">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Perfil</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ubsUser : ${ubsUsers}">
+            <td th:text="${ubsUser.name}"></td>
+            <td th:text="${ubsUser.role}"></td>
+            <td th:text="${ubsUser.active}"></td>
+            <td>
+                <form th:action="@{ubs/basicHealthUnit-management/systemUser/delete}" method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${ubsUser.id}"/>
+                    <button type="submit">Deletar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table th:fragment="emptySystemUsersUBStable">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Perfil</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="4">Sem registro</td>
+        </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

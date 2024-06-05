@@ -8,8 +8,8 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet"/>
     <link th:href="@{/css/style.build.tailwind.css}" rel="stylesheet"/>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <!--<script src="https://cdn.tailwindcss.com"></script>-->
-    <!--<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">-->
+<!--    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>-->
+    <script th:src="@{/js/htmx.min.js}"></script>
     <title>SCCUBS</title>
 </head>
 <body>
@@ -17,7 +17,8 @@
         <ul class="menu">
             <li><a href="/systemUser-insert">Cadastrar Usuário</a></li>
             <li><a th:href="@{/systemUser-list}">Consultar Usuários</a></li>
-            <li><a th:href="@{/tutorials}">Consultar Usuários Test</a></li>
+            <li><a th:href="@{/basicHealthUnit-management}">Gerenciamento UBS</a></li>
+            <!--<li><a th:href="@{/tutorials}">Consultar Usuários Test</a></li>-->
             <li><a href="#cadastrar-paciente">Cadastrar Paciente</a></li>
             <li><a href="#consultar-pacientes">Consultar Pacientes</a></li>
             <li><a th:href="@{/logout}">Logout</a></li>

@@ -3,6 +3,8 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+//import org.hibernate.annotations.Cache;
+//import org.hibernate.annotations.CacheConcurrencyStrategy;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+/*@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)*/
 @Table(name = "city_halls")
 public class CityHall implements Serializable {
 

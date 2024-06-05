@@ -19,9 +19,7 @@
             </thead>
             <tbody>
             <!-- Iteração sobre a lista de usuários -->
-            <tr th:each="user, iStat : ${systemUsersPage.content}"
-                th:style="${iStat.odd}? 'font-weight: bold;'"
-                th:alt-title="${iStat.even}? 'even' : 'odd'">
+            <tr th:each="user : ${systemUsersPage.content}">
                 <td th:text="${user.username}"></td>
                 <td th:text="${user.name}"></td>
                 <td th:text="${user.email}"></td>

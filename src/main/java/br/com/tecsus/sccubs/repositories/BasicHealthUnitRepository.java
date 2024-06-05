@@ -15,4 +15,5 @@ public interface BasicHealthUnitRepository extends JpaRepository<BasicHealthUnit
     @Query("SELECT ubs FROM BasicHealthUnit ubs WHERE ubs.cityHall.id = :id")
     List<BasicHealthUnit> findByCityHallId(@Param("id") Long cityHallId);
 
+
 }

@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -53,6 +54,7 @@ public class WebSecurityConfig {
             authConfig.requestMatchers(PUBLIC_MATCHERS).permitAll();
             authConfig.requestMatchers("/systemUser-insert/**");
             authConfig.requestMatchers("/systemUser-list/**");
+            authConfig.requestMatchers("/basicHealthUnit-management/**");
             authConfig.anyRequest().authenticated();
         });
         http.formLogin(login -> {
@@ -61,6 +63,7 @@ public class WebSecurityConfig {
             login.failureUrl("/login-error");
         });
         http.logout(logout -> {
+            logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
             logout.logoutSuccessUrl("/login");
             logout.permitAll();
             logout.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES)));

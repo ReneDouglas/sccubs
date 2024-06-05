@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -63,7 +61,7 @@ public class SessionController {
 
     @GetMapping("/error")
     public String getErrorPage() {
-        return "error2";
+        return "error";
     }
 
     @GetMapping("/expired")
@@ -89,7 +87,6 @@ public class SessionController {
                                      RedirectAttributes redirectAttributes) {
 
         try {
-
             systemUserService.registerNotAdminSystemUser(systemUser);
             redirectAttributes.addFlashAttribute("message", "Usuário cadastrado com sucesso.");
             log.info("Cadastro de usuário realizado com sucesso.");
@@ -181,8 +178,6 @@ public class SessionController {
 
 
     }
-
-
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/systemUser-insert")
