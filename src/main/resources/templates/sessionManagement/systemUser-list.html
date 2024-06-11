@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org"
+<html lang="pt-br" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head th:replace="~{fragments/template :: head}"></head>
-<body>
-    <nav th:replace="~{fragments/template :: menu}"></nav>
-    <h1>System Users</h1>
-    <div id="search-panel">
-        <div th:replace="~{sessionManagement/sessionFragments/systemUserList-search :: systemUser-search}"></div>
-    </div>
-    <hr style="height: 2px; background-color: #333; width: 70%; margin: 20px auto 20px 0;">
-    <div id="datatable-panel">
-        <div th:replace="~{sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable}"></div>
-        <p th:if="${message}" th:text="${message}"></p>
-    </div>
+
+<body class="flex w-full h-screen justify-between items-center bg-slate-900">
+    <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
+    <main class="flex flex-col h-screen w-full mx-auto bg-slate-100">
+        <header th:replace="~{fragments/navbar :: header}"></header>
+        <section>
+            <h1>System Users</h1>
+            <div id="search-panel">
+                <div th:replace="~{sessionManagement/sessionFragments/systemUserList-search :: systemUser-search}"></div>
+            </div>
+            <hr style="height: 2px; background-color: #333; width: 70%; margin: 20px auto 20px 0;">
+            <div id="datatable-panel">
+                <div th:replace="~{sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable}"></div>
+                <p th:if="${message}" th:text="${message}"></p>
+            </div>
+        </section>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
 </body>
 <script th:src="@{/js/sessionManagement.js}"></script>
 </html>

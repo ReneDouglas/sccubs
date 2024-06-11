@@ -1,78 +1,88 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org"
->
+<html xmlns:th="https://www.thymeleaf.org">
 <head th:replace="~{fragments/template :: head}"></head>
-<body>
-    <nav th:replace="~{fragments/template :: menu}"></nav>
-    <section>
-        <br>
-        <h1><strong>Cadastrar Unidade Básica de Saúde</strong></h1>
-        <br>
-        <form th:action="${basicHealthUnit.id == null} ? @{/basicHealthUnit-management/create} : @{/basicHealthUnit-management/update}"
-              method="post"
-              th:object="${basicHealthUnit}">
-            <div>
-                <label for="name">Nome da Unidade:</label>
-                <input type="text" id="name" th:field="*{name}" name="name" required>
-            </div>
-            <br>
-            <div>
-                <label for="neighborhood">Bairro:</label>
-                <input type="text" id="neighborhood" th:field="*{neighborhood}" name="neighborhood" required>
-            </div>
-            <br>
-            <div>
-                <label for="cityHall">Nome:</label>
-                <input type="text" id="cityHall" th:field="*{cityHall.name}" name="cityHall" disabled style="width: 300px">
-            </div>
-            <br>
-            <input type="hidden" id="id" th:field="*{id} "/>
-            <div>
-                <button type="submit">Enviar</button>
-            </div>
-        </form>
-        <p th:if="${message}" th:text="${message}"></p>
-    </section>
-    <section>
-        <br>
-        <h1><strong>Atualizar Unidade Básica de Saúde</strong></h1>
-        <br>
-        <label for="basicHealthUnit">Unidades Básicas de Saúde:</label>
-        <form th:action="@{/basicHealthUnit-management}" method="post" style="display:inline;">
-            <select id="basicHealthUnit" name="basicHealthUnit"
-                    hx-get="/basicHealthUnit-management/users"
-                    hx-target="#systemUsersUBStable">
-                <option th:value="${null}">Selecione</option>
-                <option th:each="ubs : ${basicHealthUnits}"
-                        th:value="${ubs.id}"
-                        th:text="${ubs.name}">
-                </option>
-            </select>
-            <button type="submit">Editar</button>
-            <!--<button type="submit" th:formaction="@{basicHealthUnit-management/delete}">Deletar</button>-->
-        </form>
-        <br>
-        <form>
-            <label for="systemUserSearch">Buscar usuário:</label>
-            <input type="text" id="systemUserSearch" name="systemUserSearch" required>
-            <div id="dropdown" style="border: 1px solid #ccc; display: none;"></div>
-        </form>
-        <br>
-        <table id="systemUsersUBStable">
-            <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Perfil</th>
-                <th>Ativo</th>
-                <th>Ações</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td colspan="4">Sem registro</td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
+
+<body class="flex w-full h-screen justify-between items-center bg-slate-900">
+    <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
+    <main class="flex flex-col h-screen w-full mx-auto bg-slate-100">
+        <header th:replace="~{fragments/navbar :: header}"></header>
+        <div class="flex flex-1 bg-slate-100 my-8">
+
+            <!-- Miolo código Renê-->
+            <section>
+                <br>
+                <h1><strong>Cadastrar Unidade Básica de Saúde</strong></h1>
+                <br>
+                <form th:action="${basicHealthUnit.id == null} ? @{/basicHealthUnit-management/create} : @{/basicHealthUnit-management/update}"
+                      method="post"
+                      th:object="${basicHealthUnit}">
+                    <div>
+                        <label for="name">Nome da Unidade:</label>
+                        <input type="text" id="name" th:field="*{name}" name="name" required>
+                    </div>
+                    <br>
+                    <div>
+                        <label for="neighborhood">Bairro:</label>
+                        <input type="text" id="neighborhood" th:field="*{neighborhood}" name="neighborhood" required>
+                    </div>
+                    <br>
+                    <div>
+                        <label for="cityHall">Nome:</label>
+                        <input type="text" id="cityHall" th:field="*{cityHall.name}" name="cityHall" disabled
+                               style="width: 300px">
+                    </div>
+                    <br>
+                    <input type="hidden" id="id" th:field="*{id} "/>
+                    <div>
+                        <button type="submit">Enviar</button>
+                    </div>
+                </form>
+                <p th:if="${message}" th:text="${message}"></p>
+            </section>
+            <section>
+                <br>
+                <h1><strong>Atualizar Unidade Básica de Saúde</strong></h1>
+                <br>
+                <label for="basicHealthUnit">Unidades Básicas de Saúde:</label>
+                <form th:action="@{/basicHealthUnit-management}" method="post" style="display:inline;">
+                    <select id="basicHealthUnit" name="basicHealthUnit"
+                            hx-get="/basicHealthUnit-management/users"
+                            hx-target="#systemUsersUBStable">
+                        <option th:value="${null}">Selecione</option>
+                        <option th:each="ubs : ${basicHealthUnits}"
+                                th:value="${ubs.id}"
+                                th:text="${ubs.name}">
+                        </option>
+                    </select>
+                    <button type="submit">Editar</button>
+                    <!--<button type="submit" th:formaction="@{basicHealthUnit-management/delete}">Deletar</button>-->
+                </form>
+                <br>
+                <form>
+                    <label for="systemUserSearch">Buscar usuário:</label>
+                    <input type="text" id="systemUserSearch" name="systemUserSearch" required>
+                    <div id="dropdown" style="border: 1px solid #ccc; display: none;"></div>
+                </form>
+                <br>
+                <table id="systemUsersUBStable">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Perfil</th>
+                        <th>Ativo</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td colspan="4">Sem registro</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+            <!-- Miolo código Renê-->
+
+        </div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
 </body>
-</html>

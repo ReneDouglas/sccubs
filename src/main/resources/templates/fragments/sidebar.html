@@ -1,0 +1,107 @@
+<nav th:fragment="sidebar"
+     class="flex flex-col absolute top-0 left-0 z-9999 w-screen h-screen sm:w-96 sm:relative bg-slate-900 p-4 space-y-4 justify-between"
+>
+<!--        -->
+    <!--        Header-Sidebar ----------------------------------------------------------------------------->
+    <div class="h-20 flex justify-center items-center bg-white rounded-md">
+
+    </div>
+    <!--        Header-Sidebar End ----->
+
+    <!--        Buttons-Section ----------------------------------------------------------------------------->
+    <div id="nav-links" class="flex flex-col flex-1 space-y-2">
+
+        <!--        Item 1 ------->
+        <a  th:href="@{/#}" class="flex text-white justify-between items-center text-md font-medium tracking-wide w-full p-4 bg-slate-950 rounded-md hover:bg-white hover:text-slate-900 hover:rounded-lg">
+            <div class="flex flex-1 items-center w-full gap-x-2">
+                <span class="material-symbols-outlined">dashboard</span>
+                <p>Dashboard</p>
+            </div>
+        </a>
+
+        <!--        Item 1 ------->
+        <div class="accordion-item">
+            <button class="accordion-header flex text-md font-medium tracking-wide w-full p-4 text-white justify-between items-center hover:bg-white hover:text-slate-900 hover:rounded-lg">
+                <div class="flex items-center gap-x-2">
+                    <span class="material-symbols-outlined">person</span>
+                    <p class="text-center">Usuário</p>
+                </div>
+                <span class="arrow material-symbols-outlined transform transition-transform duration-500">keyboard_arrow_down</span>
+            </button>
+            <div class="accordion-content flex flex-col w-full pl-8 mt-1 h-0 overflow-hidden">
+                <div class="flex text-gray-400 w-full p-4 gap-x-4 hover:text-white hover:bg-slate-800 hover:rounded-lg">
+                    <span class="material-symbols-outlined">person_add</span>
+<!--                    <a class="flex w-full font-medium" href="/systemUser-insert">Cadastrar</a>-->
+                    <a th:href="@{/systemUser-insert}">Cadastrar Usuários</a>
+                </div>
+                <div class="flex text-gray-400 w-full p-4 gap-x-4 hover:text-white hover:bg-slate-800 hover:rounded-lg">
+                    <span class="material-symbols-outlined">manage_search</span>
+                    <a th:href="@{/systemUser-list}">Consultar Usuários</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <button class="accordion-header flex text-md font-medium tracking-wide w-full p-4 text-white justify-between items-center hover:bg-white hover:text-slate-900 hover:rounded-lg">
+                <div class="flex items-center gap-x-2">
+                    <span class="material-symbols-outlined">accessibility_new</span>
+                    <p class="text-center">Pacientes</p>
+                </div>
+                <span class="arrow material-symbols-outlined transform transition-transform duration-500">keyboard_arrow_down</span>
+            </button>
+            <div class="accordion-content flex flex-col w-full pl-8 mt-1 h-0 overflow-hidden">
+                <div class="flex text-gray-400 w-full p-4 gap-x-4 hover:text-white hover:bg-slate-800 hover:rounded-lg">
+                    <span class="material-symbols-outlined">add</span>
+                    <a class="flex w-full font-medium" href="/">Novo Paciente</a>
+                </div>
+                <div class="flex text-gray-400 w-full p-4 gap-x-4 hover:text-white hover:bg-slate-800 hover:rounded-lg">
+                    <span class="material-symbols-outlined">conditions</span>
+                    <a th:href="@{/}">Consultar Pacientes</a>
+                </div>
+            </div>
+        </div>
+
+        <!--        Item 2 ------->
+        <a  th:href="@{/basicHealthUnit-management}" class="flex text-white justify-between items-center text-md font-medium tracking-wide w-full p-4 hover:bg-white hover:text-slate-900 hover:rounded-lg">
+            <div class="flex flex-1 items-center w-full gap-x-2">
+                <span class="material-symbols-outlined">apartment</span>
+                <p>UBS</p>
+            </div>
+        </a>
+
+        <!--        Item 3 ------->
+        <div class="accordion-item">
+            <button class="accordion-header flex text-md font-medium tracking-wide w-full p-4 text-white justify-between items-center hover:bg-white hover:text-slate-900 hover:rounded-lg">
+                <div class="flex items-center gap-x-2">
+                    <span class="material-symbols-outlined">inventory</span>
+                    <p class="text-center">Especialidades</p>
+                </div>
+                <span class="arrow material-symbols-outlined transform transition-transform duration-200">keyboard_arrow_down</span>
+            </button>
+            <div class="accordion-content flex flex-col w-full pl-8 mt-1 h-0 overflow-hidden">
+                <div class="flex text-gray-400 w-full p-4 gap-x-4 hover:text-white hover:bg-slate-800 hover:rounded-lg">
+                    <span class="material-symbols-outlined">add</span>
+                    <a class="flex w-full font-medium" href="/">Nova Especialidade</a>
+                </div>
+                <div class="flex text-gray-400 w-full p-4 gap-x-4 hover:text-white hover:bg-slate-800 hover:rounded-lg">
+                    <span class="material-symbols-outlined">manage_search</span>
+                    <a th:href="@{/}">Listar Especialidades</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--        Buttons-Section End ----->
+
+    <!--        Footer-Nav ----------------------------------------------------------------------------->
+    <div>
+        <a th:href="@{/logout}" class="flex text-white justify-between items-center text-md font-medium tracking-wide w-full p-4 hover:bg-white hover:text-slate-900 hover:rounded-lg">
+            <button class="flex flex-1 items-center w-full gap-x-2">
+                <span class="material-symbols-outlined">logout</span>
+                <p>Sair</p>
+            </button>
+        </a>
+    </div>
+    <!--        Footer-Nav End ----->
+</nav>
+
+
