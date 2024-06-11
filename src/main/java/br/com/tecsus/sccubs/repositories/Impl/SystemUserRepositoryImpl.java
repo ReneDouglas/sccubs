@@ -1,5 +1,6 @@
 package br.com.tecsus.sccubs.repositories.Impl;
 
+import br.com.tecsus.sccubs.dtos.UBSsystemUserDTO;
 import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.repositories.SystemUserRepositoryCustom;
 import jakarta.persistence.EntityManager;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Repository
@@ -23,6 +26,7 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         this.em = jpaContext.getEntityManagerByManagedType(SystemUser.class);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<SystemUser> findSystemUsersPaginated(SystemUser systemUser, Pageable page) {
 
@@ -76,6 +80,26 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         List<SystemUser> systemUsers = systemUsersQuery.getResultList();
 
         return new PageImpl<>(systemUsers, page, totalCountSystemUsers);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<UBSsystemUserDTO> findSystemUsersNameByNameContains(String name, Long cityId) {
+
+        String jpql = """
+                        SELECT su.id, su.name, 'null', 'null' FROM SystemUser su
+                        WHERE su.name LIKE CONCAT('%', :name, '%')
+                        AND su.cityHall.id = :cityId
+                        AND su.basicHealthUnit IS NULL
+                        AND su.active IS TRUE
+               """;
+
+        TypedQuery<UBSsystemUserDTO> usersQuery = em.createQuery(jpql, UBSsystemUserDTO.class);
+        usersQuery.setParameter("name", name);
+        usersQuery.setParameter("cityId", cityId);
+        usersQuery.setMaxResults(5);
+
+        return usersQuery.getResultList();
     }
 
     private void attachParameters(Query query, SystemUser systemUser) {

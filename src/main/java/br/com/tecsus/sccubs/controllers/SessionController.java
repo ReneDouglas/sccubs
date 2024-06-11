@@ -1,8 +1,10 @@
 package br.com.tecsus.sccubs.controllers;
 
 import br.com.tecsus.sccubs.entities.SystemUser;
+import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.SystemUserService;
+import br.com.tecsus.sccubs.services.exceptions.InvalidConfirmPasswordException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -84,20 +87,23 @@ public class SessionController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/systemUser-insert/create")
     public String registerSystemUser(@ModelAttribute SystemUser systemUser,
+                                     @AuthenticationPrincipal SystemUserDetails loggedUser,
                                      RedirectAttributes redirectAttributes) {
 
         try {
-            systemUserService.registerNotAdminSystemUser(systemUser);
+            systemUserService.registerNotAdminSystemUser(systemUser, loggedUser);
             redirectAttributes.addFlashAttribute("message", "Usuário cadastrado com sucesso.");
             log.info("Cadastro de usuário realizado com sucesso.");
         } catch (DataIntegrityViolationException e) {
             redirectAttributes.addFlashAttribute("message", "Usuário já cadastrado no sistema.");
             log.error("Usuário já cadastrado: {}", e.getMessage());
+        } catch (InvalidConfirmPasswordException e) {
+            redirectAttributes.addFlashAttribute("message", "As senhas não conferem.");
+            log.error(e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Erro ao cadastrar usuário.");
             log.error("Erro ao cadastrar usuário: {}", e.getMessage());
         }
-        //return new RedirectView("/user");
         return "redirect:/systemUser-insert";
     }
 

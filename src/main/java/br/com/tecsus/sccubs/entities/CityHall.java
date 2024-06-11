@@ -27,14 +27,14 @@ public class CityHall implements Serializable {
     @OneToMany(mappedBy = "cityHall", cascade = CascadeType.ALL)
     private List<BasicHealthUnit> basicHealthUnits = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cityHall", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cityHall", cascade = CascadeType.ALL/*, fetch = FetchType.EAGER*/)
     private List<SystemUser> systemUsers = new ArrayList<>();
 
-    @Column(name = "creation_date", updatable=false)
+    @Column(name = "creation_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime creationDate;
 
-    @Column(name = "creation_user", updatable=false)
+    @Column(name = "creation_user", updatable = false)
     private String creationUser;
 
     @Column(name = "update_date")

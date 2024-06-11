@@ -4,45 +4,53 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{fragments/template :: head}"></head>
 <body>
-    <table th:fragment="systemUsersUBStable">
-        <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Perfil</th>
-            <th>Ativo</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="ubsUser : ${ubsUsers}">
-            <td th:text="${ubsUser.name}"></td>
-            <td th:text="${ubsUser.role}"></td>
-            <td th:text="${ubsUser.active}"></td>
-            <td>
-                <form th:action="@{ubs/basicHealthUnit-management/systemUser/delete}" method="post" style="display:inline;">
-                    <input type="hidden" name="id" th:value="${ubsUser.id}"/>
-                    <button type="submit">Deletar</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div th:fragment="systemUsersUBStable">
+        <table>
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Perfil</th>
+                <th>Ativo</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ubsUser : ${ubsUsers}">
+                <td th:text="${ubsUser.name}"></td>
+                <td th:text="${ubsUser.role}"></td>
+                <td th:text="${ubsUser.active}"></td>
+                <td>
+                    <form hx-post="/basicHealthUnit-management/systemUser/delete"
+                          hx-target="#systemUsersUBStable"
+                          hx-include="[name='basicHealthUnit']">
+                        <input type="hidden" name="id" th:value="${ubsUser.id}"/>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit">Desvincular</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${attach_message}" th:text="${attach_message}"></p>
+    </div>
 
-    <table th:fragment="emptySystemUsersUBStable">
-        <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Perfil</th>
-            <th>Ativo</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td colspan="4">Sem registro</td>
-        </tr>
-        </tbody>
-    </table>
-
+    <div th:fragment="emptySystemUsersUBStable">
+        <table>
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Perfil</th>
+                <th>Ativo</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="4">Sem registro</td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${unlink_message}" th:text="${unlink_message}"></p>
+    </div>
 </body>
 </html>

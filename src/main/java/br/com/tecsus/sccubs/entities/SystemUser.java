@@ -28,8 +28,8 @@ public class SystemUser implements Serializable {
 
     @Column(unique = true, updatable=false)
     private String username;
-
     private String password;
+    @Transient private String confirmPassword;
     private String name;
     private String email;
     private Boolean active;
@@ -39,7 +39,7 @@ public class SystemUser implements Serializable {
     private BasicHealthUnit basicHealthUnit;
 
     @ManyToOne
-    @JoinColumn(name = "id_city_hall")
+    @JoinColumn(name = "id_city_hall", updatable = false)
     private CityHall cityHall;
 
     @ManyToMany
@@ -48,11 +48,11 @@ public class SystemUser implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "id_system_role"))
     private Set<SystemRole> roles = new HashSet<>();
 
-    @Column(name = "creation_date", updatable=false)
+    @Column(name = "creation_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime creationDate;
 
-    @Column(name = "creation_user", updatable=false)
+    @Column(name = "creation_user", updatable = false)
     private String creationUser;
 
     @Column(name = "update_date")

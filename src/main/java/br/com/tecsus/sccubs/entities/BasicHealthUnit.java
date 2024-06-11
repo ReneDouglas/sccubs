@@ -21,17 +21,17 @@ public class BasicHealthUnit implements Serializable {
     private String neighborhood;
 
     @ManyToOne
-    @JoinColumn(name = "id_city_hall")
+    @JoinColumn(name = "id_city_hall", updatable = false)
     private CityHall cityHall;
 
-    @OneToMany(mappedBy = "basicHealthUnit", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "basicHealthUnit"/*, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER*/)
     private List<SystemUser> systemUsers;
 
-    @Column(name = "creation_date", updatable=false)
+    @Column(name = "creation_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime creationDate;
 
-    @Column(name = "creation_user", updatable=false)
+    @Column(name = "creation_user", updatable = false)
     private String creationUser;
 
     @Column(name = "update_date")

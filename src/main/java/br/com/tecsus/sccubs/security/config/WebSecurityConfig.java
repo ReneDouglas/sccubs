@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -70,12 +72,14 @@ public class WebSecurityConfig {
             logout.invalidateHttpSession(true);
         });
         //http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(Customizer.withDefaults());
         http.httpBasic(withDefaults());
         http.sessionManagement(session -> {
             session.sessionConcurrency(concurrency -> {
                 concurrency.maximumSessions(1).expiredUrl("/expired")/*.maxSessionsPreventsLogin(true)*/;
             });
         });
+        //http.requiresChannel(channel -> channel.anyRequest().requiresSecure()); // habilita https
 
         return http.build();
     }
@@ -109,6 +113,10 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
         configuration.setAllowedMethods(List.of("POST", "GET", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedHeader("*");
+        configuration.addExposedHeader("Authorization");
+        configuration.addExposedHeader("Content-Type");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

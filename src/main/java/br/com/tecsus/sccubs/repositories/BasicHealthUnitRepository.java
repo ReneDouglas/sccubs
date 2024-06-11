@@ -12,7 +12,10 @@ import java.util.List;
 public interface BasicHealthUnitRepository extends JpaRepository<BasicHealthUnit, Long> {
 
     @Transactional(readOnly = true)
-    @Query("SELECT ubs FROM BasicHealthUnit ubs WHERE ubs.cityHall.id = :id")
+    @Query("SELECT ubs " +
+            "FROM BasicHealthUnit ubs " +
+            "LEFT JOIN FETCH ubs.systemUsers " +
+            "WHERE ubs.cityHall.id = :id")
     List<BasicHealthUnit> findByCityHallId(@Param("id") Long cityHallId);
 
 

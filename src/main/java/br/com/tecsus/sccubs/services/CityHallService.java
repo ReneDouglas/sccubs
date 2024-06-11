@@ -18,4 +18,7 @@ public class CityHallService {
     public CityHall findById(Long id) {
         return cityHallRepository.findById(id).orElse(null);
     }
+    public CityHall findNoFetchCityHallById(Long id) {
+        return cityHallRepository.findCityHallByIdNoFetch(id);
+    }
 }

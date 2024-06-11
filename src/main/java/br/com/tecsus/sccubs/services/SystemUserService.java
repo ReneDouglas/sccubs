@@ -1,13 +1,16 @@
 package br.com.tecsus.sccubs.services;
 
+import br.com.tecsus.sccubs.dtos.UBSsystemUserDTO;
 import br.com.tecsus.sccubs.entities.SystemRole;
 import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.enums.Roles;
 import br.com.tecsus.sccubs.repositories.SystemRoleRepository;
 import br.com.tecsus.sccubs.repositories.SystemUserRepository;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
+import br.com.tecsus.sccubs.services.exceptions.InvalidConfirmPasswordException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,12 +34,18 @@ public class SystemUserService implements UserDetailsService {
     private final SystemUserRepository systemUserRepository;
     private final SystemRoleRepository systemRoleRepository;
     private final PasswordEncoder passwordEncoder;
+    private CityHallService cityHallService;
 
     @Autowired
     public SystemUserService(SystemUserRepository systemUserRepository, SystemRoleRepository systemRoleRepository, PasswordEncoder passwordEncoder) {
         this.systemUserRepository = systemUserRepository;
         this.systemRoleRepository = systemRoleRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Autowired
+    public void setCityHallService(CityHallService cityHallService) {
+        this.cityHallService = cityHallService;
     }
 
     @Override
@@ -60,7 +69,12 @@ public class SystemUserService implements UserDetailsService {
 
     }
 
-    public void registerNotAdminSystemUser(SystemUser systemUser) throws Exception {
+    @Transactional
+    public void registerNotAdminSystemUser(SystemUser systemUser, SystemUserDetails loggedUser) throws Exception {
+
+        if (!systemUser.getPassword().equals(systemUser.getConfirmPassword())) {
+            throw new InvalidConfirmPasswordException("As senhas não conferem.");
+        }
 
         SystemRole role = systemRoleRepository.findById(systemUser.getSelectedRoleId())
                 .orElseThrow(() -> {
@@ -71,7 +85,8 @@ public class SystemUserService implements UserDetailsService {
         systemUser.setPassword(passwordEncoder.encode(systemUser.getPassword()));
         systemUser.setRoles(Set.of(role));
         systemUser.setCreationDate(LocalDateTime.now());
-        systemUser.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        systemUser.setCreationUser(loggedUser.getUsername());
+        systemUser.setCityHall(cityHallService.findNoFetchCityHallById(loggedUser.getCityHallId()));
         systemUser.setActive(true);
 
         systemUserRepository.save(systemUser);
@@ -124,4 +139,14 @@ public class SystemUserService implements UserDetailsService {
         });
         systemUserRepository.delete(systemUser);
     }
+
+    public List<UBSsystemUserDTO> findSystemUserByNameContaining(String username, SystemUserDetails loggedUser) {
+
+        return systemUserRepository.findSystemUsersNameByNameContains(username, loggedUser.getCityHallId());
+    }
+
+    public void updateBasicHealthUnitSystemUsers(List<SystemUser> systemUsers) {
+        systemUserRepository.saveAll(systemUsers);
+    }
+
 }
