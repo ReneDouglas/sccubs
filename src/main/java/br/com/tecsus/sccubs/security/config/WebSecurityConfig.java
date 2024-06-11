@@ -62,7 +62,7 @@ public class WebSecurityConfig {
         http.formLogin(login -> {
             login.loginPage("/login");
             login.defaultSuccessUrl("/", true);
-            login.failureUrl("/login-error");
+            //login.failureUrl("/login-error");
         });
         http.logout(logout -> {
             logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
