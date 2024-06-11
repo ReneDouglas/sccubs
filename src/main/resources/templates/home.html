@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head th:replace="~{fragments/template :: head}"></head>
-<body>
-    <nav th:replace="~{fragments/template :: menu}"></nav>
-    <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
-    <a href="/admin">Somente ADMIN</a>
-    <a href="/user">Todos os usuários</a>
+
+<body class="flex w-screen h-screen items-center bg-blue-800">
+    <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
+    <main class="flex flex-col justify-between h-screen w-full mx-auto bg-white">
+        <header th:replace="~{fragments/navbar :: header}"></header>
+        <div class="flex flex-col justify-between container h-screen w-full mx-auto bg-white py-8">
+            <section class="flex flex-1 bg-slate-100 my-8">
+
+            </section>
+            <section class="flex flex-1 bg-slate-100 my-8">
+
+            </section>
+        </div>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
 </body>
 </html>
+

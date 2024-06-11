@@ -1,67 +1,76 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org"
+<html lang="pt-br" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head th:replace="~{fragments/template :: head}"></head>
-<body>
-    <nav th:replace="~{fragments/template :: menu}"></nav>
-    <h1>Formulário de Cadastro</h1>
-    <form th:action="${systemUser.id == null} ? @{/systemUser-insert/create} : @{/systemUser-insert/update}" method="post"
-          th:object="${systemUser}">
+
+<body class="flex w-full h-screen justify-between items-center bg-slate-900">
+    <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
+    <main class="flex flex-col h-screen w-full mx-auto bg-slate-100">
+        <header th:replace="~{fragments/navbar :: header}"></header>
         <div>
-            <label for="username">Login:</label>
-            <input type="text" id="username" th:field="*{username}" th:disabled="${systemUser.username != null}" name="username" required>
+            <h1>Formulário de Cadastro</h1>
+            <form th:action="${systemUser.id == null} ? @{/systemUser-insert/create} : @{/systemUser-insert/update}"
+                  method="post"
+                  th:object="${systemUser}">
+                <div>
+                    <label for="username">Login:</label>
+                    <input type="text" id="username" th:field="*{username}" th:disabled="${systemUser.username != null}"
+                           name="username" required>
+                </div>
+
+                <div>
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div>
+                    <label for="confirmPassword">Confirmar senha:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+
+                <div>
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" th:field="*{name}" name="name" required>
+                </div>
+
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" th:field="*{email}" name="email" required>
+                </div>
+                <div>
+                    <label for="basicHealthUnit">UBS:</label>
+                    <select id="basicHealthUnit" name="basicHealthUnit">
+                        <option th:each="ubs : ${basicHealthUnits}"
+                                th:value="${ubs.id}"
+                                th:text="${ubs.name}"
+                                th:selected="*{basicHealthUnit == null} ? ${ubs.id} == 1 : ${ubs.id} == *{basicHealthUnit.id}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label for="selectedRoleId">Perfil:</label>
+                    <select id="selectedRoleId" name="selectedRoleId">
+                        <option th:each="role : ${rolesList}"
+                                th:value="${role.id}"
+                                th:text="${role.title}"
+                                th:selected="*{roles.isEmpty()} ? ${role.id} == 2 : ${role.id} == *{getFirstRole()}"></option>
+                    </select>
+                </div>
+                <div th:if="*{id}">
+                    <label for="active">Ativo:</label>
+                    <select id="active" name="active">
+                        <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
+                        <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
+                    </select>
+                </div>
+                <input type="hidden" id="id" th:field="*{id} "/>
+                <div>
+                    <button type="submit">Enviar</button>
+                </div>
+            </form>
+            <p th:if="${message}" th:text="${message}"></p>
         </div>
-        <br>
-        <div>
-            <label for="password">Senha:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <br>
-        <div>
-            <label for="confirmPassword">Confirmar senha:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" required>
-        </div>
-        <br>
-        <div>
-            <label for="name">Nome:</label>
-            <input type="text" id="name" th:field="*{name}" name="name" required>
-        </div>
-        <br>
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" id="email" th:field="*{email}" name="email" required>
-        </div>
-        <br>
-        <div>
-            <label for="basicHealthUnit">UBS:</label>
-            <select id="basicHealthUnit" name="basicHealthUnit" >
-                <option th:each="ubs : ${basicHealthUnits}"
-                        th:value="${ubs.id}"
-                        th:text="${ubs.name}"
-                        th:selected="*{basicHealthUnit == null} ? ${ubs.id} == 1 : ${ubs.id} == *{basicHealthUnit.id}"></option>
-            </select>
-        </div>
-        <div>
-            <label for="selectedRoleId">Perfil:</label>
-            <select id="selectedRoleId" name="selectedRoleId" >
-                <option th:each="role : ${rolesList}"
-                        th:value="${role.id}"
-                        th:text="${role.title}"
-                        th:selected="*{roles.isEmpty()} ? ${role.id} == 2 : ${role.id} == *{getFirstRole()}"></option>
-            </select>
-        </div>
-        <div th:if="*{id}">
-            <label for="active">Ativo:</label>
-            <select id="active" name="active" >
-                <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
-                <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
-            </select>
-        </div>
-        <input type="hidden" id="id" th:field="*{id} "/>
-        <div>
-            <button type="submit">Enviar</button>
-        </div>
-    </form>
-    <p th:if="${message}" th:text="${message}"></p>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </main>
 </body>
 </html>
