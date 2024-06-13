@@ -1,0 +1,60 @@
+<form th:fragment="patientToEdit"
+      th:attr="hx-post=@{/patient-insert/edit}"
+      th:object="${patient}"
+      hx-target="this"
+      hx-swap="outerHTML">
+    <div>
+        <label>Nome completo: </label><span th:text="${patient.name}"></span>
+        <input type="hidden" th:field="*{name}" />
+    </div>
+    <div>
+        <label>Cartão SUS: </label><span th:text="${patient.susNumber}"></span>
+        <input type="hidden" th:field="*{susNumber}" />
+    </div>
+    <div>
+        <label>CPF: </label><span th:text="${patient.cpf}"></span>
+        <input type="hidden" th:field="*{cpf}" />
+    </div>
+    <div>
+        <label>Sexo: </label><span th:text="${patient.gender}"></span>
+        <input type="hidden" th:field="*{gender}" />
+    </div>
+    <div>
+        <label>Data de Nascimento: </label><span th:text="${patient.birthDate}"></span>
+        <input type="hidden" th:field="*{birthDate}" />
+    </div>
+    <div>
+        <label>Situação Social: </label><span th:text="${patient.socialSituationRating.description}"></span>
+        <input type="hidden" th:field="*{socialSituationRating}" />
+    </div>
+    <div>
+        <label>Telefone: </label><span th:text="${patient.phoneNumber}"></span>
+        <input type="hidden" th:field="*{phoneNumber}" />
+    </div>
+    <div>
+        <label>Endereço: </label><span th:text="${patient.addressStreet}"></span>
+        <input type="hidden" th:field="*{addressStreet}" />
+    </div>
+    <div>
+        <label>Número: </label><span th:text="${patient.addressNumber}"></span>
+        <input type="hidden" th:field="*{addressNumber}" />
+    </div>
+    <div>
+        <label>Complemento: </label><span th:text="${patient.addressComplement}"></span>
+        <input type="hidden" th:field="*{addressComplement}" />
+    </div>
+    <div>
+        <label>Referência: </label><span th:text="${patient.addressReference}"></span>
+        <input type="hidden" th:field="*{addressReference}" />
+    </div>
+    <div>
+        <label>ACS: </label><span th:text="${patient.acsName}"></span>
+        <input type="hidden" th:field="*{acsName}" />
+    </div>
+    <input type="hidden" id="id" th:field="*{id}"/>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <div>
+        <button type="submit">Editar</button>
+        <button>Cancelar</button>
+    </div>
+</form>

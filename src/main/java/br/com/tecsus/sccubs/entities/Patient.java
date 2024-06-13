@@ -1,0 +1,79 @@
+package br.com.tecsus.sccubs.entities;
+
+import br.com.tecsus.sccubs.entities.converters.SocialSituationAttrConverter;
+import br.com.tecsus.sccubs.enums.SocialSituationRating;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "patients")
+public class Patient {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Column(name = "sus_card_number", updatable = false)
+    private String susNumber;
+
+    @Column(updatable = false)
+    private String cpf;
+
+    private String gender;
+
+    @Column(name = "birth_date")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
+
+    @Convert(converter = SocialSituationAttrConverter.class)
+    @Column(name = "social_sit_rating")
+    private SocialSituationRating socialSituationRating;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "address_street")
+    private String addressStreet;
+
+    @Column(name = "address_number")
+    private String addressNumber;
+
+    @Column(name = "address_complement")
+    private String addressComplement;
+
+    @Column(name = "address_ref")
+    private String addressReference;
+
+    @Column(name = "acs_name")
+    private String acsName;
+
+    @ManyToOne
+    @JoinColumn(name = "id_basic_health_unit")
+    private BasicHealthUnit basicHealthUnit;
+
+    @Column(name = "creation_date", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime creationDate;
+
+    @Column(name = "creation_user", updatable = false)
+    private String creationUser;
+
+    @Column(name = "update_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime updateDate;
+
+    @Column(name = "update_user")
+    private String updateUser;
+
+}

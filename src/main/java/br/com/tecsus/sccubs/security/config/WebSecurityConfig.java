@@ -57,6 +57,7 @@ public class WebSecurityConfig {
             authConfig.requestMatchers("/systemUser-insert/**");
             authConfig.requestMatchers("/systemUser-list/**");
             authConfig.requestMatchers("/basicHealthUnit-management/**");
+            authConfig.requestMatchers("/patient-insert/**");
             authConfig.anyRequest().authenticated();
         });
         http.formLogin(login -> {
