@@ -93,15 +93,19 @@ public class SessionController {
         try {
             systemUserService.registerNotAdminSystemUser(systemUser, loggedUser);
             redirectAttributes.addFlashAttribute("message", "Usuário cadastrado com sucesso.");
+            redirectAttributes.addFlashAttribute("error", false);
             log.info("Cadastro de usuário realizado com sucesso.");
         } catch (DataIntegrityViolationException e) {
             redirectAttributes.addFlashAttribute("message", "Usuário já cadastrado no sistema.");
+            redirectAttributes.addFlashAttribute("error", true);
             log.error("Usuário já cadastrado: {}", e.getMessage());
         } catch (InvalidConfirmPasswordException e) {
             redirectAttributes.addFlashAttribute("message", "As senhas não conferem.");
+            redirectAttributes.addFlashAttribute("error", true);
             log.error(e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Erro ao cadastrar usuário.");
+            redirectAttributes.addFlashAttribute("error", true);
             log.error("Erro ao cadastrar usuário: {}", e.getMessage());
         }
         return "redirect:/systemUser-insert";
@@ -205,9 +209,11 @@ public class SessionController {
         try {
             systemUserService.updateNotAdminSystemUser(systemUser);
             redirectAttributes.addFlashAttribute("message", "Usuário atualizado com sucesso.");
+            redirectAttributes.addFlashAttribute("error", false);
             log.info("Usuário atualizado com sucesso.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Erro ao atualizar usuário.");
+            redirectAttributes.addFlashAttribute("error", true);
             log.error("Erro ao atualizar usuário: {}", e.getMessage());
         }
         //return new RedirectView("/user");
@@ -221,9 +227,11 @@ public class SessionController {
         try {
             systemUserService.deleteNotAdminSystemUser(id);
             redirectAttributes.addFlashAttribute("message", "Usuário deletado com sucesso.");
+            redirectAttributes.addFlashAttribute("error", false);
             log.info("Usuário deletado com sucesso.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Erro ao deletar usuário.");
+            redirectAttributes.addFlashAttribute("error", true);
             log.error("Erro ao deletar usuário: {}", e.getMessage());
         }
 

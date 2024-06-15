@@ -13,12 +13,10 @@
                 <img th:src="@{/images/loading.gif}" alt="none"/> Salvando...
             </span>
             <th:block th:if="${true}">
-                <form th:replace="~{patientManagement/patientFragments/patient-form :: patientForm}"></form>
-                <p id="msg" hx-swap-oob="true" th:text="${message}"></p>
+                <div th:replace="~{patientManagement/patientFragments/patient-form :: patientForm}"></div>
             </th:block>
         </div>
 
     </main>
-
 </body>
 </html>

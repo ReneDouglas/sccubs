@@ -6,6 +6,7 @@ import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,16 +39,22 @@ public class PatientController {
     @PostMapping("/patient-insert/create")
     public String registerPatient(@ModelAttribute Patient patient,
                                   @AuthenticationPrincipal SystemUserDetails loggedUser,
-                                  RedirectAttributes redirectAttributes,
                                   Model model) {
         try {
             Patient newPatient = patientService.registerPatient(patient, loggedUser);
             model.addAttribute("patient", newPatient);
             model.addAttribute("message", "Paciente cadastrado com sucesso.");
+            model.addAttribute("error", false);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Violação de integridade [Paciente]: {}", e.getMessage());
+            model.addAttribute("message", "CPF ou Cartão SUS já cadastrados no sistema.");
+            model.addAttribute("error", true);
+            return "patientManagement/patientFragments/patient-form :: patientForm";
         } catch (Exception e) {
             log.error("Erro ao cadastrar paciente: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("message", "Erro ao cadastrar paciente.");
-            return "redirect:patient-insert";
+            model.addAttribute("message", "Erro ao cadastrar paciente.");
+            model.addAttribute("error", true);
+            return "patientManagement/patientFragments/patient-form :: patientForm";
         }
         return "patientManagement/patientFragments/patient-info :: patientToEdit";
     }
@@ -69,9 +76,11 @@ public class PatientController {
             Patient updatedPatient = patientService.updatePatient(patient, loggedUser);
             model.addAttribute("patient", updatedPatient);
             model.addAttribute("message", "Paciente atualizado com sucesso.");
+            model.addAttribute("error", false);
         } catch (Exception e) {
             log.error("Erro ao atualizar paciente: {}", e.getMessage());
             model.addAttribute("message", "Erro ao atualizar paciente.");
+            model.addAttribute("error", true);
             return "patientManagement/patientFragments/patient-form :: patientForm";
         }
         return "patientManagement/patientFragments/patient-info :: patientToEdit";
