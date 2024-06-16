@@ -16,7 +16,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.PortMapperImpl;
+import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -27,6 +30,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import static br.com.tecsus.sccubs.security.UrlPatternConfig.*;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.*;
+
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -81,6 +86,7 @@ public class WebSecurityConfig {
         });
         http.requiresChannel(channel -> channel.anyRequest().requiresSecure()); // habilita https
         //http.requiresChannel(channel -> channel.requestMatchers(new AntPathRequestMatcher("/login")).requiresSecure());
+
         return http.build();
     }
 
