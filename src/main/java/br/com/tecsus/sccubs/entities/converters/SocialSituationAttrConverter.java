@@ -15,11 +15,13 @@ public class SocialSituationAttrConverter implements AttributeConverter<SocialSi
         }
 
         return switch (attribute) {
-            case ATE_UM_SALARIO_MINIMO -> 1;
-            case DE_UM_A_TRES_SALARIOS_MINIMOS -> 2;
-            case DE_TRES_A_CINCO_SALARIOS_MINIMOS -> 3;
-            case DE_CINCO_A_QUINZE_SALARIOS_MINIMOS -> 4;
-            case MAIS_DE_15_SALARIOS_MINIMOS -> 5;
+            case UM_QUARTO_DE_SALARIO_MINIMO -> 1;
+            case MEIO_SALARIO_MINIMO -> 2;
+            case UM_SALARIO_MINIMO -> 3;
+            case DOIS_SALARIOS_MINIMOS -> 4;
+            case TRES_SALARIOS_MINIMOS -> 5;
+            case QUATRO_SALARIOS_MINIMOS -> 6;
+            case MAIS_DE_QUATRO_SALARIOS_MINIMOS -> 7;
         };
     }
 
@@ -31,11 +33,13 @@ public class SocialSituationAttrConverter implements AttributeConverter<SocialSi
         }
 
         return switch (dbData) {
-            case 1 -> SocialSituationRating.ATE_UM_SALARIO_MINIMO;
-            case 2 -> SocialSituationRating.DE_UM_A_TRES_SALARIOS_MINIMOS;
-            case 3 -> SocialSituationRating.DE_TRES_A_CINCO_SALARIOS_MINIMOS;
-            case 4 -> SocialSituationRating.DE_CINCO_A_QUINZE_SALARIOS_MINIMOS;
-            case 5 -> SocialSituationRating.MAIS_DE_15_SALARIOS_MINIMOS;
+            case 1 -> SocialSituationRating.UM_QUARTO_DE_SALARIO_MINIMO;
+            case 2 -> SocialSituationRating.MEIO_SALARIO_MINIMO;
+            case 3 -> SocialSituationRating.UM_SALARIO_MINIMO;
+            case 4 -> SocialSituationRating.DOIS_SALARIOS_MINIMOS;
+            case 5 -> SocialSituationRating.TRES_SALARIOS_MINIMOS;
+            case 6 -> SocialSituationRating.QUATRO_SALARIOS_MINIMOS;
+            case 7 -> SocialSituationRating.MAIS_DE_QUATRO_SALARIOS_MINIMOS;
             default -> throw new IllegalStateException("Unexpected value: " + dbData);
         };
     }

@@ -103,3 +103,49 @@ create table patients(
                          update_user varchar(255),
                          foreign key (id_basic_health_unit) references basic_health_units(id)
 );
+
+-- -- -- -- -- --
+-- VERSÃO 1.3.0
+-- -- -- -- -- --
+create table specialties(
+                            id bigint primary key auto_increment,
+                            description varchar(255),
+                            active boolean not null default true,
+                            creation_date datetime(6) not null,
+                            creation_user varchar(255) not null
+);
+
+/**
+  A tabela abaixo MUITO PROVAVELMENTE não é necessária!
+ */
+create table basic_health_units_specialties(
+                                               id bigint primary key auto_increment,
+                                               id_basic_health_unit bigint not null,
+                                               id_specialties bigint not null,
+                                               foreign key (id_basic_health_unit) references basic_health_units(id),
+                                               foreign key (id_specialties) references specialties(id)
+);
+
+ALTER TABLE specialties CHANGE description title varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL;
+ALTER TABLE specialties ADD description varchar(255) NULL;
+ALTER TABLE specialties CHANGE description description varchar(255) NULL AFTER title;
+
+create table exams(
+                      id bigint primary key auto_increment,
+                      description varchar(255),
+                      active boolean not null default true,
+                      id_specialty bigint not null,
+                      creation_date datetime(6) not null,
+                      creation_user varchar(255) not null,
+                      foreign key (id_specialty) references specialties(id)
+);
+
+create table surgeries(
+                          id bigint primary key auto_increment,
+                          description varchar(255),
+                          active boolean not null default true,
+                          id_specialty bigint not null,
+                          creation_date datetime(6) not null,
+                          creation_user varchar(255) not null,
+                          foreign key (id_specialty) references specialties(id)
+);

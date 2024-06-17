@@ -1,0 +1,41 @@
+<div th:fragment="examsAndSurgeriesInfo">
+    <div id="examTable">
+        <h1>Exames</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Ativo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="exam : ${exams}">
+                <td th:text="${exam.id}"></td>
+                <td th:text="${exam.description}"></td>
+                <td th:text="${exam.active} ? 'Sim': 'Não'"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="surgeryTable">
+        <h1>Cirurgias</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Ativo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="surgery : ${surgeries}">
+                <td th:text="${surgery.id}"></td>
+                <td th:text="${surgery.description}"></td>
+                <td th:text="${surgery.active} ? 'Sim': 'Não'"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -26,17 +25,16 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @GetMapping("/patient-insert")
+    @GetMapping("/patient-management")
     public String getPatientInsertPage(Model model, @AuthenticationPrincipal SystemUserDetails loggedUser) {
 
         model.addAttribute("patient", new Patient());
         model.addAttribute("socialSituations", SocialSituationRating.getDescriptionSortedByRating());
 
-
-        return "patientManagement/patient-insert";
+        return "patientManagement/patient-management";
     }
 
-    @PostMapping("/patient-insert/create")
+    @PostMapping("/patient-management/create")
     public String registerPatient(@ModelAttribute Patient patient,
                                   @AuthenticationPrincipal SystemUserDetails loggedUser,
                                   Model model) {
@@ -59,7 +57,7 @@ public class PatientController {
         return "patientManagement/patientFragments/patient-info :: patientToEdit";
     }
 
-    @PostMapping("/patient-insert/edit")
+    @PostMapping("/patient-management/edit")
     public String patientToEdit(@ModelAttribute Patient patient,
                                 Model model) {
 
@@ -67,7 +65,7 @@ public class PatientController {
         return "patientManagement/patientFragments/patient-form :: patientForm";
     }
 
-    @PostMapping("/patient-insert/update")
+    @PostMapping("/patient-management/update")
     public String updatePatient(@ModelAttribute Patient patient,
                                 @AuthenticationPrincipal SystemUserDetails loggedUser,
                                 Model model) {

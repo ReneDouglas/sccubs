@@ -7,13 +7,16 @@ import java.util.List;
 
 @Getter
 public enum SocialSituationRating {
-    ATE_UM_SALARIO_MINIMO(1, "Até um salário mínimo"),
-    DE_UM_A_TRES_SALARIOS_MINIMOS(2, "De um a três salários mínimos"),
-    DE_TRES_A_CINCO_SALARIOS_MINIMOS(3, "De três a cinco salários mínimos"),
-    DE_CINCO_A_QUINZE_SALARIOS_MINIMOS(4, "De cinco a quinze salários mínimos"),
-    MAIS_DE_15_SALARIOS_MINIMOS(5, "Mais de quinze salários mínimos");
+    UM_QUARTO_DE_SALARIO_MINIMO(1, "1/4 salário mínimo (R$ 353,00)"),
+    MEIO_SALARIO_MINIMO(2, "1/2 salário mínimo (R$ 706,00)"),
+    UM_SALARIO_MINIMO(3, "1 salário mínimo (R$ 1412,00)"),
+    DOIS_SALARIOS_MINIMOS(4, "Até 2 salários mínimos (R$ 2824,00)"),
+    TRES_SALARIOS_MINIMOS(5, "Até 3 salários mínimos (R$ 4236,00)"),
+    QUATRO_SALARIOS_MINIMOS(6, "Até 4 salários mínimos (R$ 5648,00)"),
+    MAIS_DE_QUATRO_SALARIOS_MINIMOS(7, "Mais de 4 salários mínimos");
 
-    // Crescente, onde 1 é o maior nível de prioridade.
+
+    // 1 é o maior nível de prioridade.
     private final int priority;
     private final String description;
 

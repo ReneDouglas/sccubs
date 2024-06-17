@@ -1,21 +1,21 @@
 <div th:fragment="patientForm">
     <form
-          th:attr="hx-post=${patient.id == null} ? @{/patient-insert/create} : @{/patient-insert/update}"
+          th:attr="hx-post=${patient.id == null} ? @{/patient-management/create} : @{/patient-management/update}"
           hx-target="this"
           hx-swap="outerHTML"
           hx-indicator=".htmx-indicator"
           th:object="${patient}">
-        <!--    th:attr="${patient.id == null} ? hx-post=@{/patient-insert/create} : hx-post=@{/patient-insert/update}"-->
-        <!--      th:action="${patient.id == null} ? @{/patient-insert/create} : @{/patient-insert/update}"-->
+        <!--    th:attr="${patient.id == null} ? hx-post=@{/patient-management/create} : hx-post=@{/patient-management/update}"-->
+        <!--      th:action="${patient.id == null} ? @{/patient-management/create} : @{/patient-management/update}"-->
 
         <div>
             <label for="name">Nome completo:</label>
-            <input type="text" id="name" th:field="*{name}" name="name" required>
+            <input type="text" id="name" th:field="*{name}" name="name" autocomplete="off" required>
         </div>
         <div>
             <label for="susNumber">Cartão SUS:</label>
             <input type="text" id="susNumber" th:field="*{susNumber}" th:disabled="${patient.susNumber != null}"
-                   name="susNumber" required>
+                   name="susNumber" autocomplete="off" required>
             <th:block th:if="${patient.susNumber != null}">
                 <input type="hidden" th:field="*{susNumber}"/>
             </th:block>
@@ -23,7 +23,7 @@
         <div>
             <label for="cpf">CPF:</label>
             <input type="text" id="cpf" th:field="*{cpf}" th:disabled="${patient.cpf != null}"
-                   name="cpf" required>
+                   name="cpf" autocomplete="off" required>
             <th:block th:if="${patient.cpf != null}">
                 <input type="hidden" th:field="*{cpf}"/>
             </th:block>
@@ -57,26 +57,26 @@
         </div>
         <div>
             <label for="phoneNumber">Telefone:</label>
-            <input type="text" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" required>
+            <input type="text" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" autocomplete="off" required>
         </div>
         <div>
-            <label for="addressStreet">Endereço (rua; comunidade ou sítio para zona rural):</label>
-            <input type="text" id="addressStreet" name="addressStreet" th:field="*{addressStreet}" required>
+            <label for="addressStreet">Logradouro: (rua; comunidade ou sítio para zona rural):</label>
+            <input type="text" id="addressStreet" name="addressStreet" th:field="*{addressStreet}" autocomplete="off" required>
         </div>
         <div>
             <label for="addressNumber">Número:</label>
-            <input type="text" id="addressNumber" name="addressNumber" th:field="*{addressNumber}">
+            <input type="text" id="addressNumber" name="addressNumber" autocomplete="off" th:field="*{addressNumber}">
         </div>
         <div>
             <label for="addressComplement">Complemento:</label>
-            <input type="text" id="addressComplement" name="addressComplement" th:field="*{addressComplement}">
+            <input type="text" id="addressComplement" name="addressComplement" autocomplete="off" th:field="*{addressComplement}">
         </div>
         <div>
             <label for="addressReference">Referência:</label>
-            <input type="text" id="addressReference" name="addressReference" th:field="*{addressReference}">
+            <input type="text" id="addressReference" name="addressReference" autocomplete="off" th:field="*{addressReference}">
         </div>
         <div>
-            <label for="acsName">ACS:</label>
+            <label for="acsName">ACS Responsável:</label>
             <input type="text" id="acsName" name="acsName" th:field="*{acsName}">
         </div>
         <input type="hidden" id="id" th:field="*{id}"/>

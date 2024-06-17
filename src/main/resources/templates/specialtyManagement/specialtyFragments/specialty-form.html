@@ -1,0 +1,16 @@
+<div th:fragment="specialtyForm">
+    <h1>Cadastrar Especialidade</h1>
+    <form th:action="${specialty.id == null} ? @{/specialty-management/create} : @{/specialty-management/update}"
+          method="post"
+          th:object="${specialty}">
+
+        <label for="title"></label>
+        <input id="title" type="text">
+
+        <label for="description"></label>
+        <input id="description" type="text">
+
+        <input type="hidden" id="id" th:field="*{id}"/>
+        <button>Salvar</button>
+    </form>
+</div>

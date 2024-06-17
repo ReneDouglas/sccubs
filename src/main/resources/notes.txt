@@ -9,3 +9,54 @@ Utilizar para criar o arquivo style.build.tailwind.css (produção):
 npm run build:postcss
 Utilizar para desenvolvimento local:
 npm run watch:postcss
+
+************************************************************************
+************************************************************************
+
+
+-- NOTAS GERAIS:
+
+- Mamografia vs Mastologia
+- Histerectomia (cirurgia ginecológica) vs ginecologia
+- Densitometria vs Reumatologia
+- Tomografia (especialidade?)
+- Ecocardiograma (cardiologista?)
+- Raio X (radiologia?)
+- Teste Ergonometrico (cargiologista)
+- Eletrocardiograma (cargiologista)
+- Cirurgia HREC (Cirurgia geral?)
+- Cirurgia hernia (cirurgia geral?)
+- colonoscopia, endoscopia (gastro)
+
+--> as vagas vem por exame?
+--> uma especialidade pode ter vários exames e/ou cirurgias(?)
+
+Informações da planilha (coluna classificação de risco)
+--> retorno, eletivo, colono, consulta, surto, autista, juridico, urgente, idoso, acompanhamento
+Qual a relação disso com as prioridades?
+
+Classificação de risco? (prioridade)
+1 mais de 3 meses (topo da fila)
+2 urgência
+3 idade
+4 situação social
+5 sexo
+
+--> Como funciona o fluxo? A pessoa vai até a UBS? o ACS durante uma visita?
+
+-- -- - --
+
+vagas:
+id, quantidade, mês da vaga (dia/mês/ano), especialidade, exame, cirurgia
+
+agendamentos:
+id, paciente, especialidade, exame, cirurgia, data da solicitação, classificação de risco, tipo de agendamento, ACS (user q cadastrou), observação
+
+contemplados:
+id, agendamento, vaga, data da contemplação, confirmação, faltou (talvez?)
+
+históricos:
+id, agendamento, contemplado
+
+
+

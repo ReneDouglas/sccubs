@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{fragments/template :: head}"></head>
+<body class="flex w-full h-screen justify-between items-center bg-slate-900">
+    <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
+    <main class="flex flex-col h-screen w-full mx-auto bg-slate-100">
+        <header th:replace="~{fragments/navbar :: header}"></header>
+        <div>
+            <h1>Especialidades, exames e cirurgias</h1>
+            <label for="specialty">Especialidades: </label>
+            <select id="specialty" name="specialty"
+                    hx-get="/specialty-management/load"
+                    hx-target="#examsAndSurgeriesInfo" required>
+                <option th:value="${null}">Selecione</option>
+                <option th:each="specialty : ${specialties}"
+                        th:value="${specialty.id}"
+                        th:text="${specialty.title}">
+                </option>
+            </select>
+            <div id="examsAndSurgeriesInfo">
+                <div id="examTable">
+                    <h1>Exames</h1>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Ativo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="surgeryTable">
+                    <h1>Cirurgias</h1>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Ativo</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
