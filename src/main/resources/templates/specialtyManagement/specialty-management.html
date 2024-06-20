@@ -8,49 +8,53 @@
     <main class="flex flex-col h-screen w-full mx-auto bg-slate-100">
         <header th:replace="~{fragments/navbar :: header}"></header>
         <div>
-            <h1>Especialidades, exames e cirurgias</h1>
-            <label for="specialty">Especialidades: </label>
-            <select id="specialty" name="specialty"
-                    hx-get="/specialty-management/load"
-                    hx-target="#examsAndSurgeriesInfo" required>
-                <option th:value="${null}">Selecione</option>
-                <option th:each="specialty : ${specialties}"
-                        th:value="${specialty.id}"
-                        th:text="${specialty.title}">
-                </option>
-            </select>
-            <div id="examsAndSurgeriesInfo">
-                <div id="examTable">
-                    <h1>Exames</h1>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nome</th>
-                            <th>Ativo</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div id="surgeryTable">
-                    <h1>Cirurgias</h1>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nome</th>
-                            <th>Ativo</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <h1>Cadastrar Especialidades</h1>
+            <div th:replace="~{specialtyManagement/specialtyFragments/specialty-form :: specialtyForm}"></div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h1>Especialidades</h1>
+            <div th:replace="~{specialtyManagement/specialtyFragments/specialty-info :: specialtyInfo}"></div>
         </div>
     </main>
 </body>
+<script>
+    $(document).ready(function() {
+        var procedures = [];
+        $('#addProcedureBtn').click(function() {
+            // Obter os valores dos campos de entrada
+            var procedureName = $(`#procedure`).val();
+            var procedureType = $('#procedureType option:selected').text();
+
+            // Verificar se os campos estão preenchidos
+            if(procedureName && procedureType !== "Selecione") {
+                // Adicionar uma nova linha à tabela
+                $('#procedureTable tbody').append('<tr><td>' + procedureName + '</td><td>' + procedureType + '</td></tr>');
+
+                procedures.push({ description: procedureName, procedureType: procedureType });
+
+                // Limpar os campos de entrada
+                $('#procedure').val('').prop('disabled', false);
+                $('#procedureType').prop('selectedIndex', 0);
+            } else {
+                alert("Por favor, preencha ambos os campos antes de adicionar um procedimento.");
+            }
+        });
+
+        $('form').submit(function() {
+            // Converter o array de procedimentos em JSON e definir no campo oculto
+            $('#proceduresJson').val(JSON.stringify(procedures));
+        });
+
+        $('#procedureType').change(function() {
+            var selectedValue = $('#procedureType option:selected').val();
+            if (selectedValue === "Consulta") {
+                $('#procedure').val('-').prop('disabled', true);
+            } else {
+                $('#procedure').prop('disabled', false);
+            }
+        });
+    });
+</script>
 </html>

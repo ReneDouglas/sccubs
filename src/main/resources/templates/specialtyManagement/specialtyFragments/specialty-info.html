@@ -1,41 +1,24 @@
-<div th:fragment="examsAndSurgeriesInfo">
-    <div id="examTable">
-        <h1>Exames</h1>
-        <table>
-            <thead>
-            <tr>
-                <th>Código</th>
-                <th>Nome</th>
-                <th>Ativo</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="exam : ${exams}">
-                <td th:text="${exam.id}"></td>
-                <td th:text="${exam.description}"></td>
-                <td th:text="${exam.active} ? 'Sim': 'Não'"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div id="surgeryTable">
-        <h1>Cirurgias</h1>
-        <table>
-            <thead>
-            <tr>
-                <th>Código</th>
-                <th>Nome</th>
-                <th>Ativo</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="surgery : ${surgeries}">
-                <td th:text="${surgery.id}"></td>
-                <td th:text="${surgery.description}"></td>
-                <td th:text="${surgery.active} ? 'Sim': 'Não'"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+<div th:fragment="specialtyInfo" style="max-height: 300px; overflow-y: auto">
+    <table style="width: 100%; border-collapse: collapse">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="specialty : ${specialties}">
+            <td th:text="${specialtyStat.index} + 1"></td>
+            <td th:text="${specialty.title}"></td>
+            <td th:text="${specialty.description}"></td>
+            <td th:text="${specialty.active} ? 'Sim' : 'Não'"></td>
+            <td>
+                <a th:href="@{/specialty-management/specialty(id=${specialty.id})}">Editar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>

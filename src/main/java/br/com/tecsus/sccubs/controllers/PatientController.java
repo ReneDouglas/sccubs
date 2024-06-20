@@ -76,9 +76,9 @@ public class PatientController {
             model.addAttribute("message", "Paciente atualizado com sucesso.");
             model.addAttribute("error", false);
         } catch (Exception e) {
-            log.error("Erro ao atualizar paciente: {}", e.getMessage());
             model.addAttribute("message", "Erro ao atualizar paciente.");
             model.addAttribute("error", true);
+            log.error("Erro ao atualizar paciente: {}", e.getMessage());
             return "patientManagement/patientFragments/patient-form :: patientForm";
         }
         return "patientManagement/patientFragments/patient-info :: patientToEdit";

@@ -5,19 +5,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 
-@Repository
+//@Repository
 public interface SpecialtyRepository extends JpaRepository<Specialty, Long> {
 
     @Query("""
             SELECT s
             FROM Specialty s
-            LEFT JOIN FETCH s.exams
-            LEFT JOIN FETCH s.surgeries
+            LEFT JOIN FETCH s.medicalProcedures
             WHERE s.id = :id
             """)
-    public Specialty loadByIdWithExamsAndSurgeries(@Param("id") Long id);
+    public Specialty loadByIdWithProcedures(@Param("id") Long id);
+
+    public List<Specialty> findAllByOrderByTitleAsc();
 
 
 }

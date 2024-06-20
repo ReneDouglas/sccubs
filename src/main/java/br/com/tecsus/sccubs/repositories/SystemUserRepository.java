@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public interface SystemUserRepository extends JpaRepository<SystemUser, Long>, SystemUserRepositoryCustom {
 
     @EntityGraph(value = "SystemUserGraph")

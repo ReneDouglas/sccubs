@@ -20,11 +20,8 @@ public class Specialty {
     private String description;
     private Boolean active;
 
-    @OneToMany(mappedBy = "specialty")
-    private Set<Exam> exams = new HashSet<>();
-
-    @OneToMany(mappedBy = "specialty")
-    private Set<Surgery> surgeries = new HashSet<>();
+    @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL)
+    private Set<MedicalProcedure> medicalProcedures = new HashSet<>();
 
     @Column(name = "creation_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

@@ -41,22 +41,27 @@ Classificação de risco? (prioridade)
 3 idade
 4 situação social
 5 sexo
+-> retorno
+-> com histórico (cirurgia)
 
 --> Como funciona o fluxo? A pessoa vai até a UBS? o ACS durante uma visita?
 
 -- -- - --
 
 vagas:
-id, quantidade, mês da vaga (dia/mês/ano), especialidade, exame, cirurgia
+id, quantidade, mês da vaga (dia/mês/ano), procedimento
 
 agendamentos:
-id, paciente, especialidade, exame, cirurgia, data da solicitação, classificação de risco, tipo de agendamento, ACS (user q cadastrou), observação
+id, paciente, procedimento, data da solicitação, classificação de risco, tipo de agendamento(consulta/retorno), ACS (user q cadastrou), observação
 
 contemplados:
 id, agendamento, vaga, data da contemplação, confirmação, faltou (talvez?)
 
 históricos:
 id, agendamento, contemplado
+
+
+-- procedimentos: consulta, exame e cirurgia
 
 
 

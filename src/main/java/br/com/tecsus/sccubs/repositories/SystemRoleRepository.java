@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public interface SystemRoleRepository extends JpaRepository<SystemRole, Long> {
 
     @Transactional(readOnly = true)

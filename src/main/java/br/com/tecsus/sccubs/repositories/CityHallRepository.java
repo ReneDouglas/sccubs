@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public interface CityHallRepository extends JpaRepository<CityHall, Long> {
 
     @Transactional(readOnly = true)

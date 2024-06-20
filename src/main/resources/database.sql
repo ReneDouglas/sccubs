@@ -130,22 +130,22 @@ ALTER TABLE specialties CHANGE description title varchar(255) CHARACTER SET lati
 ALTER TABLE specialties ADD description varchar(255) NULL;
 ALTER TABLE specialties CHANGE description description varchar(255) NULL AFTER title;
 
-create table exams(
-                      id bigint primary key auto_increment,
-                      description varchar(255),
-                      active boolean not null default true,
-                      id_specialty bigint not null,
-                      creation_date datetime(6) not null,
-                      creation_user varchar(255) not null,
-                      foreign key (id_specialty) references specialties(id)
+create table medical_procedures(
+                                   id bigint primary key auto_increment,
+                                   description varchar(255),
+                                   `type` int not null,
+                                   id_specialty bigint not null,
+                                   creation_date datetime(6) not null,
+                                   creation_user varchar(255) not null,
+                                   foreign key (id_specialty) references specialties(id)
 );
 
-create table surgeries(
-                          id bigint primary key auto_increment,
-                          description varchar(255),
-                          active boolean not null default true,
-                          id_specialty bigint not null,
-                          creation_date datetime(6) not null,
-                          creation_user varchar(255) not null,
-                          foreign key (id_specialty) references specialties(id)
+create table available_appointments(
+                                       id bigint primary key auto_increment,
+                                       quantity int not null,
+                                       vacancy_date date not null,
+                                       id_medical_procedure bigint not null,
+                                       id_exam bigint,
+                                       id_surgery bigint,
+                                       foreign key (id_medical_procedure) references medical_procedures(id)
 );

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-@Repository
+//@Repository
 public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
 
     private final EntityManager em;

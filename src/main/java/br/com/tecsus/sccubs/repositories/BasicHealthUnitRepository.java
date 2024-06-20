@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-@Repository
+//@Repository
 public interface BasicHealthUnitRepository extends JpaRepository<BasicHealthUnit, Long> {
 
     @Transactional(readOnly = true)

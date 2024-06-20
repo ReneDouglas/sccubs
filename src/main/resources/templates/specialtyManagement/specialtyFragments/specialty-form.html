@@ -1,16 +1,55 @@
 <div th:fragment="specialtyForm">
-    <h1>Cadastrar Especialidade</h1>
-    <form th:action="${specialty.id == null} ? @{/specialty-management/create} : @{/specialty-management/update}"
+    <form th:action="${specialtyDTO.id == null} ? @{/specialty-management/create} : @{/specialty-management/update}"
           method="post"
-          th:object="${specialty}">
-
-        <label for="title"></label>
-        <input id="title" type="text">
-
-        <label for="description"></label>
-        <input id="description" type="text">
-
+          th:object="${specialtyDTO}">
+        <div>
+            <label for="title">Nome: </label>
+            <input type="text" id="title" th:field="*{title}">
+        </div>
+        <div>
+            <label for="description">Descrição: </label>
+            <input type="text" id="description" th:field="*{description}">
+        </div>
+        <div th:if="*{id}">
+            <label for="active">Ativo: </label>
+            <select id="active" name="active">
+                <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
+                <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
+            </select>
+        </div>
+        <div>
+            <label for="procedure">Nome do procedimento: </label>
+            <input type="text" id="procedure">
+        </div>
+        <div>
+            <label for="procedureType">Tipo de procedimento: </label>
+            <select id="procedureType">
+                <option th:value="${null}">Selecione</option>
+                <option th:each="type : ${T(br.com.tecsus.sccubs.enums.ProcedureType).values()}"
+                        th:value="${type.description}"
+                        th:text="${type.description}">
+                </option>
+            </select>
+        </div>
+        <button type="button" id="addProcedureBtn">Adicionar procedimento</button>
+        <br>
+        <h1>Procedimentos</h1>
+        <table id="procedureTable">
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Procedimento</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="procedure : ${procedures}">
+                <td th:text="${procedure.description}"></td>
+                <td th:text="${procedure.procedureType}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="hidden" id="proceduresJson" name="proceduresJson"/>
         <input type="hidden" id="id" th:field="*{id}"/>
-        <button>Salvar</button>
+        <button th:text="*{id} == null ? 'Salvar' : 'Editar'"></button>
     </form>
 </div>

@@ -1,7 +1,6 @@
 package br.com.tecsus.sccubs.enums;
 
 import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.List;
 
