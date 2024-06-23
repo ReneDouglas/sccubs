@@ -133,7 +133,7 @@ ALTER TABLE specialties CHANGE description description varchar(255) NULL AFTER t
 create table medical_procedures(
                                    id bigint primary key auto_increment,
                                    description varchar(255),
-                                   `type` int not null,
+                                   `type` varchar(255) not null,
                                    id_specialty bigint not null,
                                    creation_date datetime(6) not null,
                                    creation_user varchar(255) not null,
@@ -145,7 +145,48 @@ create table available_appointments(
                                        quantity int not null,
                                        vacancy_date date not null,
                                        id_medical_procedure bigint not null,
-                                       id_exam bigint,
-                                       id_surgery bigint,
+                                       creation_date datetime(6) not null,
+                                       creation_user varchar(255) not null,
+                                       update_date datetime(6),
+                                       update_user varchar(255),
                                        foreign key (id_medical_procedure) references medical_procedures(id)
 );
+
+create table patient_schedulings(
+                                    id bigint primary key auto_increment,
+                                    request_date datetime(6) not null,
+                                    priority int not null,
+                                    observation text,
+                                    creation_user varchar(255) not null,
+                                    id_medical_procedure bigint not null,
+                                    id_patient bigint not null,
+                                    foreign key (id_medical_procedure) references medical_procedures(id),
+                                    foreign key (id_patient) references patients(id)
+);
+
+create table covered_patients(
+                                 id bigint primary key auto_increment,
+                                 contemplation_date datetime(6) not null,
+                                 priority int not null,
+                                 confirmed boolean not null,
+                                 id_patient_scheduling bigint not null,
+                                 creation_date datetime(6) not null,
+                                 creation_user varchar(255) not null,
+                                 update_date datetime(6),
+                                 update_user varchar(255),
+                                 foreign key (id_patient_scheduling) references patient_schedulings(id)
+);
+
+create table patient_histories(
+                                  id bigint primary key auto_increment,
+                                  id_patient_scheduling bigint not null,
+                                  id_covered_patient bigint not null,
+                                  creation_date datetime(6) not null,
+                                  creation_user varchar(255) not null,
+                                  update_date datetime(6),
+                                  update_user varchar(255),
+                                  foreign key (id_patient_scheduling) references patient_schedulings(id),
+                                  foreign key (id_covered_patient) references covered_patients(id)
+);
+
+ALTER TABLE patients ADD FULLTEXT(name, sus_card_number, cpf);

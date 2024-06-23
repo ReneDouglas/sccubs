@@ -6,10 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -75,5 +74,20 @@ public class Patient {
 
     @Column(name = "update_user")
     private String updateUser;
+
+    public Patient() {
+    }
+
+    public String getNameSUSandCPF() {
+        return "NOME: " + this.name.toUpperCase() + " - SUS: " + this.susNumber + " - CPF: " + this.cpf;
+    }
+
+    public String formattedBirthDate() {
+        if (this.birthDate == null) {
+            return null;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return this.birthDate.format(formatter);
+    }
 
 }

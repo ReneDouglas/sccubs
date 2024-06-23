@@ -25,8 +25,28 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         this.em = jpaContext.getEntityManagerByManagedType(SystemUser.class);
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
+    public List<UBSsystemUserDTO> findSystemUsersNameByNameContains(String name, Long cityId) {
+
+        String jpql = """
+                        SELECT su.id, su.name, 'null', 'null' FROM SystemUser su
+                        WHERE su.name LIKE CONCAT('%', :name, '%')
+                        AND su.cityHall.id = :cityId
+                        AND su.basicHealthUnit IS NULL
+                        AND su.active IS TRUE
+               """;
+
+        TypedQuery<UBSsystemUserDTO> usersQuery = em.createQuery(jpql, UBSsystemUserDTO.class);
+        usersQuery.setParameter("name", name);
+        usersQuery.setParameter("cityId", cityId);
+        usersQuery.setMaxResults(5);
+
+        return usersQuery.getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<SystemUser> findSystemUsersPaginated(SystemUser systemUser, Pageable page) {
 
         StringBuilder jpql = new StringBuilder();
@@ -79,26 +99,6 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         List<SystemUser> systemUsers = systemUsersQuery.getResultList();
 
         return new PageImpl<>(systemUsers, page, totalCountSystemUsers);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<UBSsystemUserDTO> findSystemUsersNameByNameContains(String name, Long cityId) {
-
-        String jpql = """
-                        SELECT su.id, su.name, 'null', 'null' FROM SystemUser su
-                        WHERE su.name LIKE CONCAT('%', :name, '%')
-                        AND su.cityHall.id = :cityId
-                        AND su.basicHealthUnit IS NULL
-                        AND su.active IS TRUE
-               """;
-
-        TypedQuery<UBSsystemUserDTO> usersQuery = em.createQuery(jpql, UBSsystemUserDTO.class);
-        usersQuery.setParameter("name", name);
-        usersQuery.setParameter("cityId", cityId);
-        usersQuery.setMaxResults(5);
-
-        return usersQuery.getResultList();
     }
 
     private void attachParameters(Query query, SystemUser systemUser) {

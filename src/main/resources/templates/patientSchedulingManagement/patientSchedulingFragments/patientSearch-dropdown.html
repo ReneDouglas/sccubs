@@ -1,0 +1,24 @@
+<!--<div th:fragment="dropdownPatient"-->
+<!--     th:each="patient : ${patients}"-->
+<!--     class="w-full p-2 hover:bg-gray-200"-->
+<!--     style="cursor: pointer;"-->
+<!--     th:attr="hx-get=@{/patient-scheduling/load(id=${patient.id})}"-->
+<!--     hx-trigger="click"-->
+<!--     hx-target="#schedulingForm">-->
+<!--    <strong>NOME: </strong><span th:text="${patient.name.toUpperCase()}"></span>-->
+<!--    <strong> - SUS: </strong><span th:text="${patient.susNumber}"></span>-->
+<!--    <strong> - CPF: </strong><span th:text="${patient.cpf}"></span>-->
+<!--</div>-->
+
+<div th:fragment="dropdownPatient">
+    <ul>
+        <li th:each="patient : ${patients}"
+            class="w-full p-2 hover:bg-gray-200">
+            <a th:href="@{/patient-scheduling/load(id=${patient.id})}">
+                <strong>NOME: </strong><span th:text="${patient.name.toUpperCase()}"></span>
+                <strong> - SUS: </strong><span th:text="${patient.susNumber}"></span>
+                <strong> - CPF: </strong><span th:text="${patient.cpf}"></span>
+            </a>
+        </li>
+    </ul>
+</div>

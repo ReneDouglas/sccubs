@@ -19,7 +19,8 @@ public class MedicalProcedure {
     private String description;
 
     @Column(name = "type")
-    @Convert(converter = ProcedureTypeAttrConverter.class)
+    //@Convert(converter = ProcedureTypeAttrConverter.class)
+    @Enumerated(EnumType.STRING)
     private ProcedureType procedureType;
 
     @ManyToOne

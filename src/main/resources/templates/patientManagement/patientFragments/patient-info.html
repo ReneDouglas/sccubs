@@ -21,7 +21,7 @@
             <input type="hidden" th:field="*{gender}"/>
         </div>
         <div>
-            <label>Data de Nascimento: </label><span th:text="${patient.birthDate}"></span>
+            <label>Data de Nascimento: </label><span th:text="${patient.formattedBirthDate()}"></span>
             <input type="hidden" th:field="*{birthDate}"/>
         </div>
         <div>

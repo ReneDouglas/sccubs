@@ -3,6 +3,7 @@ node.js=20.14.0
 npm=10.7.0
 java(amazon-corretto)=17.0.11
 mysql=5.7~8
+tailwind (plugin tailwind typography)
 
 *** cmd postcss ***
 Utilizar para criar o arquivo style.build.tailwind.css (produção):
@@ -46,22 +47,63 @@ Classificação de risco? (prioridade)
 
 --> Como funciona o fluxo? A pessoa vai até a UBS? o ACS durante uma visita?
 
--- -- - --
+-- -- -- --
+procedimento:
+id, descrição, tipo (consulta, exame ou cirurgia), especialidade
 
 vagas:
 id, quantidade, mês da vaga (dia/mês/ano), procedimento
 
+****************************
 agendamentos:
-id, paciente, procedimento, data da solicitação, classificação de risco, tipo de agendamento(consulta/retorno), ACS (user q cadastrou), observação
+id, paciente, procedimento, data da solicitação, classificação de risco (prioridade), tipo de agendamento(consulta/retorno), ACS (user q cadastrou), observação
+--> tipo de agendamento: consulta, retorno
+--> class. risco: sem risco (eletivo?), urgência, condição especial(autista)[?]
 
+
+se a vaga for para consulta:
+    - prioridade ativa: eletivo, urgência, retorno com exames, cond.especial
+se a vaga for para exame:
+    - prioridade ativa: eletivo, urgência, com histórico[*], cond.especial
+    * Aqui pode-se criar uma opção 'com histórico' (já realizou consulta e médico pediu exames [via SUS])
+      ou automatizar no sistema
+se a vaga for para cirurgia:
+    - tipo de agendamento: eletivo, com histórico
+    - prioridade ativa: sem prioridade, urgência,  com histórico[*], cond.especial
+    * Aqui pode-se criar uma opção 'com histórico' (já realizou consultas e exames via SUS)
+      ou automatizar no sistema
+
+prioridade ativa 'eletiva': O agendamento entrará na fila das prioridades passivas
+
+--> prioridade (class. risco) passiva (sem necessidade de informar ativamente ao sistema):
+---> mais de 3 meses, idade, situação social, sexo (feminino)
+--> prioridade (class. risco) ativa (é necessário informar ao sistema):
+---> urgência, retorno (apresentação de exames, cirurgia)
+
+Classificação de risco (prioridade)
+1 mais de 3 meses (topo da fila) [passiva]
+2 urgência [ativa]
+3 retorno [ativa]
+4 idade [passiva]
+5 situação social [passiva]
+6 sexo [passiva]
+
+
+**********************************
 contemplados:
-id, agendamento, vaga, data da contemplação, confirmação, faltou (talvez?)
+id, agendamento, paciente, data da contemplação, confirmação
+-> tempo para confirmação do contemplado, do contrário, a vaga passará para o próximo da fila.
+-> O que acontece com a vaga de um paciente faltante?
 
 históricos:
 id, agendamento, contemplado
 
-
 -- procedimentos: consulta, exame e cirurgia
+
+
+-- Elementos da Página Inicial (nível gestor):
+-> Sinalização verde de que a rotina de contemplação rodou normalmente com o horário de finalização
+-> Lista de contemplados por vaga
 
 
 
