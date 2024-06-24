@@ -1,0 +1,16 @@
+<div th:fragment="proceduresAndPriorities" >
+    <label for="medicalProcedure">Procedimento: </label>
+    <select id="medicalProcedure" th:name="medicalProcedure.id" required>
+        <option th:value="${null}">Selecione</option>
+        <option th:each="procedure : ${procedures}"
+                th:value="${procedure.id}"
+                th:text="${procedure.description}"></option>
+    </select>
+    <label for="priority">Prioridade: </label>
+    <select id="priority" th:name="priority" required>
+        <option th:value="${null}">Selecione</option>
+        <option th:each="priority : ${priorities}"
+                th:value="${priority}"
+                th:text="${priority.description}"></option>
+    </select>
+</div>

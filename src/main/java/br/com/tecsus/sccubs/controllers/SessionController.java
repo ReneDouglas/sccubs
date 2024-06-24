@@ -64,7 +64,7 @@ public class SessionController {
 
     @GetMapping("/error")
     public String getErrorPage() {
-        return "error";
+        return "error2";
     }
 
     @GetMapping("/expired")
