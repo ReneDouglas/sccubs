@@ -4,18 +4,17 @@ import br.com.tecsus.sccubs.entities.Patient;
 import br.com.tecsus.sccubs.repositories.PatientRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaContext;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-public class PatientRepositoryImpl implements PatientRepositoryCustom {
+public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     private final EntityManager em;
 
     @Autowired
-    public PatientRepositoryImpl(JpaContext jpaContext) {
+    public PatientRepositoryCustomImpl(JpaContext jpaContext) {
         this.em = jpaContext.getEntityManagerByManagedType(Patient.class);
     }
 

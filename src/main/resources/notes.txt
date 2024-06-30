@@ -32,6 +32,8 @@ npm run watch:postcss
 --> as vagas vem por exame?
 --> uma especialidade pode ter vários exames e/ou cirurgias(?)
 
+
+
 Informações da planilha (coluna classificação de risco)
 --> retorno, eletivo, colono, consulta, surto, autista, juridico, urgente, idoso, acompanhamento
 Qual a relação disso com as prioridades?
@@ -81,12 +83,19 @@ prioridade ativa 'eletiva': O agendamento entrará na fila das prioridades passi
 ---> urgência, retorno (apresentação de exames, cirurgia)
 
 Classificação de risco (prioridade)
-1 mais de 3 meses (topo da fila) [passiva]
+0 - excecao (juridico, CA) [ativa] * não precisa mais.É extra sistema
+1 mais de 4 meses (topo da fila) [passiva] * atualizado pra 4 meses
 2 urgência [ativa]
 3 retorno [ativa]
+- prioritário (idoso, gestante, deficiente, fibromialgia, puerperio, autismo) [ativa]
 4 idade [passiva]
 5 situação social [passiva]
 6 sexo [passiva]
+
+
+
+-- condição especial
+-- autista (exclusividade)
 
 
 **********************************
@@ -105,5 +114,8 @@ id, agendamento, contemplado
 -> Sinalização verde de que a rotina de contemplação rodou normalmente com o horário de finalização
 -> Lista de contemplados por vaga
 
-
-
+-- vagas por UBS
+-- as vagas vem sempre entre o dia 25 do mes anterior e 5 do mes corrente
+-- desistencia [perde a vaga]
+-- resposta em 5 dias
+-- cancelamento [a critério da SMS [marcar vaga de encaixe, contemplação automática [sms]]]
