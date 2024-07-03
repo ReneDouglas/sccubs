@@ -4,19 +4,19 @@ import br.com.tecsus.sccubs.entities.MedicalProcedure;
 import br.com.tecsus.sccubs.entities.Specialty;
 import br.com.tecsus.sccubs.enums.ProcedureType;
 import br.com.tecsus.sccubs.repositories.MedicalProcedureRepository;
-import br.com.tecsus.sccubs.repositories.PatientSchedulingRepository;
+import br.com.tecsus.sccubs.repositories.AppointmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class PatientSchedulingService {
+public class AppointmentService {
 
-    private final PatientSchedulingRepository patientSchedulingRepository;
+    private final AppointmentRepository appointmentRepository;
     private final MedicalProcedureRepository medicalProcedureRepository;
 
-    public PatientSchedulingService(PatientSchedulingRepository patientSchedulingRepository, MedicalProcedureRepository medicalProcedureRepository) {
-        this.patientSchedulingRepository = patientSchedulingRepository;
+    public AppointmentService(AppointmentRepository appointmentRepository, MedicalProcedureRepository medicalProcedureRepository) {
+        this.appointmentRepository = appointmentRepository;
         this.medicalProcedureRepository = medicalProcedureRepository;
     }
 

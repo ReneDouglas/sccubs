@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "patient_schedulings")
-public class PatientScheduling {
+@Table(name = "appointments")
+public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +35,6 @@ public class PatientScheduling {
     @JoinColumn(name = "id_patient", updatable = false)
     private Patient patient;
 
-    public PatientScheduling() {
+    public Appointment() {
     }
 }

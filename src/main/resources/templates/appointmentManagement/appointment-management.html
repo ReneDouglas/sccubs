@@ -21,7 +21,7 @@
                                 <input type="search" id="patientSearch" name="patientSearch"
                                        class="w-full p-2 border border-gray-300 rounded"
                                        placeholder="Digite um nome, Cartão SUS ou CPF"
-                                       hx-get="/patient-scheduling/search"
+                                       hx-get="/appointment-management/search"
                                        hx-trigger="input changed delay:500ms, patientSearch"
                                        hx-target="#dropdown"/>
                                 <div id="dropdown"
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <br>
-                        <form th:action="@{/patient-scheduling/create}" method="post" th:object="${patientScheduling}">
+                        <form th:action="@{/appointment-management/create}" method="post" th:object="${appointment}">
                             <div>
                                 <label>Nome completo: </label><span th:text="*{patient.name}"></span>
                             </div>
@@ -63,7 +63,7 @@
                                 </select>
                                 <label for="procedureType">Procedimento: </label>
                                 <select id="procedureType" name="procedureType"
-                                        hx-get="/patient-scheduling/procedures"
+                                        hx-get="/appointment-management/procedures"
                                         hx-target="#selectProcedureAndPriority"
                                         hx-include="[name='specialty']" disabled required>
                                     <option th:value="${null}">Selecione</option>

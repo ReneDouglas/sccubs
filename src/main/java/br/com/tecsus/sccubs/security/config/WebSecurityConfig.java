@@ -62,7 +62,7 @@ public class WebSecurityConfig {
             authConfig.requestMatchers("/systemUser-list/**");
             authConfig.requestMatchers("/basicHealthUnit-management/**");
             authConfig.requestMatchers("/patient-management/**");
-            authConfig.requestMatchers("/patient-scheduling/**");
+            authConfig.requestMatchers("/appointment-management/**");
             authConfig.requestMatchers("/specialty-management/**");
             authConfig.anyRequest().authenticated();
         });

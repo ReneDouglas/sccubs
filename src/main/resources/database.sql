@@ -139,7 +139,19 @@ create table medical_procedures(
                                    creation_user varchar(255) not null,
                                    foreign key (id_specialty) references specialties(id)
 );
-
+-- agendamentos
+create table appointments(
+                                    id bigint primary key auto_increment,
+                                    request_date datetime(6) not null,
+                                    priority int not null,
+                                    observation text,
+                                    creation_user varchar(255) not null,
+                                    id_medical_procedure bigint not null,
+                                    id_patient bigint not null,
+                                    foreign key (id_medical_procedure) references medical_procedures(id),
+                                    foreign key (id_patient) references patients(id)
+);
+-- agendamentos disponíveis ou vagas para agendamento
 create table available_appointments(
                                        id bigint primary key auto_increment,
                                        quantity int not null,
@@ -152,40 +164,29 @@ create table available_appointments(
                                        foreign key (id_medical_procedure) references medical_procedures(id)
 );
 
-create table patient_schedulings(
-                                    id bigint primary key auto_increment,
-                                    request_date datetime(6) not null,
-                                    priority int not null,
-                                    observation text,
-                                    creation_user varchar(255) not null,
-                                    id_medical_procedure bigint not null,
-                                    id_patient bigint not null,
-                                    foreign key (id_medical_procedure) references medical_procedures(id),
-                                    foreign key (id_patient) references patients(id)
-);
-
+-- contemplados (contemplated)
 create table covered_patients(
                                  id bigint primary key auto_increment,
                                  contemplation_date datetime(6) not null,
                                  priority int not null,
                                  confirmed boolean not null,
-                                 id_patient_scheduling bigint not null,
+                                 id_appointment bigint not null,
                                  creation_date datetime(6) not null,
                                  creation_user varchar(255) not null,
                                  update_date datetime(6),
                                  update_user varchar(255),
-                                 foreign key (id_patient_scheduling) references patient_schedulings(id)
+                                 foreign key (id_appointment) references appointments(id)
 );
 
 create table patient_histories(
                                   id bigint primary key auto_increment,
-                                  id_patient_scheduling bigint not null,
+                                  id_appointment bigint not null,
                                   id_covered_patient bigint not null,
                                   creation_date datetime(6) not null,
                                   creation_user varchar(255) not null,
                                   update_date datetime(6),
                                   update_user varchar(255),
-                                  foreign key (id_patient_scheduling) references patient_schedulings(id),
+                                  foreign key (id_appointment) references appointments(id),
                                   foreign key (id_covered_patient) references covered_patients(id)
 );
 
