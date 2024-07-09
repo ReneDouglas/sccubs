@@ -73,6 +73,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>sigaubs-jar</id>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
