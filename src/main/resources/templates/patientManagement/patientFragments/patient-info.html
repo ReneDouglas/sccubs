@@ -52,9 +52,19 @@
             <label>ACS Responsável: </label><span th:text="${patient.acsName}"></span>
             <input type="hidden" th:field="*{acsName}"/>
         </div>
+        <div>
+            <label for="basicHealthUnit">UBS:</label>
+            <select id="basicHealthUnit" th:name="basicHealthUnit.id"
+                    disabled>
+                <option th:value="${null}" th:selected="${patient.id == null}">Selecione</option>
+                <option th:value="${patient.basicHealthUnit.id}" th:text="${patient.basicHealthUnit.name}" th:selected="${patient.id != null}"></option>
+            </select>
+        </div>
         <input type="hidden" id="id" th:field="*{id}"/>
+        <input type="hidden" id="ubsid" th:field="*{basicHealthUnit.id}"/>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div>
+            <a th:href="@{/patient-management}">Novo Paciente</a>
             <button type="submit">Editar</button>
             <button>Cancelar</button>
         </div>

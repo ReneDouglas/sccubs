@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head></head>
+<body>
+    <div th:fragment="patientDatatable" id="patientsDatatable">
+        <table>
+            <thead>
+            <tr>
+                <th>N.</th>
+                <th>Nome</th>
+                <th>Contato</th>
+                <th>CPF</th>
+                <th>Cartão SUS</th>
+                <th>Logradouro</th>
+                <th>Situação Social</th>
+                <th>ACS</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="patient, iStat : ${patientsPage.content}">
+                <td th:text="${patientsPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (patientsPage.number * patientsPage.size)}"></td>
+                <td th:text="${patient.name}"></td>
+                <td th:text="${patient.phoneNumber}"></td>
+                <td th:text="${patient.cpf}"></td>
+                <td th:text="${patient.susNumber}"></td>
+                <td th:text="${patient.addressStreet}"></td>
+                <td th:text="${patient.socialSituationRating.getDescription()}"></td>
+                <td th:text="${patient.acsName}"></td>
+                <td>
+                    <a th:href="@{/patient-list/edit(id = ${patient.id})}">Editar</a>
+                    <button th:attrappend="hx-get=@{/patient-list/history(id = ${patient.id}, pagination = ${false})}"
+                            hx-target="#patientHistoryDatatable"
+                            hx-trigger="click">Ver Histórico
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="paginationPanel" th:if="${patientsPage.totalPages > 0}">
+            <label for="pageSize">Linhas por página:</label>
+            <select id="pageSize" name="pageSize"
+                    th:attrappend="hx-get=@{/patient-list(page = ${patientsPage.number}, pagination = ${true})}"
+                    hx-target="#patientsDatatable">
+                <option th:value="${10}" th:selected="${patientsPage.size == 10}">10</option>
+                <option th:value="${15}" th:selected="${patientsPage.size == 15}">15</option>
+                <option th:value="${30}" th:selected="${patientsPage.size == 30}">30</option>
+            </select>
+            <button id="prevPage"
+                    th:disabled="${!patientsPage.hasPrevious()}"
+                    th:attrprepend="hx-get=@{/patient-list(page = ${patientsPage.number - 1}, pagination = ${true})}"
+                    hx-target="#patientsDatatable"
+                    hx-include="[name='pageSize']"
+                    hx-trigger="click">Anterior
+            </button>
+            <span>Página <span id="currentPage" th:text="${patientsPage.number + 1}">1</span> de <span
+                    th:text="${patientsPage.totalPages}">Muitos</span></span>
+
+            <button id="nextPage"
+                    th:disabled="${!patientsPage.hasNext()}"
+                    th:attrprepend="hx-get=@{/patient-list(page = ${patientsPage.number + 1}, pagination = ${true})}"
+                    hx-target="#patientsDatatable"
+                    hx-include="[name='pageSize']"
+                    hx-trigger="click">Próximo
+            </button>
+        </div>
+    </div>
+
+    <div th:fragment="emptyPatientDatatable">
+        <table>
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Contato</th>
+                <th>Cartão SUS</th>
+                <th>CPF</th>
+                <th>Logradouro</th>
+                <th>Situação Social</th>
+                <th>ACS</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="8">Sem registro</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

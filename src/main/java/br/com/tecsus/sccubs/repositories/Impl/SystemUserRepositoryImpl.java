@@ -3,6 +3,7 @@ package br.com.tecsus.sccubs.repositories.Impl;
 import br.com.tecsus.sccubs.dtos.UBSsystemUserDTO;
 import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.repositories.SystemUserRepositoryCustom;
+import br.com.tecsus.sccubs.utils.ValidationUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -19,10 +20,16 @@ import java.util.List;
 public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
 
     private final EntityManager em;
+    private ValidationUtils validationUtils;
 
     @Autowired
     public SystemUserRepositoryImpl(JpaContext jpaContext) {
         this.em = jpaContext.getEntityManagerByManagedType(SystemUser.class);
+    }
+
+    @Autowired
+    public void setValidationUtils(ValidationUtils validationUtils) {
+        this.validationUtils = validationUtils;
     }
 
     @Override
@@ -55,19 +62,19 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         jpql.append("LEFT JOIN su.roles r ");
         jpql.append("WHERE su.creationUser = :creationUser ");
 
-        if (attrIsNotNull(systemUser.getUsername())) {
+        if (validationUtils.attrIsNotNull(systemUser.getUsername())) {
             jpql.append("AND su.username = :username ");
         }
-        if (attrIsNotNull(systemUser.getName())) {
+        if (validationUtils.attrIsNotNull(systemUser.getName())) {
             jpql.append("AND su.name = :name ");
         }
-        if (attrIsNotNull(systemUser.getBasicHealthUnit())) {
+        if (validationUtils.attrIsNotNull(systemUser.getBasicHealthUnit())) {
             jpql.append("AND su.basicHealthUnit.id = :ubsId ");
         }
-        if (attrIsNotNull(systemUser.getSelectedRoleId())) {
+        if (validationUtils.attrIsNotNull(systemUser.getSelectedRoleId())) {
             jpql.append("AND r.id = :roleId ");
         }
-        if (attrIsNotNull(systemUser.getActive())) {
+        if (validationUtils.attrIsNotNull(systemUser.getActive())) {
             jpql.append("AND su.active = :active ");
         }
 
@@ -81,7 +88,7 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
         long totalCountSystemUsers = 0;
 
         if (systemUsersIds.size() < page.getPageSize()) {
-            page.getPageSize();
+            totalCountSystemUsers = systemUsersIds.size();
         } else {
             Query count = em.createQuery(jpql.toString().replace("su.id", "count(su.id)"));
             attachParameters(count, systemUser);
@@ -105,28 +112,20 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
 
         query.setParameter("creationUser", systemUser.getCreationUser());
 
-        if (attrIsNotNull(systemUser.getUsername())) {
+        if (validationUtils.attrIsNotNull(systemUser.getUsername())) {
             query.setParameter("username", systemUser.getUsername());
         }
-        if (attrIsNotNull(systemUser.getName())) {
+        if (validationUtils.attrIsNotNull(systemUser.getName())) {
             query.setParameter("name", systemUser.getName());
         }
-        if (attrIsNotNull(systemUser.getBasicHealthUnit())) {
+        if (validationUtils.attrIsNotNull(systemUser.getBasicHealthUnit())) {
             query.setParameter("ubsId", systemUser.getBasicHealthUnit().getId());
         }
-        if (attrIsNotNull(systemUser.getSelectedRoleId())) {
+        if (validationUtils.attrIsNotNull(systemUser.getSelectedRoleId())) {
             query.setParameter("roleId", systemUser.getSelectedRoleId());
         }
-        if (attrIsNotNull(systemUser.getActive())) {
+        if (validationUtils.attrIsNotNull(systemUser.getActive())) {
             query.setParameter("active", systemUser.getActive());
         }
-    }
-
-    private Boolean attrIsNotNull(Object attr){
-
-        if (attr instanceof String) {
-            return attr != null && !((String) attr).isEmpty();
-        }
-        return attr != null;
     }
 }

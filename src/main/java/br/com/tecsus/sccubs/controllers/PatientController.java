@@ -1,38 +1,58 @@
 package br.com.tecsus.sccubs.controllers;
 
+import br.com.tecsus.sccubs.dtos.PatientAppointmentsHistoryDTO;
+import br.com.tecsus.sccubs.entities.BasicHealthUnit;
 import br.com.tecsus.sccubs.entities.Patient;
+import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.enums.SocialSituationRating;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.SessionScope;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Controller
+@SessionScope
 public class PatientController {
 
     private final PatientService patientService;
+    private Patient patientToSearch;
+    private Patient patientToEdit;
+    private long patientHistoryId;
 
     @Autowired
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
+        this.patientToSearch = new Patient();
+        this.patientToEdit = new Patient();
     }
 
+    /**
+     * TODO: Futuramente, adicionar um atributo 'model' para listar as UBS a fim de migrar o paciente para outra.
+     * TODO: Migração disponível apenas para o usuário da SMS
+      */
     @GetMapping("/patient-management")
     public String getPatientInsertPage(Model model, @AuthenticationPrincipal SystemUserDetails loggedUser) {
 
-        model.addAttribute("patient", new Patient());
+        if (patientToEdit.getId() != null) {
+            model.addAttribute("patient", patientToEdit);
+        } else {
+            model.addAttribute("patient", new Patient());
+        }
         model.addAttribute("socialSituations", SocialSituationRating.getDescriptionSortedByRating());
 
         return "patientManagement/patient-management";
@@ -76,6 +96,7 @@ public class PatientController {
 
         try {
             Patient updatedPatient = patientService.updatePatient(patient, loggedUser);
+            patientToEdit = new Patient();
             model.addAttribute("patient", updatedPatient);
             model.addAttribute("message", "Paciente atualizado com sucesso.");
             model.addAttribute("error", false);
@@ -88,4 +109,58 @@ public class PatientController {
         return "patientManagement/patientFragments/patient-info :: patientToEdit";
     }
 
+
+    @GetMapping("/patient-list")
+    public String getPatientsPage(Model model,
+                                  @ModelAttribute Patient patient,
+                                  @AuthenticationPrincipal SystemUserDetails loggedUser,
+                                  @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
+                                  @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+                                  @RequestParam(value = "pagination", defaultValue = "false", required = false) boolean isPagination){
+
+        if (!isPagination) {
+            patientToSearch = patient;
+        }
+
+        Page<Patient> patientsPage = patientService.findPatientsPage(patientToSearch, PageRequest.of(currentPage, pageSize), loggedUser);
+        model.addAttribute("patientsPage", patientsPage);
+        model.addAttribute("patient", patientToSearch);
+
+        if (!isPagination) {
+            return "patientManagement/patient-list";
+        }
+        return "patientManagement/patientFragments/patient-datatable :: patientDatatable";
+
+    }
+
+    @GetMapping("/patient-list/history")
+    public String getPatientAppointmentsHistory(Model model,
+                                                @AuthenticationPrincipal SystemUserDetails loggedUser,
+                                                @RequestParam(value = "id", required = false) Long patientId,
+                                                @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
+                                                @RequestParam(value = "pageSizeHistory", defaultValue = "10", required = false) int pageSizeHistory,
+                                                @RequestParam(value = "pagination", defaultValue = "false", required = false) boolean isPagination) {
+
+        if (!isPagination) {
+            this.patientHistoryId = patientId;
+        }
+
+        Page<PatientAppointmentsHistoryDTO> patientHistoryPage = patientService
+                .findPatientAppointmentsHistoryPage(this.patientHistoryId, PageRequest.of(currentPage, pageSizeHistory), loggedUser);
+
+        model.addAttribute("patientHistoryPage", patientHistoryPage);
+        return "patientManagement/patientFragments/patient-history :: patientHistoryDatatable";
+    }
+
+    @GetMapping("/patient-list/clear")
+    public String clearPatientsPage() {
+        patientToSearch = new Patient();
+        return "redirect:/patient-list";
+    }
+
+    @GetMapping("/patient-list/edit")
+    public String editSelectedPatient(@RequestParam(value = "id") long patientId) throws RuntimeException{
+        patientToEdit = patientService.findPatientToEdit(patientId);
+        return "redirect:/patient-management";
+    }
 }

@@ -79,7 +79,21 @@
             <label for="acsName">ACS Responsável:</label>
             <input type="text" id="acsName" name="acsName" th:field="*{acsName}">
         </div>
+        <div>
+            <label for="basicHealthUnit">UBS:</label>
+<!--            Como o select está desabilitado, o thymeleaf não leva o id da UBS no form ao submeter. -->
+<!--            É preciso utilizar um input hidden (ver 'ubsid') levando o id da UBS -->
+            <select id="basicHealthUnit" th:name="basicHealthUnit.id" disabled>
+                <option th:value="${null}" th:selected="${patient.id == null}">Selecione</option>
+                <th:block th:if="${patient.id != null}">
+                    <option th:value="${patient.basicHealthUnit.id}" th:text="${patient.basicHealthUnit.name}" th:selected="${patient.id != null}"></option>
+                </th:block>
+            </select>
+        </div>
         <input type="hidden" id="id" th:field="*{id}"/>
+        <th:block th:if="${patient.id != null}">
+            <input type="hidden" id="ubsid" th:field="*{basicHealthUnit.id}"/>
+        </th:block>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div>
             <button type="submit">Enviar</button>

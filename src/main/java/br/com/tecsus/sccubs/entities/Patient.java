@@ -3,8 +3,10 @@ package br.com.tecsus.sccubs.entities;
 import br.com.tecsus.sccubs.entities.converters.SocialSituationAttrConverter;
 import br.com.tecsus.sccubs.enums.SocialSituationRating;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Setter
 @Entity
+@DynamicUpdate
 @Table(name = "patients")
 public class Patient {
 

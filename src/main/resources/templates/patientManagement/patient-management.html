@@ -9,9 +9,9 @@
         <header th:replace="~{fragments/navbar :: header}"></header>
         <div>
             <h1>Dados do Paciente</h1>
-            <span class="htmx-indicator">
-                <img th:src="@{/images/loading.gif}" alt="none"/> Salvando...
-            </span>
+<!--            <span class="htmx-indicator">-->
+<!--                <img th:src="@{/images/loading.gif}" alt="none"/> Salvando...-->
+<!--            </span>-->
             <th:block th:if="${true}">
                 <div th:replace="~{patientManagement/patientFragments/patient-form :: patientForm}"></div>
             </th:block>

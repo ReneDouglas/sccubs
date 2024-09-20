@@ -3,15 +3,15 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "basic_health_units")
-public class BasicHealthUnit implements Serializable {
+public class BasicHealthUnit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +26,9 @@ public class BasicHealthUnit implements Serializable {
 
     @OneToMany(mappedBy = "basicHealthUnit"/*, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER*/)
     private List<SystemUser> systemUsers;
+
+    @OneToMany(mappedBy = "basicHealthUnit")
+    private List<Patient> patients = new ArrayList<>();
 
     @Column(name = "creation_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

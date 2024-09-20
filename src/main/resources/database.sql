@@ -165,7 +165,7 @@ create table available_appointments(
 );
 
 -- contemplados (contemplated)
-create table covered_patients(
+create table contemplations(
                                  id bigint primary key auto_increment,
                                  contemplation_date datetime(6) not null,
                                  priority int not null,
@@ -178,19 +178,26 @@ create table covered_patients(
                                  foreign key (id_appointment) references appointments(id)
 );
 
-create table patient_histories(
+
+create table patient_history(
                                   id bigint primary key auto_increment,
                                   id_appointment bigint not null,
-                                  id_covered_patient bigint not null,
                                   creation_date datetime(6) not null,
                                   creation_user varchar(255) not null,
                                   update_date datetime(6),
                                   update_user varchar(255),
-                                  foreign key (id_appointment) references appointments(id),
-                                  foreign key (id_covered_patient) references covered_patients(id)
+                                  foreign key (id_appointment) references appointments(id)
 );
 
 ALTER TABLE patients ADD FULLTEXT(name, sus_card_number, cpf);
+
+ALTER TABLE sccubs.appointments ADD canceled TINYINT DEFAULT 0 NULL;
+ALTER TABLE sccubs.appointments CHANGE canceled canceled TINYINT DEFAULT 0 NULL AFTER id_patient;
+ALTER TABLE sccubs.appointments ADD update_date datetime(6) NULL;
+ALTER TABLE sccubs.appointments ADD update_user varchar(255) NULL;
+ALTER TABLE sccubs.contemplations CHANGE priority contemplated_by int(11) NOT NULL;
+
+-- INSERTS PARA TESTES
 
 INSERT INTO patients (id, name, sus_card_number, cpf, gender, birth_date, social_sit_rating, phone_number, address_street, address_number, address_complement, address_ref, acs_name, id_basic_health_unit, creation_date, creation_user, update_date, update_user) VALUES(1, 'Abner Da Silva De Moraes', '903 2850 9183 0006', '832.915.970-10', 'Feminino', '1990-01-01', 2, '12345', 'test', '1', 'test', 'test', 'test', 1, '2024-06-13 10:35:41.753172000', 'sms', NULL, NULL);
 INSERT INTO patients (id, name, sus_card_number, cpf, gender, birth_date, social_sit_rating, phone_number, address_street, address_number, address_complement, address_ref, acs_name, id_basic_health_unit, creation_date, creation_user, update_date, update_user) VALUES(2, 'Ademir Aparecido De Alvarenga', '953 3764 3378 0003', '383.709.600-90', 'Masculino', '2024-05-29', 2, '5', '5', '5', '5', '5', '5', 1, '2024-06-13 10:54:44.591829000', 'user', NULL, NULL);

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Controller
+@SessionScope
 public class SessionController {
 
     private final SystemUserService systemUserService;
@@ -115,8 +117,8 @@ public class SessionController {
     @GetMapping("/systemUser-list")
     public String getSystemUserListPage(Model model,
                                         @ModelAttribute SystemUser systemUser,
-                                        @RequestParam(value = "page", defaultValue = "0",required = false) int currentPage,
-                                        @RequestParam(value = "size", defaultValue = "5",required = false) int pageSize,
+                                        @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
+                                        @RequestParam(value = "size", defaultValue = "5", required = false) int pageSize,
                                         HttpServletRequest request) {
 
         Page<SystemUser> systemUsersPage;
@@ -135,13 +137,13 @@ public class SessionController {
                 .findAllUsersByCreationUserPaginated(systemUser, PageRequest.of(currentPage, pageSize, Sort.Direction.valueOf("DESC"), "creationDate"));
         model.addAttribute("systemUsersPage", systemUsersPage);
 
-        totalPages = systemUsersPage.getTotalPages();
+        /*totalPages = systemUsersPage.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                     .boxed()
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
-        }
+        }*/
 
         if("searchRequest".equals(request.getHeader("X-Requested-With"))) {
             return "sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable";

@@ -1,3 +1,98 @@
-<div>
-    <h1>Histórico do paciente</h1>
-</div>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head></head>
+<body>
+    <div th:fragment="patientHistoryDatatable" id="patientHistoryDatatable">
+        <table>
+            <thead>
+            <tr>
+                <th>N.</th>
+                <th>Data da Requisição</th>
+                <th>Data da Contemplação</th>
+                <th>Cancelado</th>
+                <th>Contemplado por</th>
+                <th>Prioridade</th>
+                <th>Confirmado</th>
+                <th>Marcação</th>
+                <th>Procedimento</th>
+                <th>Especialidade</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="patientHistory, iStat : ${patientHistoryPage.content}">
+                <td th:text="${patientHistoryPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (patientHistoryPage.number * patientHistoryPage.size)}"></td>
+                <td th:text="${patientHistory.formattedRequestDate()}"></td>
+                <td th:text="${patientHistory.formattedContemplationDate()}"></td>
+                <td th:text="${patientHistory.canceled ? 'Sim': ''}"></td>
+                <td th:text="${patientHistory.nullableContemplatedBy()}"></td>
+                <td th:text="${patientHistory.priorityRegistered.getDescription()}"></td>
+                <td th:text="${patientHistory.contemplationId eq null ? '' : (patientHistory.confirmed ? 'Sim' : 'Não')}"></td>
+                <td th:text="${patientHistory.procedureType.getDescription()}"></td>
+                <td th:text="${patientHistory.medicalProcedure}"></td>
+                <td th:text="${patientHistory.specialty}"></td>
+                <td>
+                    <button type="button" th:onclick="openModal([[${patientHistory.observations()}]])" >
+                        Observações
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="paginationPanelHistory" th:if="${patientHistoryPage.totalPages > 0}">
+            <label for="pageSizeHistory">Linhas por página:</label>
+            <select id="pageSizeHistory" name="pageSizeHistory"
+                    th:attrappend="hx-get=@{/patient-list/history(page = ${patientHistoryPage.number}, pagination = ${true})}"
+                    hx-target="#patientHistoryDatatable">
+                <option th:value="${10}" th:selected="${patientHistoryPage.size == 10}">10</option>
+                <option th:value="${15}" th:selected="${patientHistoryPage.size == 15}">15</option>
+                <option th:value="${30}" th:selected="${patientHistoryPage.size == 30}">30</option>
+            </select>
+            <button id="prevPageHistory"
+                    th:disabled="${!patientHistoryPage.hasPrevious()}"
+                    th:attrprepend="hx-get=@{/patient-list/history(page = ${patientHistoryPage.number - 1}, pagination = ${true})}"
+                    hx-target="#patientHistoryDatatable"
+                    hx-include="[name='pageSizeHistory']"
+                    hx-trigger="click">Anterior
+            </button>
+            <span>Página <span id="currentPageHistory" th:text="${patientHistoryPage.number + 1}">1</span> de <span
+                    th:text="${patientHistoryPage.totalPages}">Muitos</span></span>
+
+            <button id="nextPageHistory"
+                    th:disabled="${!patientHistoryPage.hasNext()}"
+                    th:attrprepend="hx-get=@{/patient-list/history(page = ${patientHistoryPage.number + 1}, pagination = ${true})}"
+                    hx-target="#patientHistoryDatatable"
+                    hx-include="[name='pageSizeHistory']"
+                    hx-trigger="click">Próximo
+            </button>
+        </div>
+    </div>
+
+    <div th:fragment="emptyPatientHistoryDatatable">
+        <table>
+            <thead>
+            <tr>
+                <th>N.</th>
+                <th>Data da Requisição</th>
+                <th>Data da Contemplação</th>
+                <th>Cancelado</th>
+                <th>Contemplado por</th>
+                <th>Prioridade</th>
+                <th>Confirmado</th>
+                <th>Marcação</th>
+                <th>Procedimento</th>
+                <th>Especialidade</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="11">Sem registro</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

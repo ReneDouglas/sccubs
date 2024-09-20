@@ -9,19 +9,23 @@ import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.AppointmentService;
 import br.com.tecsus.sccubs.services.PatientService;
 import br.com.tecsus.sccubs.services.SpecialtyService;
+import br.com.tecsus.sccubs.services.exceptions.AppointmentRegistrationFailureException;
+import br.com.tecsus.sccubs.services.exceptions.CancelAppointmentException;
+import br.com.tecsus.sccubs.services.exceptions.DuplicateAppointmentRegistrationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 @Slf4j
 @Controller
+@SessionScope
 public class AppointmentController {
 
     private final PatientService patientService;
@@ -44,7 +48,9 @@ public class AppointmentController {
 
         model.addAttribute("patients", List.of());
         model.addAttribute("appointment", appointment);
+        model.addAttribute("patientOpenAppointments", List.of());
         model.addAttribute("specialties", specialtyService.findSpecialties());
+        model.addAttribute("loaded", false);
 
         return "appointmentManagement/appointment-management";
     }
@@ -80,6 +86,8 @@ public class AppointmentController {
         model.addAttribute("patients", List.of());
         model.addAttribute("appointment", appointment);
         model.addAttribute("specialties", specialtyService.findSpecialties());
+        model.addAttribute("patientOpenAppointments", appointmentService.findPatientOpenAppointments(idPatient));
+        model.addAttribute("loaded", true);
         return "appointmentManagement/appointment-management";
     }
 
@@ -106,9 +114,45 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointment-management/create")
-    public String registerAppointment(@ModelAttribute Appointment appointment,
+    public String registerAppointmentSolicitation(@ModelAttribute Appointment appointment,
                                             @AuthenticationPrincipal SystemUserDetails loggedUser,
-                                            Model model) {
-        return null;
+                                            RedirectAttributes redirectAttributes) {
+
+        try{
+            appointmentService.registerAppointment(appointment, loggedUser);
+            redirectAttributes.addFlashAttribute("message", "Marcação agendada com sucesso.");
+            redirectAttributes.addFlashAttribute("error", false);
+            log.info("Marcação agendada com sucesso.");
+        } catch (AppointmentRegistrationFailureException e) {
+            log.error("Erro ao registrar consulta: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("message", "Erro ao agendar marcação. Tente novamente.");
+            redirectAttributes.addFlashAttribute("error", true);
+        } catch (DuplicateAppointmentRegistrationException e) {
+            log.error("Marcação de consulta duplicada: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("message", "Existe uma marcação em aberto para este procedimento.");
+            redirectAttributes.addFlashAttribute("error", true);
+        }
+
+        return "redirect:/appointment-management/load?id=" + appointment.getPatient().getId();
     }
+
+    @PutMapping("/appointment-management/{id}/cancel")
+    public String cancelAppointmentSolicitation(@PathVariable("id") Long apptSolicitationId,
+                                                @RequestParam("patientId") Long patientId,
+                                                @AuthenticationPrincipal SystemUserDetails loggedUser,
+                                                RedirectAttributes redirectAttributes) {
+
+        try {
+            appointmentService.cancelSolicitation(apptSolicitationId, loggedUser);
+            redirectAttributes.addFlashAttribute("message", "Marcação cancelada com sucesso.");
+            redirectAttributes.addFlashAttribute("error", false);
+            log.info("Marcação cancelada com sucesso.");
+        } catch (CancelAppointmentException e) {
+            log.error("Não foi possível cancelar a marcação de consulta: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("message", "Não foi possível cancelar a marcação. Contate o TI.");
+            redirectAttributes.addFlashAttribute("error", true);
+        }
+        return "redirect:/appointment-management/load?id=" + patientId;
+    }
+
 }
