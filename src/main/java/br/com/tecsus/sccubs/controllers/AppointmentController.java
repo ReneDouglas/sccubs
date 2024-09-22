@@ -12,7 +12,9 @@ import br.com.tecsus.sccubs.services.SpecialtyService;
 import br.com.tecsus.sccubs.services.exceptions.AppointmentRegistrationFailureException;
 import br.com.tecsus.sccubs.services.exceptions.CancelAppointmentException;
 import br.com.tecsus.sccubs.services.exceptions.DuplicateAppointmentRegistrationException;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -94,6 +96,7 @@ public class AppointmentController {
     @GetMapping(value = "/appointment-management/procedures", produces = MediaType.TEXT_HTML_VALUE)
     public String loadPrioritiesByProcedure(@RequestParam("procedureType") String procedureType,
                                             @RequestParam("specialty") Long specialtyId,
+                                            @RequestParam(name = "slot", required = false, defaultValue = "false") boolean fromUBSPage,
                                             Model model) {
 
         List<MedicalProcedure> procedures;
@@ -110,6 +113,7 @@ public class AppointmentController {
 
         model.addAttribute("procedures", procedures);
         model.addAttribute("priorities", priorities);
+        model.addAttribute("fromUBSPage", fromUBSPage);
         return "appointmentManagement/appointmentFragments/appointment-procedureAndPriority :: proceduresAndPriorities";
     }
 

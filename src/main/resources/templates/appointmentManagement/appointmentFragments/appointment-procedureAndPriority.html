@@ -1,16 +1,18 @@
-<div th:fragment="proceduresAndPriorities" >
+<div th:fragment="proceduresAndPriorities" id="selectProcedureAndPriority">
     <label for="medicalProcedure">Procedimento: </label>
-    <select id="medicalProcedure" th:name="medicalProcedure.id" required>
+    <select id="medicalProcedure" name="medicalProcedure" required>
         <option th:value="${null}">Selecione</option>
         <option th:each="procedure : ${procedures}"
                 th:value="${procedure.id}"
                 th:text="${procedure.description}"></option>
     </select>
-    <label for="priority">Prioridade: </label>
-    <select id="priority" th:name="priority" required>
-        <option th:value="${null}">Selecione</option>
-        <option th:each="priority : ${priorities}"
-                th:value="${priority}"
-                th:text="${priority.description}"></option>
-    </select>
+    <th:block th:if="${!fromUBSPage}">
+        <label for="priority">Prioridade: </label>
+        <select id="priority" th:name="priority" required>
+            <option th:value="${null}">Selecione</option>
+            <option th:each="priority : ${priorities}"
+                    th:value="${priority}"
+                    th:text="${priority.description}"></option>
+        </select>
+    </th:block>
 </div>

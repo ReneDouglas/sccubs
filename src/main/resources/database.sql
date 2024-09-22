@@ -197,7 +197,26 @@ ALTER TABLE sccubs.appointments ADD update_date datetime(6) NULL;
 ALTER TABLE sccubs.appointments ADD update_user varchar(255) NULL;
 ALTER TABLE sccubs.contemplations CHANGE priority contemplated_by int(11) NOT NULL;
 
--- INSERTS PARA TESTES
+-- -- -- -- -- --
+-- VERSÃO 1.4.0
+-- -- -- -- -- --
+
+RENAME TABLE sccubs.available_appointments TO sccubs.available_medical_slots;
+ALTER TABLE sccubs.available_medical_slots CHANGE quantity total_slots int(11) NOT NULL;
+ALTER TABLE sccubs.available_medical_slots ADD filled_slots INT DEFAULT 0 NULL;
+ALTER TABLE sccubs.available_medical_slots CHANGE filled_slots filled_slots INT DEFAULT 0 NULL AFTER total_slots;
+ALTER TABLE sccubs.available_medical_slots CHANGE reference_month reference_month date NOT NULL AFTER id;
+ALTER TABLE sccubs.available_medical_slots CHANGE filled_slots current_slots int(11) DEFAULT 0 NULL;
+ALTER TABLE sccubs.contemplations ADD id_available_medical_slot bigint(20) NOT NULL;
+ALTER TABLE sccubs.contemplations CHANGE id_available_medical_slot id_available_medical_slot bigint(20) NOT NULL AFTER id_appointment;
+alter table contemplations add foreign key (id_available_medical_slot) references available_medical_slots(id);
+ALTER TABLE sccubs.available_medical_slots ADD id_basic_health_unit bigint NOT NULL;
+ALTER TABLE sccubs.available_medical_slots CHANGE id_basic_health_unit id_basic_health_unit bigint NOT NULL AFTER id_medical_procedure;
+ALTER TABLE sccubs.available_medical_slots ADD CONSTRAINT available_medical_slots_FK FOREIGN KEY (id_basic_health_unit) REFERENCES sccubs.basic_health_units(id);
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+-- -- -- -- -- -- -- INSERTS PARA TESTES -- -- -- -- -- -- -- --
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 INSERT INTO patients (id, name, sus_card_number, cpf, gender, birth_date, social_sit_rating, phone_number, address_street, address_number, address_complement, address_ref, acs_name, id_basic_health_unit, creation_date, creation_user, update_date, update_user) VALUES(1, 'Abner Da Silva De Moraes', '903 2850 9183 0006', '832.915.970-10', 'Feminino', '1990-01-01', 2, '12345', 'test', '1', 'test', 'test', 'test', 1, '2024-06-13 10:35:41.753172000', 'sms', NULL, NULL);
 INSERT INTO patients (id, name, sus_card_number, cpf, gender, birth_date, social_sit_rating, phone_number, address_street, address_number, address_complement, address_ref, acs_name, id_basic_health_unit, creation_date, creation_user, update_date, update_user) VALUES(2, 'Ademir Aparecido De Alvarenga', '953 3764 3378 0003', '383.709.600-90', 'Masculino', '2024-05-29', 2, '5', '5', '5', '5', '5', '5', 1, '2024-06-13 10:54:44.591829000', 'user', NULL, NULL);
@@ -228,3 +247,74 @@ INSERT INTO patients (id, name, sus_card_number, cpf, gender, birth_date, social
 INSERT INTO patients (id, name, sus_card_number, cpf, gender, birth_date, social_sit_rating, phone_number, address_street, address_number, address_complement, address_ref, acs_name, id_basic_health_unit, creation_date, creation_user, update_date, update_user) VALUES(36, 'Andreza Katiucia Batista ', '709 3461 7081 0004', '341.666.750-60', 'Feminino', '1979-06-19', 7, 'pacientTest1', 'pacientTest1', 'pacientTest1', 'pacientTest1', 'pacientTest1', 'pacientTest1', 1, '2024-06-21 11:25:34.813166000', 'test1', NULL, NULL);
 INSERT INTO patients (id, name, sus_card_number, cpf, gender, birth_date, social_sit_rating, phone_number, address_street, address_number, address_complement, address_ref, acs_name, id_basic_health_unit, creation_date, creation_user, update_date, update_user) VALUES(37, 'Renê Douglas Nobre de Morais', '150 1782 5154 0005', '486.315.966-80', 'Masculino', '1992-07-01', 3, '87999148083', 'Rua José Belizário Costa', '62', 'casa', '', 'Teste', 1, '2024-06-22 20:47:14.289027000', 'user', NULL, NULL);
 INSERT INTO patients (id, name, sus_card_number, cpf, gender, birth_date, social_sit_rating, phone_number, address_street, address_number, address_complement, address_ref, acs_name, id_basic_health_unit, creation_date, creation_user, update_date, update_user) VALUES(38, 'Renia Raynne Nobre de Morais', '279 0275 7046 0003', '338.631.467-86', 'Feminino', '1994-12-02', 3, '87999999999', 'Rua José Belizário Costa', '62', 'casa', '', 'teste', 1, '2024-06-22 20:52:46.065648000', 'user', NULL, NULL);
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(1, 'Cardiologia', 'Diagnostica e trata doenças do coração e do sistema circulatório.', 1, '2024-06-16 13:50:33.832000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(2, 'Mastologia', 'Cuida da saúde das mamas, incluindo a prevenção e tratamento do câncer de mama.', 1, '2024-06-16 13:51:35.275000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(3, 'Endocrinologia', 'Trata distúrbios hormonais e doenças das glândulas endócrinas.', 1, '2024-06-16 13:52:05.982000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(4, 'Otorrinolaringologia', 'Diagnostica e trata doenças do ouvido, nariz e garganta.', 1, '2024-06-16 13:52:09.970000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(5, 'Urologia', 'Foca no trato urinário de homens e mulheres e no sistema reprodutor masculino.', 1, '2024-06-16 13:53:54.725000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(6, 'Oftalmologia', 'Cuida da saúde dos olhos e trata problemas visuais.', 1, '2024-06-16 13:53:59.213000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(7, 'Ortopedia', 'Trata doenças e lesões do sistema musculoesquelético.', 1, '2024-06-16 13:54:57.239000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(8, 'Cirurgia Geral', 'Realiza intervenções para tratar doenças, lesões e deformidades.', 1, '2024-06-16 13:55:10.065000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(9, 'Neurologia', 'Trata distúrbios do sistema nervoso central e periférico.', 1, '2024-06-16 13:56:02.484000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(10, 'Obstetricia', 'Cuida da gestação, parto e saúde da mãe e do bebê.', 1, '2024-06-16 13:56:05.674000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(12, 'Reumatologia', 'Trata doenças reumáticas e autoimunes que afetam articulações, músculos e ossos.', 1, '2024-06-16 13:56:11.842000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(13, 'Ginecologia', 'Cuida da saúde do sistema reprodutor feminino.', 1, '2024-06-16 13:56:15.064000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(14, 'Dermatologia', 'Diagnostica e trata doenças da pele, cabelos e unhas.', 1, '2024-06-16 13:58:43.618000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(15, 'Gastroenterologia', 'Trata doenças do sistema digestivo.', 1, '2024-06-16 13:59:21.266000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(16, 'Angiologia', 'Cuida das doenças dos vasos sanguíneos e linfáticos.', 1, '2024-06-16 14:00:09.474000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(17, 'Nutrição', 'Estuda os alimentos e sua influência na saúde, elaborando planos alimentares.', 1, '2024-06-16 14:04:42.464000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(18, 'Pediatria', 'Cuida da saúde de bebês, crianças e adolescentes.', 1, '2024-06-16 14:05:15.731000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(19, 'Psiquiatria', 'Diagnostica e trata transtornos mentais e emocionais.', 1, '2024-06-16 14:06:20.747000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(20, 'Radiologia', 'Utiliza técnicas de imagem para diagnosticar e tratar doenças.', 1, '2024-06-16 14:12:55.219000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(23, 'Fonoaudiologia', 'Trata distúrbios da comunicação, fala, linguagem e audição.', 1, '2024-06-16 14:19:20.286000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(25, 'Fisioterapia', 'Utiliza exercícios terapêuticos para tratar e prevenir doenças e lesões físicas.', 1, '2024-06-16 14:25:20.370000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(27, 'Nefrologia ', 'Diagnostica e trata doenças dos rins e do sistema urinário.', 1, '2024-06-16 14:35:44.917000000', 'rene.morais');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(32, 'testeEdit', 'testeEdit', 0, '2024-06-20 10:53:42.082576000', 'sms');
+INSERT INTO specialties (id, title, description, active, creation_date, creation_user) VALUES(33, 'enumTest', 'enumTest', 1, '2024-06-21 14:45:43.758524000', 'sms');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(1, 'Histerectomia', 'CIRURGIA', 13, '2024-06-18 00:31:47.115000000', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(2, 'Cirurgia HREC', 'CIRURGIA', 8, '2024-06-18 00:32:05.706000000', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(3, 'Cirurgia de Hérnia', 'CIRURGIA', 8, '2024-06-18 00:32:19.980000000', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(4, 'Cirurgia de Hérnia Inguinal', 'CIRURGIA', 8, '2024-06-18 00:32:32.045000000', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(5, 'Cirurgia de Hérnia Epigástrica', 'CIRURGIA', 8, '2024-06-18 00:32:42.856000000', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(6, 'Mamografia', 'EXAME', 2, '2024-06-18 00:36:27.771000000', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(7, 'Densitometria', 'EXAME', 12, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(8, 'Tomografia', 'EXAME', 20, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(9, 'Ecocardiograma', 'EXAME', 1, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(10, 'Eletrocardiograma', 'EXAME', 1, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(11, 'Teste Ergonométrico', 'EXAME', 1, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(12, 'Raio X', 'EXAME', 20, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(13, 'Colonoscopia', 'EXAME', 15, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(14, 'Endoscopia', 'EXAME', 15, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(15, 'Colposcopia ', 'EXAME', 13, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(16, 'Ultrassonografia', 'EXAME', 20, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(17, 'Ressonância Magnética', 'EXAME', 20, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(18, 'Histeroscopia', 'EXAME', 13, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(19, '-', 'CONSULTA', 1, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(20, '-', 'CONSULTA', 2, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(21, '-', 'CONSULTA', 3, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(22, '-', 'CONSULTA', 4, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(23, '-', 'CONSULTA', 5, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(24, '-', 'CONSULTA', 6, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(25, '-', 'CONSULTA', 7, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(27, '-', 'CONSULTA', 9, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(28, '-', 'CONSULTA', 10, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(29, '-', 'CONSULTA', 12, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(30, '-', 'CONSULTA', 13, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(31, '-', 'CONSULTA', 14, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(32, '-', 'CONSULTA', 15, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(33, '-', 'CONSULTA', 16, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(34, '-', 'CONSULTA', 17, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(35, '-', 'CONSULTA', 18, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(36, '-', 'CONSULTA', 19, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(37, '-', 'CONSULTA', 20, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(38, '-', 'CONSULTA', 23, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(39, '-', 'CONSULTA', 25, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(40, '-', 'CONSULTA', 27, '2024-06-17 21:36:27', 'rene.morais');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(41, 'p2', 'CIRURGIA', 32, '2024-06-20 10:53:42.082576000', 'sms');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(42, '-', 'CONSULTA', 32, '2024-06-20 10:53:42.082576000', 'sms');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(43, 'p1', 'EXAME', 32, '2024-06-20 10:53:42.082576000', 'sms');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(44, 'p3', 'EXAME', 32, '2024-06-20 12:15:26.136663000', 'sms');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(45, 'p4', 'CIRURGIA', 32, '2024-06-20 12:15:40.163071000', 'sms');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(46, 'pE1', 'EXAME', 33, '2024-06-21 14:45:43.763509000', 'sms');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(47, '-', 'CONSULTA', 33, '2024-06-21 14:45:43.763509000', 'sms');
+INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(48, 'pE2', 'CIRURGIA', 33, '2024-06-21 14:45:43.763509000', 'sms');

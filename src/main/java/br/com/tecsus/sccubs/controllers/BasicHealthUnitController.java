@@ -1,13 +1,18 @@
 package br.com.tecsus.sccubs.controllers;
 
+import br.com.tecsus.sccubs.dtos.AvailableMedicalSlotsFormDTO;
 import br.com.tecsus.sccubs.dtos.UBSsystemUserDTO;
+import br.com.tecsus.sccubs.entities.AvailableMedicalSlot;
 import br.com.tecsus.sccubs.entities.BasicHealthUnit;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.CityHallService;
+import br.com.tecsus.sccubs.services.SpecialtyService;
 import br.com.tecsus.sccubs.services.SystemUserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,20 +31,25 @@ public class BasicHealthUnitController {
     private final BasicHealthUnitService basicHealthUnitService;
     private final CityHallService cityHallService;
     private final SystemUserService systemUserService;
+    private final SpecialtyService specialtyService;
+    private AvailableMedicalSlotsFormDTO availableMedicalSlotsFormDTO;
 
     @Autowired
     public BasicHealthUnitController(BasicHealthUnitService basicHealthUnitService,
                                      CityHallService cityHallService,
-                                     SystemUserService systemUserService) {
+                                     SystemUserService systemUserService,
+                                     SpecialtyService specialtyService) {
         this.basicHealthUnitService = basicHealthUnitService;
         this.cityHallService = cityHallService;
         this.systemUserService = systemUserService;
+        this.specialtyService = specialtyService;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/basicHealthUnit-management")
     public String getBasicHealthUnitPage(Model model, @AuthenticationPrincipal SystemUserDetails loggedUser) {
 
+        this.availableMedicalSlotsFormDTO = null;
         BasicHealthUnit ubs = new BasicHealthUnit();
         ubs.setCityHall(cityHallService.findNoFetchCityHallById(loggedUser.getCityHallId()));
 
@@ -47,6 +57,7 @@ public class BasicHealthUnitController {
         model.addAttribute("basicHealthUnits", basicHealthUnitService
                 .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
         model.addAttribute("ubsUsers", List.of());
+        model.addAttribute("specialties", specialtyService.findSpecialties());
 
         return "basicHealthUnitManagement/basicHealthUnit-management";
     }
@@ -230,6 +241,35 @@ public class BasicHealthUnitController {
             return "basicHealthUnitManagement/ubsFragments/systemUsersUBSTable :: emptySystemUsersUBStable";
         }
         return "basicHealthUnitManagement/ubsFragments/systemUsersUBSTable :: systemUsersUBStable";
+    }
+
+    @PostMapping("/basicHealthUnit-management/slots/add")
+    public String addAvailableMedicalSlotsRow(@ModelAttribute AvailableMedicalSlot availableMedicalSlot,
+                                              Model model) {
+
+        if (availableMedicalSlotsFormDTO == null) {
+            this.availableMedicalSlotsFormDTO = new AvailableMedicalSlotsFormDTO();
+        }
+        //this.availableMedicalSlotsFormDTO.addRow(basicHealthUnitService.getFetchedAssociations(availableMedicalSlot));
+        this.availableMedicalSlotsFormDTO.addRow(availableMedicalSlot);
+        model.addAttribute("availableMedicalSlotsForm", availableMedicalSlotsFormDTO);
+
+        return "basicHealthUnitManagement/ubsFragments/availableMedicalSlotsForm :: availableMedicalSlotsFormTable";
+
+    }
+
+    @PostMapping("/basicHealthUnit-management/slots/create")
+    public String registerAvailableMedicalSlots(@ModelAttribute AvailableMedicalSlotsFormDTO availableMedicalSlotsFormDTO) {
+
+        return null;
+    }
+
+    @GetMapping("/basicHealthUnit-management/slots/{index}/remove")
+    public String removeRowtByIndex(@PathVariable int index,
+                                    Model model) {
+        this.availableMedicalSlotsFormDTO.removeRow(index);
+        model.addAttribute("availableMedicalSlotsForm", this.availableMedicalSlotsFormDTO);
+        return "basicHealthUnitManagement/ubsFragments/availableMedicalSlotsForm :: availableMedicalSlotsFormTable";
     }
 
 }

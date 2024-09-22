@@ -1,9 +1,12 @@
 package br.com.tecsus.sccubs.services;
 
 import br.com.tecsus.sccubs.dtos.UBSsystemUserDTO;
+import br.com.tecsus.sccubs.entities.AvailableMedicalSlot;
 import br.com.tecsus.sccubs.entities.BasicHealthUnit;
+import br.com.tecsus.sccubs.entities.MedicalProcedure;
 import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.repositories.BasicHealthUnitRepository;
+import br.com.tecsus.sccubs.repositories.MedicalProcedureRepository;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +24,13 @@ public class BasicHealthUnitService {
 
     private final BasicHealthUnitRepository basicHealthUnitRepository;
     private final CityHallService cityHallService;
+    private final MedicalProcedureRepository medicalProcedureRepository;
     private SystemUserService systemUserService;
 
-    public BasicHealthUnitService(BasicHealthUnitRepository basicHealthUnitRepository, CityHallService cityHallService) {
+    public BasicHealthUnitService(BasicHealthUnitRepository basicHealthUnitRepository, CityHallService cityHallService, MedicalProcedureRepository medicalProcedureRepository) {
         this.basicHealthUnitRepository = basicHealthUnitRepository;
         this.cityHallService = cityHallService;
+        this.medicalProcedureRepository = medicalProcedureRepository;
     }
 
     @Autowired
@@ -120,6 +125,20 @@ public class BasicHealthUnitService {
         BasicHealthUnit basicHealthUnit = basicHealthUnitRepository.findById(idUBS).orElse(null);
         systemUser.setBasicHealthUnit(basicHealthUnit);
         systemUserService.updateBasicHealthUnitSystemUsers(List.of(systemUser));
+    }
+
+    @Transactional(readOnly = true)
+    public MedicalProcedure fetchMedicalProcedure(long medicalProcedureId) {
+        return medicalProcedureRepository.findFetchedMedicalProcedure(medicalProcedureId);
+    }
+
+    public AvailableMedicalSlot getFetchedAssociations(AvailableMedicalSlot availableMedicalSlot) {
+
+        MedicalProcedure mp = medicalProcedureRepository
+                .findFetchedMedicalProcedure(availableMedicalSlot.getMedicalProcedure().getId());
+        availableMedicalSlot.setMedicalProcedure(mp);
+
+        return availableMedicalSlot;
     }
 
 }

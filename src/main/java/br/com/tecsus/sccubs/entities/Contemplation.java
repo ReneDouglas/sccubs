@@ -28,6 +28,10 @@ public class Contemplation {
     @JoinColumn(name = "id_appointment")
     private Appointment appointment;
 
+    @OneToOne
+    @JoinColumn(name = "id_available_medical_slot")
+    private AvailableMedicalSlot availableMedicalSlot;
+
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime creationDate;
 
