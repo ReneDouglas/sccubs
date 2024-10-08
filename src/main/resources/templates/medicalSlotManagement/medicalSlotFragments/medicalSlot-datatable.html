@@ -9,7 +9,8 @@
             <tr class="bg-gray-700 text-white">
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">N.</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">UBS</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Total de Vagas</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Mês Ref.</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Vagas</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Especialidade</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Marcação</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Procedimento</th>
@@ -23,13 +24,12 @@
                 <td class="px-4 py-2 text-gray-700"
                     th:text="${medicalSlotsPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (medicalSlotsPage.number * medicalSlotsPage.size)}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${ms.basicHealthUnit.name}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.monthNameShort(ms.referenceMonth) + ' de ' + #temporals.year(ms.referenceMonth) }"></td>
                 <td class="px-4 py-2 text-gray-700 text-center" th:text="${ms.totalSlots}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${ms.medicalProcedure.specialty.title}"></td>
-                <td class="px-4 py-2 text-gray-700"
-                    th:text="${ms.medicalProcedure.procedureType.getDescription()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${ms.medicalProcedure.procedureType.getDescription()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${ms.medicalProcedure.description}"></td>
-                <td class="px-4 py-2 text-gray-700"
-                    th:text="${#temporals.format(ms.creationDate, 'dd/MM/yyyy HH:mm')}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(ms.creationDate, 'dd/MM/yyyy HH:mm')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${ms.creationUser}"></td>
             </tr>
             </tbody>

@@ -1,11 +1,15 @@
 package br.com.tecsus.sccubs.entities;
 
+import br.com.tecsus.sccubs.entities.converters.YearMonthDateAttributeConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 @Getter
 @Setter
@@ -17,6 +21,11 @@ public class MedicalSlot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @DateTimeFormat(pattern = "yyyy-MM")
+    @Convert(converter = YearMonthDateAttributeConverter.class)
+    @Column(name = "reference_month", columnDefinition = "date")
+    private YearMonth referenceMonth;
 
     @Column(name = "total_slots")
     private Integer totalSlots;
@@ -44,6 +53,8 @@ public class MedicalSlot {
     @Column(name = "update_user")
     private String updateUser;
 
+
     public MedicalSlot() {
     }
+
 }

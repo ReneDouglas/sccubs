@@ -34,25 +34,68 @@
             <div class="w-full">
                 <input type="checkbox" id="panel1" class="peer hidden" th:checked="${true}">
                 <label for="panel1" class="block bg-gray-700 text-white p-4 cursor-pointer">
-                    Cadastrar Vagas Disponíveis
+                    Consultar Contemplados
                 </label>
                 <div class="peer-checked:max-h-screen max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
                     <div class="p-4 bg-white border border-gray-300">
+                        <div class="flex w-full justify-start">
+                            <div class="mb-4 p-4">
+                                <label for="ubs"
+                                       class="inline-flex text-sm font-medium text-gray-700">UBS:</label>
+                                <select id="ubs" name="basicHealthUnit"
+                                        class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        required>
+                                    <option th:value="${null}">Selecione</option>
+                                    <option th:each="ubs : ${basicHealthUnits}"
+                                            th:value="${ubs.id}"
+                                            th:text="${ubs.name}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-4 p-4">
+                                <label for="specialty" class="inline-flex text-sm font-medium text-gray-700">Especialidade: </label>
+                                <select id="specialty" name="specialty"
+                                        class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                        required>
+                                    <option th:value="${null}">Selecione</option>
+                                    <option th:each="specialty : ${specialties}"
+                                            th:value="${specialty.id}"
+                                            th:text="${specialty.title}"></option>
+                                </select>
+                            </div>
+                            <div class="ml-4 mt-11 flex justify-start h-1/2">
+                                <button type="submit"
+                                        class="px-4 p-1.5 bg-blue-600 text-white font-medium rounded-md shadow-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors duration-300">
+                                    Pesquisar
+                                </button>
+                            </div>
+                        </div>
                         <!-- Abas -->
                         <div class="flex space-x-4 border-b border-gray-300 mb-4 shadow-xl">
-                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300">
+                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+                                    onclick="showTab('consultas')">
                                 Consultas
                             </button>
-                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300">
+                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+                                    onclick="showTab('exames')">
                                 Exames
                             </button>
-                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300">
+                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
+                                    onclick="showTab('cirurgias')">
                                 Cirurgias
                             </button>
                         </div>
                         <!-- Conteúdo das abas -->
-                        <div class="p-4 bg-gray-100">
-                            <p>Conteúdo da aba selecionada será exibido aqui.</p>
+                        <div id="contentPanel">
+                            <div id="consultas" class="tab-content p-4 bg-gray-100">
+                                <p>Conteúdo da aba Consultas.</p>
+                            </div>
+                            <div id="exames" class="tab-content p-4 bg-gray-100 hidden">
+                                <p>Conteúdo da aba Exames.</p>
+                            </div>
+                            <div id="cirurgias" class="tab-content p-4 bg-gray-100 hidden">
+                                <p>Conteúdo da aba Cirurgias.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -74,5 +117,14 @@
     </main>
 </body>
 <script>
+    function showTab(tabId) {
+        // Esconde todos os conteúdos de aba
+        document.querySelectorAll('.tab-content').forEach(function (content) {
+            content.classList.add('hidden');
+        });
+
+        // Mostra o conteúdo da aba clicada
+        document.getElementById(tabId).classList.remove('hidden');
+    }
 </script>
 </html>

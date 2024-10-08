@@ -107,6 +107,11 @@
                                             <option th:value="${null}">Selecione</option>
                                         </select>
                                     </div>
+                                    <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700" for="referenceMonth">Mês de Referência:</label>
+                                            <input class="w-full mt-1 block p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                                   type="month" id="referenceMonth" name="referenceMonth" required>
+                                    </div>
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                 </form>
                             </div>
@@ -116,11 +121,12 @@
                                     <span class="material-symbols-outlined">double_arrow</span>
                                 </button>
                             </div>
-                            <div class="p-2 bg-gray-100 overflow-auto max-h-[420px] rounded-lg">
+                            <div class="p-2 bg-gray-100 overflow-auto max-h-[500px] rounded-lg">
                                 <form id="availableMedicalSlotsFormTable" class="mt-4">
                                     <table class="min-w-full bg-white divide-y divide-gray-200 table-fixed">
                                         <thead class="bg-gray-50">
                                         <tr class="bg-gray-700 text-white">
+                                            <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Mês Ref.</th>
                                             <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Vagas</th>
                                             <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Especialidade</th>
                                             <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Marcação</th>

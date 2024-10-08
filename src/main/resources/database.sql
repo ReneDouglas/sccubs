@@ -219,6 +219,8 @@ ALTER TABLE sccubs.contemplations ADD canceled TINYINT(1) NULL;
 ALTER TABLE sccubs.contemplations CHANGE canceled canceled TINYINT(1) NULL AFTER id_available_medical_slot;
 ALTER TABLE sccubs.contemplations ADD observation varchar(255) NULL;
 ALTER TABLE sccubs.contemplations CHANGE observation observation varchar(255) NULL AFTER canceled;
+ALTER TABLE sccubs.medical_slots ADD reference_month date NOT NULL;
+ALTER TABLE sccubs.medical_slots CHANGE reference_month reference_month date NOT NULL AFTER id;
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- INSERTS PARA TESTES -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
