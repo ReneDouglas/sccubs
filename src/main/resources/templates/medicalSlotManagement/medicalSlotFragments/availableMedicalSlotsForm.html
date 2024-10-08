@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:replace="~{fragments/template :: head}"></head>
+<body>
+    <form th:fragment="availableMedicalSlotsFormTable"
+          id="availableMedicalSlotsFormTable"
+          th:object="${availableMedicalSlotsForm}"
+          th:action="@{/medicalSlot-management/slots/create}"
+          method="post"
+          class="mt-4">
+        <table class="min-w-full bg-white divide-y divide-gray-200 table-fixed">
+            <thead class="bg-gray-50">
+            <tr class="bg-gray-700 text-white">
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Vagas</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Especialidade</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Marcação</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Procedimento</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">UBS</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+            <tr th:each="row, itemStat : ${availableMedicalSlotsForm.availableMedicalSlots}"
+                class="hover:bg-gray-200 transition-colors duration-200">
+                <td class="px-4 py-2 text-gray-700 text-center" th:text="${row.totalSlots}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${row.medicalProcedure.specialty.title}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${row.medicalProcedure.procedureType.description}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${row.medicalProcedure.description}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${row.basicHealthUnit.name}"></td>
+                <td td style="display:none;">
+                    <input type="hidden" th:name="|availableMedicalSlots[${itemStat.index}].totalSlots|" th:value="${row.totalSlots}">
+                </td>
+                <td td style="display:none;">
+                    <input type="hidden" th:name="|availableMedicalSlots[${itemStat.index}].medicalProcedure.id|" th:value="${row.medicalProcedure.id}">
+                </td>
+                <td td style="display:none;">
+                    <input type="hidden" th:name="|availableMedicalSlots[${itemStat.index}].basicHealthUnit.id|" th:value="${row.basicHealthUnit.id}">
+                </td>
+                <td class="px-4 py-2 text-gray-700">
+                    <a th:attrappend="hx-get=@{/medicalSlot-management/slots/{index}/remove(index = ${itemStat.index})}"
+                       hx-target="#availableMedicalSlotsFormTable"
+                       hx-swap="outerHTML"
+                       href=""
+                       class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-400 focus:outline-none transition-colors duration-300">Remover</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</body>
+</html>

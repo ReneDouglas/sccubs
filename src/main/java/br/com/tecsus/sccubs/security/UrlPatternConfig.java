@@ -14,4 +14,17 @@ public final class UrlPatternConfig {
             "/webjars/**"
     };
 
+    public static final String[] PRIVATE_MATCHERS = {
+            "/",
+            "/systemUser-insert/**",
+            "/systemUser-list/**",
+            "/basicHealthUnit-management/**",
+            "/patient-management/**",
+            "/patient-list/**",
+            "/appointment-management/**",
+            "/specialty-management/**",
+            "/medicalSlot-management/**",
+            "/contemplation-management"
+    };
+
 }

@@ -58,14 +58,8 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests(authConfig -> {
             authConfig.requestMatchers(PUBLIC_MATCHERS).permitAll();
-            authConfig.requestMatchers("/systemUser-insert/**");
-            authConfig.requestMatchers("/systemUser-list/**");
-            authConfig.requestMatchers("/basicHealthUnit-management/**");
-            authConfig.requestMatchers("/patient-management/**");
-            authConfig.requestMatchers("/patient-list/**");
-            authConfig.requestMatchers("/appointment-management/**");
-            authConfig.requestMatchers("/specialty-management/**");
-            authConfig.anyRequest().authenticated();
+            authConfig.requestMatchers(PRIVATE_MATCHERS).authenticated();
+            //authConfig.anyRequest().authenticated();
         });
         http.formLogin(login -> {
             login.loginPage("/login");

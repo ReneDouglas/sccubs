@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<body>
+    <div th:fragment="medicalSlotsDatatable" id="medicalSlotsDatatable">
+        <table class="min-w-full bg-white divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr class="bg-gray-700 text-white">
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">N.</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">UBS</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Total de Vagas</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Especialidade</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Marcação</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Procedimento</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Data do Cadastro</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Usuário</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+            <tr th:each="ms, iStat : ${medicalSlotsPage}"
+                class="hover:bg-gray-200 transition-colors duration-200">
+                <td class="px-4 py-2 text-gray-700"
+                    th:text="${medicalSlotsPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (medicalSlotsPage.number * medicalSlotsPage.size)}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${ms.basicHealthUnit.name}"></td>
+                <td class="px-4 py-2 text-gray-700 text-center" th:text="${ms.totalSlots}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${ms.medicalProcedure.specialty.title}"></td>
+                <td class="px-4 py-2 text-gray-700"
+                    th:text="${ms.medicalProcedure.procedureType.getDescription()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${ms.medicalProcedure.description}"></td>
+                <td class="px-4 py-2 text-gray-700"
+                    th:text="${#temporals.format(ms.creationDate, 'dd/MM/yyyy HH:mm')}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${ms.creationUser}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="paginationPanel" th:if="${medicalSlotsPage.totalPages > 0}"
+             class="flex items-center justify-between mt-4 p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+            <div class="flex items-center space-x-2">
+                <label for="pageSize" class="text-sm font-medium text-gray-700">Linhas por página:</label>
+                <select id="pageSize" name="pageSize"
+                        th:attrappend="hx-get=@{/medicalSlot-management/paginated(page = ${medicalSlotsPage.number})}"
+                        hx-target="#medicalSlotsDatatable"
+                        class="border-gray-300 rounded-md shadow-md focus:ring-gray-500 focus:border-gray-500 p-2">
+                    <option th:value="${10}" th:selected="${medicalSlotsPage.size == 10}">10</option>
+                    <option th:value="${15}" th:selected="${medicalSlotsPage.size == 15}">15</option>
+                    <option th:value="${30}" th:selected="${medicalSlotsPage.size == 30}">30</option>
+                </select>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="prevPage"
+                        th:disabled="${!medicalSlotsPage.hasPrevious()}"
+                        th:attrprepend="hx-get=@{/medicalSlot-management/paginated(page = ${medicalSlotsPage.number - 1})}"
+                        hx-target="#medicalSlotsDatatable"
+                        hx-include="[name='pageSize']"
+                        hx-trigger="click"
+                        class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-md shadow-md hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-400">
+                    Anterior
+                </button>
+                <span class="text-sm text-gray-700">
+                    Página <span id="currentPage" th:text="${medicalSlotsPage.number + 1}">1</span> de
+                    <span th:text="${medicalSlotsPage.totalPages}">Muitos</span>
+                </span>
+                <button id="nextPage"
+                        th:disabled="${!medicalSlotsPage.hasNext()}"
+                        th:attrprepend="hx-get=@{/medicalSlot-management/paginated(page = ${medicalSlotsPage.number + 1})}"
+                        hx-target="#medicalSlotsDatatable"
+                        hx-include="[name='pageSize']"
+                        hx-trigger="click"
+                        class="px-4 py-2 bg-gray-700 text-white font-semibold rounded-md shadow-md hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-400">
+                    Próximo
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,22 +3,20 @@ package br.com.tecsus.sccubs.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "available_medical_slots")
-public class AvailableMedicalSlot {
+@DynamicUpdate
+@Table(name = "medical_slots")
+public class MedicalSlot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "reference_month", updatable = false)
-    private LocalDate referenceMonth;
 
     @Column(name = "total_slots")
     private Integer totalSlots;
@@ -46,6 +44,6 @@ public class AvailableMedicalSlot {
     @Column(name = "update_user")
     private String updateUser;
 
-    public AvailableMedicalSlot() {
+    public MedicalSlot() {
     }
 }

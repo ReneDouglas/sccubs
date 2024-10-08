@@ -1,7 +1,7 @@
 package br.com.tecsus.sccubs.services;
 
 import br.com.tecsus.sccubs.dtos.UBSsystemUserDTO;
-import br.com.tecsus.sccubs.entities.AvailableMedicalSlot;
+import br.com.tecsus.sccubs.entities.MedicalSlot;
 import br.com.tecsus.sccubs.entities.BasicHealthUnit;
 import br.com.tecsus.sccubs.entities.MedicalProcedure;
 import br.com.tecsus.sccubs.entities.SystemUser;
@@ -50,6 +50,11 @@ public class BasicHealthUnitService {
             return basicHealthUnitRepository.findByCityHallId(systemUserDetails.getCityHallId());
         }
         return basicHealthUnitRepository.findByCityHallId(1L);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BasicHealthUnit> findAllUBS() {
+        return basicHealthUnitRepository.findAll();
     }
 
     public void registerBasicHealthUnit(BasicHealthUnit basicHealthUnit, SystemUserDetails loggedUser) throws Exception{
@@ -132,7 +137,7 @@ public class BasicHealthUnitService {
         return medicalProcedureRepository.findFetchedMedicalProcedure(medicalProcedureId);
     }
 
-    public AvailableMedicalSlot getFetchedAssociations(AvailableMedicalSlot availableMedicalSlot) {
+    public MedicalSlot getFetchedAssociations(MedicalSlot availableMedicalSlot) {
 
         MedicalProcedure mp = medicalProcedureRepository
                 .findFetchedMedicalProcedure(availableMedicalSlot.getMedicalProcedure().getId());

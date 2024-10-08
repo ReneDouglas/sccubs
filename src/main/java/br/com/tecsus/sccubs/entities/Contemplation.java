@@ -4,11 +4,14 @@ import br.com.tecsus.sccubs.enums.Priorities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
+@DynamicUpdate
 @Table(name = "contemplations")
 public class Contemplation {
 
@@ -22,6 +25,7 @@ public class Contemplation {
     @Column(name = "contemplated_by")
     @Enumerated(EnumType.ORDINAL)
     private Priorities contemplatedBy;
+
     private boolean confirmed;
 
     @OneToOne
@@ -30,7 +34,11 @@ public class Contemplation {
 
     @OneToOne
     @JoinColumn(name = "id_available_medical_slot")
-    private AvailableMedicalSlot availableMedicalSlot;
+    private MedicalSlot medicalSlot;
+
+    private boolean canceled;
+
+    private String observation;
 
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime creationDate;

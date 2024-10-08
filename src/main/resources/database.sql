@@ -213,7 +213,12 @@ alter table contemplations add foreign key (id_available_medical_slot) reference
 ALTER TABLE sccubs.available_medical_slots ADD id_basic_health_unit bigint NOT NULL;
 ALTER TABLE sccubs.available_medical_slots CHANGE id_basic_health_unit id_basic_health_unit bigint NOT NULL AFTER id_medical_procedure;
 ALTER TABLE sccubs.available_medical_slots ADD CONSTRAINT available_medical_slots_FK FOREIGN KEY (id_basic_health_unit) REFERENCES sccubs.basic_health_units(id);
-
+RENAME TABLE sccubs.available_medical_slots TO sccubs.medical_slots;
+ALTER TABLE sccubs.medical_slots DROP COLUMN reference_month;
+ALTER TABLE sccubs.contemplations ADD canceled TINYINT(1) NULL;
+ALTER TABLE sccubs.contemplations CHANGE canceled canceled TINYINT(1) NULL AFTER id_available_medical_slot;
+ALTER TABLE sccubs.contemplations ADD observation varchar(255) NULL;
+ALTER TABLE sccubs.contemplations CHANGE observation observation varchar(255) NULL AFTER canceled;
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- INSERTS PARA TESTES -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

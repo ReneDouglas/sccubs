@@ -1,6 +1,6 @@
 package br.com.tecsus.sccubs.dtos;
 
-import br.com.tecsus.sccubs.entities.AvailableMedicalSlot;
+import br.com.tecsus.sccubs.entities.MedicalSlot;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,12 +11,12 @@ import java.util.List;
 @Setter
 public class AvailableMedicalSlotsFormDTO {
 
-    private List<AvailableMedicalSlot> availableMedicalSlots = new ArrayList<>();
+    private List<MedicalSlot> availableMedicalSlots = new ArrayList<>();
 
     public AvailableMedicalSlotsFormDTO() {
     }
 
-    public void addRow(AvailableMedicalSlot availableMedicalSlot) {
+    public void addRow(MedicalSlot availableMedicalSlot) {
         this.availableMedicalSlots.add(availableMedicalSlot);
     }
 

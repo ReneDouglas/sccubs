@@ -22,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 
 @Slf4j
@@ -41,8 +40,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointment-management")
-    public String getPatientInsertPage(Model model,
-                                       @AuthenticationPrincipal SystemUserDetails loggedUser) {
+    public String getPatientInsertPage(Model model) {
 
         Appointment appointment = new Appointment();
         appointment.setPatient(new Patient());
@@ -96,7 +94,7 @@ public class AppointmentController {
     @GetMapping(value = "/appointment-management/procedures", produces = MediaType.TEXT_HTML_VALUE)
     public String loadPrioritiesByProcedure(@RequestParam("procedureType") String procedureType,
                                             @RequestParam("specialty") Long specialtyId,
-                                            @RequestParam(name = "slot", required = false, defaultValue = "false") boolean fromUBSPage,
+                                            @RequestParam(name = "slot", required = false, defaultValue = "false") boolean fromMedicalSlotPage,
                                             Model model) {
 
         List<MedicalProcedure> procedures;
@@ -113,7 +111,7 @@ public class AppointmentController {
 
         model.addAttribute("procedures", procedures);
         model.addAttribute("priorities", priorities);
-        model.addAttribute("fromUBSPage", fromUBSPage);
+        model.addAttribute("fromMedicalSlotPage", fromMedicalSlotPage);
         return "appointmentManagement/appointmentFragments/appointment-procedureAndPriority :: proceduresAndPriorities";
     }
 

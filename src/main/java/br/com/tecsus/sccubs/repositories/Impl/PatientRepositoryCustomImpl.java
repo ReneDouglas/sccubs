@@ -78,8 +78,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
             jpql.append("AND p.socialSituationRating = :socialSituationRating ");
         }
         if (validationUtils.attrIsNotNull(patient.getAcsName())) {
-            jpql.append("AND p.acsName = :acsName");
+            jpql.append("AND p.acsName = :acsName ");
         }
+
+        jpql.append("ORDER BY p.name");
 
         TypedQuery<Long> patientsIdQueryPaginated = em.createQuery(jpql.toString(), Long.class);
         attachParameters(patientsIdQueryPaginated, patient);
@@ -121,6 +123,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 LEFT JOIN mp.specialty s
                 LEFT JOIN a.patient p
                 WHERE p.id = :id AND p.basicHealthUnit.id = :ubsId
+                ORDER BY a.requestDate DESC
                 """, Long.class);
 
         appointmentsHistoryIdQueryPaginated.setParameter("id", patient.getId());
