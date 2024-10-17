@@ -34,42 +34,52 @@
             <div class="w-full">
                 <input type="checkbox" id="panel1" class="peer hidden" th:checked="${true}">
                 <label for="panel1" class="block bg-gray-700 text-white p-4 cursor-pointer">
-                    Consultar Contemplados
+                    Pacientes Contemplados
                 </label>
-                <div class="peer-checked:max-h-screen max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
+                <div class="peer-checked:max-h-[2000px] max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
                     <div class="p-4 bg-white border border-gray-300">
-                        <div class="flex w-full justify-start">
-                            <div class="mb-4 p-4">
-                                <label for="ubs"
-                                       class="inline-flex text-sm font-medium text-gray-700">UBS:</label>
-                                <select id="ubs" name="basicHealthUnit"
-                                        class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                        required>
-                                    <option th:value="${null}">Selecione</option>
-                                    <option th:each="ubs : ${basicHealthUnits}"
-                                            th:value="${ubs.id}"
-                                            th:text="${ubs.name}">
-                                    </option>
-                                </select>
+                        <form th:action="@{/contemplation-management/search}" th:method="get">
+                            <div class="flex w-full justify-start">
+                                <div class="mb-4 p-4">
+                                    <label for="ubs"
+                                           class="inline-flex text-sm font-medium text-gray-700">UBS:</label>
+                                    <select id="ubs" th:name="basicHealthUnit"
+                                            class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                            required>
+                                        <option th:value="${null}">Selecione</option>
+                                        <option th:each="ubs : ${basicHealthUnits}"
+                                                th:value="${ubs.id}"
+                                                th:text="${ubs.name}"
+                                                th:selected="${ubs.id == selectedUBS}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-4 p-4">
+                                    <label for="specialty" class="inline-flex text-sm font-medium text-gray-700">Especialidade: </label>
+                                    <select id="specialty" th:name="specialty"
+                                            class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                            required>
+                                        <option th:value="${null}">Selecione</option>
+                                        <option th:each="specialty : ${specialties}"
+                                                th:value="${specialty.id}"
+                                                th:text="${specialty.title}"
+                                                th:selected="${specialty.id == selectedSpecialty}"></option>
+                                    </select>
+                                </div>
+                                <div class="mb-4 p-4">
+                                    <label class="inline-flex text-sm font-medium text-gray-700" for="referenceMonth">Mês de Referência:</label>
+                                    <input class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                           type="month" id="referenceMonth" name="referenceMonth" required>
+                                    <input type="hidden" id="selectedMonth" th:value="${selectedMonth}">
+                                </div>
+                                <div class="ml-4 mt-11 flex justify-start h-1/2">
+                                    <button type="submit"
+                                            class="px-4 p-1.5 bg-blue-600 text-white font-medium rounded-md shadow-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors duration-300">
+                                        Pesquisar
+                                    </button>
+                                </div>
                             </div>
-                            <div class="mb-4 p-4">
-                                <label for="specialty" class="inline-flex text-sm font-medium text-gray-700">Especialidade: </label>
-                                <select id="specialty" name="specialty"
-                                        class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                        required>
-                                    <option th:value="${null}">Selecione</option>
-                                    <option th:each="specialty : ${specialties}"
-                                            th:value="${specialty.id}"
-                                            th:text="${specialty.title}"></option>
-                                </select>
-                            </div>
-                            <div class="ml-4 mt-11 flex justify-start h-1/2">
-                                <button type="submit"
-                                        class="px-4 p-1.5 bg-blue-600 text-white font-medium rounded-md shadow-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors duration-300">
-                                    Pesquisar
-                                </button>
-                            </div>
-                        </div>
+                        </form>
                         <!-- Abas -->
                         <div class="flex space-x-4 border-b border-gray-300 mb-4 shadow-xl">
                             <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
@@ -87,13 +97,13 @@
                         </div>
                         <!-- Conteúdo das abas -->
                         <div id="contentPanel">
-                            <div id="consultas" class="tab-content p-4 bg-gray-100">
+                            <div id="consultas" th:replace="~{contemplationManagement/contemplationFragments/contemplation-tabs :: consultas-datatable}" class="tab-content p-4 bg-gray-100">
                                 <p>Conteúdo da aba Consultas.</p>
                             </div>
-                            <div id="exames" class="tab-content p-4 bg-gray-100 hidden">
+                            <div id="exames" th:replace="~{contemplationManagement/contemplationFragments/contemplation-tabs :: exames-datatable}" class="tab-content p-4 bg-gray-100 hidden">
                                 <p>Conteúdo da aba Exames.</p>
                             </div>
-                            <div id="cirurgias" class="tab-content p-4 bg-gray-100 hidden">
+                            <div id="cirurgias" th:replace="~{contemplationManagement/contemplationFragments/contemplation-tabs :: cirurgias-datatable}" class="tab-content p-4 bg-gray-100 hidden">
                                 <p>Conteúdo da aba Cirurgias.</p>
                             </div>
                         </div>
@@ -113,10 +123,33 @@
                 </div>
             </div>
         </div>
+        <div id="default-modal"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </body>
 <script>
+
+    let reasonText;
+
+    window.addEventListener("DOMContentLoaded", function () {
+        const selectedMonth = document.getElementById("selectedMonth");
+        const monthControl = document.querySelector('input[type="month"]');
+        if (selectedMonth.value !== "") {
+            monthControl.value = selectedMonth.value;
+        } else {
+            const date = new Date();
+            const month = ("0" + (date.getMonth() + 1)).slice(-2);
+            const year = date.getFullYear();
+            monthControl.value = `${year}-${month}`;
+        }
+    });
+
+    // const monthControl = document.querySelector('input[type="month"]');
+    // const date = new Date();
+    // const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    // const year = date.getFullYear();
+    // monthControl.value = `${year}-${month}`;
+
     function showTab(tabId) {
         // Esconde todos os conteúdos de aba
         document.querySelectorAll('.tab-content').forEach(function (content) {
@@ -126,5 +159,70 @@
         // Mostra o conteúdo da aba clicada
         document.getElementById(tabId).classList.remove('hidden');
     }
+
+    function openModal(observacoes) {
+        let modal = document.getElementById("default-modal");
+        let modalObservacoes = modal.querySelector("#modal-observacoes")
+        modalObservacoes.innerText = observacoes;
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        modal.classList.add("opacity-100");
+        console.log(observacoes)
+
+    }
+
+    function closeModal() {
+        let modal = document.getElementById("default-modal");
+        modal.classList.add("opacity-0");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
+
+    document.addEventListener("htmx:confirm", function(evt) {
+        // The event is triggered on every trigger for a request, so we need to check if the element
+        // that triggered the request has a hx-confirm attribute, if not we can return early and let
+        // the default behavior happen
+        if (!evt.detail.target.hasAttribute('hx-confirm')) return
+
+        // This will prevent the request from being issued to later manually issue it
+        evt.preventDefault()
+
+        Swal.fire({
+            title: "Cancelar contemplação",
+            text: `${evt.detail.question}`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Cancelar"
+
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Digite o motivo do cancelamento",
+                    input: "textarea",
+                    inputPlaceholder: "Motivo...",
+                    showCancelButton: true,
+                    confirmButtonText: "Enviar",
+                    cancelButtonText: "Cancelar",
+                    inputAttributes: {
+                        maxlength:"255"
+                    },
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return "Você precisa digitar um motivo!"
+                        }
+                    }
+                }).then(function(textResult) {
+                    if (textResult.isConfirmed && textResult.value) {
+                        reasonText = textResult.value;
+                        // Emite a requisição manualmente com o valor do motivo
+                        evt.detail.issueRequest(true);
+                    }
+                });
+            }
+        })
+    })
 </script>
 </html>

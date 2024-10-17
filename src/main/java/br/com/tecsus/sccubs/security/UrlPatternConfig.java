@@ -24,7 +24,7 @@ public final class UrlPatternConfig {
             "/appointment-management/**",
             "/specialty-management/**",
             "/medicalSlot-management/**",
-            "/contemplation-management"
+            "/contemplation-management/**"
     };
 
 }

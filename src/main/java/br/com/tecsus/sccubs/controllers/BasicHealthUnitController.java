@@ -9,6 +9,7 @@ import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.CityHallService;
 import br.com.tecsus.sccubs.services.SpecialtyService;
 import br.com.tecsus.sccubs.services.SystemUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
