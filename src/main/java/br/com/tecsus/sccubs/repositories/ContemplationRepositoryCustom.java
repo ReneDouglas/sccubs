@@ -14,6 +14,7 @@ public interface ContemplationRepositoryCustom {
                                                                            Long ubsId,
                                                                            Long specialtyId,
                                                                            YearMonth referenceMonth,
+                                                                           Boolean confirmed,
                                                                            Pageable pageable);
 
 }

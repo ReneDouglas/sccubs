@@ -5,30 +5,8 @@
     <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
     <main class="flex flex-col w-full mx-auto bg-slate-100">
         <header th:replace="~{fragments/navbar :: header}"></header>
-        <th:block th:switch="${error}">
-            <div th:case="${false}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
-                <div class="bg-green-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
-                    Sucesso
-                    <button class="ml-auto text-green-800 font-bold" style="font-size: 1.5rem;"
-                            onclick="this.parentElement.parentElement.style.display='none'">&#215;
-                    </button>
-                </div>
-                <div class="border border-t-0 border-green-400 rounded-b bg-green-100 px-4 py-3 text-green-700">
-                    <p th:text="${message}"></p>
-                </div>
-            </div>
-            <div th:case="${true}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
-                <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
-                    Erro
-                    <button class="ml-auto text-red-800 font-bold" style="font-size: 1.5rem;"
-                            onclick="this.parentElement.parentElement.style.display='none'">&#215;
-                    </button>
-                </div>
-                <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                    <p th:text="${message}"></p>
-                </div>
-            </div>
-        </th:block>
+
+        <th:block th:replace="~{fragments/dialogs :: confirmDialog}"></th:block>
 
         <div class="flex flex-1 bg-slate-100 my-8 flex-col space-y-4">
             <div class="w-full">
@@ -67,10 +45,23 @@
                                     </select>
                                 </div>
                                 <div class="mb-4 p-4">
-                                    <label class="inline-flex text-sm font-medium text-gray-700" for="referenceMonth">Mês de Referência:</label>
+                                    <label class="inline-flex text-sm font-medium text-gray-700" for="month">Mês de Referência:</label>
                                     <input class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                           type="month" id="referenceMonth" name="referenceMonth" required>
+                                           type="month" id="month" name="referenceMonth" required>
                                     <input type="hidden" id="selectedMonth" th:value="${selectedMonth}">
+                                </div>
+                                <div class="mb-4 p-4">
+                                    <label for="confirmed"
+                                           class="inline-flex text-sm font-medium text-gray-700">Confirmado:</label>
+                                    <select id="confirmed" th:name="confirmed"
+                                            class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                        <option value="null"
+                                                th:selected="${confirmed eq null}">Todos</option>
+                                        <option value="true"
+                                                th:selected="${confirmed eq true}">Sim</option>
+                                        <option value="false"
+                                                th:selected="${confirmed eq false}">Não</option>
+                                    </select>
                                 </div>
                                 <div class="ml-4 mt-11 flex justify-start h-1/2">
                                     <button type="submit"
@@ -130,6 +121,10 @@
 <script>
 
     let reasonText;
+    let ubsId;
+    let specialtyId;
+    let monthValue;
+    let contemplationId;
 
     window.addEventListener("DOMContentLoaded", function () {
         const selectedMonth = document.getElementById("selectedMonth");
@@ -178,6 +173,65 @@
         modal.classList.remove("flex");
     }
 
+    function handleCancel() {
+
+        Swal.fire({
+            title: "Cancelar contemplação",
+            text: "Tem certeza que deseja cancelar?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Cancelar"
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Digite o motivo do cancelamento",
+                    input: "textarea",
+                    inputPlaceholder: "Motivo...",
+                    showCancelButton: true,
+                    confirmButtonText: "Enviar",
+                    cancelButtonText: "Cancelar",
+                    inputAttributes: {
+                        maxlength: "255"
+                    },
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return "Você precisa digitar um motivo!";
+                        }
+                    }
+                }).then(function(textResult) {
+                    if (textResult.isConfirmed && textResult.value) {
+                        // Define o valor do motivo no campo oculto do formulário
+                        document.getElementById("reason").value = textResult.value;
+                        // Submete o formulário
+                        document.getElementById("cancelForm").submit();
+                    }
+                });
+            }
+        });
+    }
+
+    function handleConfirmation() {
+
+        Swal.fire({
+            title: "Confirmar contemplação",
+            text: "Tem certeza que deseja continuar?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Cancelar"
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                document.getElementById("confirmForm").submit();
+            }
+        });
+    }
+
+
     document.addEventListener("htmx:confirm", function(evt) {
         // The event is triggered on every trigger for a request, so we need to check if the element
         // that triggered the request has a hx-confirm attribute, if not we can return early and let
@@ -217,6 +271,9 @@
                 }).then(function(textResult) {
                     if (textResult.isConfirmed && textResult.value) {
                         reasonText = textResult.value;
+                        ubsId = document.getElementById("ubs").value;
+                        specialtyId = document.getElementById("specialty").value;
+                        monthValue = document.getElementById("selectedMonth").value;
                         // Emite a requisição manualmente com o valor do motivo
                         evt.detail.issueRequest(true);
                     }

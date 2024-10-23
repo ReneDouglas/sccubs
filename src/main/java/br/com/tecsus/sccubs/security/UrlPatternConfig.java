@@ -11,7 +11,8 @@ public final class UrlPatternConfig {
             "/logout",
             "/error",
             "/expired",
-            "/webjars/**"
+            "/webjars/**",
+            "/favicon.ico"
     };
 
     public static final String[] PRIVATE_MATCHERS = {

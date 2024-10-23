@@ -81,7 +81,7 @@ public class WebSecurityConfig {
                 concurrency.maximumSessions(1).expiredUrl("/expired");//.maxSessionsPreventsLogin(true)
             });
         });
-        http.requiresChannel(channel -> channel.anyRequest().requiresSecure()); // habilita https
+        //http.requiresChannel(channel -> channel.anyRequest().requiresSecure()); // habilita https
         //http.requiresChannel(channel -> channel.requestMatchers(new AntPathRequestMatcher("/login")).requiresSecure());
 
         return http.build();

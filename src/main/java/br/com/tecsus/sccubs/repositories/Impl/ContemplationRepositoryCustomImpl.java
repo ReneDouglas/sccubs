@@ -29,6 +29,7 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
                                                                            Long ubsId,
                                                                            Long specialtyId,
                                                                            YearMonth referenceMonth,
+                                                                           Boolean confirmed,
                                                                            Pageable pageable) {
 
         TypedQuery<Long> contemplationIdsQueryPaginated = em.createQuery("""
@@ -43,14 +44,17 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
             WHERE ubs.id = :ubsId
             AND s.id = :specialtyId
             AND mp.procedureType = :type
+            AND (:confirmed IS NULL OR c.confirmed = :confirmed)
             AND MONTH(ms.referenceMonth) = :month
             AND YEAR(ms.referenceMonth) = :year
+            AND c.canceled IS FALSE
             ORDER BY p.name
         """, Long.class);
 
         contemplationIdsQueryPaginated.setParameter("ubsId", ubsId);
         contemplationIdsQueryPaginated.setParameter("specialtyId", specialtyId);
         contemplationIdsQueryPaginated.setParameter("type", type);
+        contemplationIdsQueryPaginated.setParameter("confirmed", confirmed);
         contemplationIdsQueryPaginated.setParameter("month", referenceMonth.getMonthValue());
         contemplationIdsQueryPaginated.setParameter("year", referenceMonth.getYear());
 
@@ -73,14 +77,17 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
                 WHERE ubs.id = :ubsId
                 AND s.id = :specialtyId
                 AND mp.procedureType = :type
+                AND (:confirmed IS NULL OR c.confirmed = :confirmed)
                 AND MONTH(ms.referenceMonth) = :month
                 AND YEAR(ms.referenceMonth) = :year
+                AND c.canceled IS FALSE
                 ORDER BY p.name
             """, Long.class);
 
             count.setParameter("ubsId", ubsId);
             count.setParameter("specialtyId", specialtyId);
             count.setParameter("type", type);
+            count.setParameter("confirmed", confirmed);
             count.setParameter("month", referenceMonth.getMonthValue());
             count.setParameter("year", referenceMonth.getYear());
 

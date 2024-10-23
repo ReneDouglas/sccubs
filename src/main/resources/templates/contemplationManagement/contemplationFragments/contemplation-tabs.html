@@ -33,7 +33,7 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.contemplationDate, 'dd/MM/yyyy')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.confirmed ? 'Sim' : 'Não'}"></td>
                 <td class="px-4 py-2 text-gray-700">
-                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${cp.id})}"
+                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${cp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
                        hx-target="#default-modal"
                        hx-swap="outerHTML"
                        href=""
@@ -52,7 +52,7 @@
             <div class="flex items-center space-x-2">
                 <label for="consultasPageSize" class="text-sm font-medium text-gray-700">Linhas por página:</label>
                 <select id="consultasPageSize" name="consultasPageSize"
-                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA')}"
+                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', confirmed = ${selectedStatus})}"
                         hx-target="#consultas"
                         hx-swap="outerHTML"
                         class="border-gray-300 rounded-md shadow-md focus:ring-gray-500 focus:border-gray-500 p-2">
@@ -64,7 +64,7 @@
             <div class="flex items-center space-x-4">
                 <button id="consultasPrevPage"
                         th:disabled="${!consultasPage.hasPrevious()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA')}"
+                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', confirmed = ${selectedStatus})}"
                         hx-target="#consultas"
                         hx-include="[name='consultasPageSize']"
                         hx-trigger="click"
@@ -78,7 +78,7 @@
                 </span>
                 <button id="consultasNextPage"
                         th:disabled="${!consultasPage.hasNext()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA')}"
+                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', confirmed = ${selectedStatus})}"
                         hx-target="#consultas"
                         hx-include="[name='consultasPageSize']"
                         hx-trigger="click"
@@ -120,7 +120,7 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.contemplationDate, 'dd/MM/yyyy')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.confirmed ? 'Sim' : 'Não'}"></td>
                 <td class="px-4 py-2 text-gray-700">
-                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${exp.id})}"
+                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${exp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
                        hx-target="#default-modal"
                        hx-swap="outerHTML"
                        href=""
@@ -139,7 +139,7 @@
             <div class="flex items-center space-x-2">
                 <label for="examesPageSize" class="text-sm font-medium text-gray-700">Linhas por página:</label>
                 <select id="examesPageSize" name="examesPageSize"
-                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME')}"
+                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME', confirmed = ${selectedStatus})}"
                         hx-target="#exames"
                         hx-swap="outerHTML"
                         class="border-gray-300 rounded-md shadow-md focus:ring-gray-500 focus:border-gray-500 p-2">
@@ -151,7 +151,7 @@
             <div class="flex items-center space-x-4">
                 <button id="examesPrevPage"
                         th:disabled="${!examesPage.hasPrevious()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME')}"
+                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME', confirmed = ${selectedStatus})}"
                         hx-target="#exames"
                         hx-include="[name='examesPageSize']"
                         hx-trigger="click"
@@ -165,7 +165,7 @@
                 </span>
                 <button id="examesNextPage"
                         th:disabled="${!examesPage.hasNext()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME')}"
+                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME', confirmed = ${selectedStatus})}"
                         hx-target="#exames"
                         hx-include="[name='examesPageSize']"
                         hx-trigger="click"
@@ -207,7 +207,7 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.contemplationDate, 'dd/MM/yyyy')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.confirmed ? 'Sim' : 'Não'}"></td>
                 <td class="px-4 py-2 text-gray-700">
-                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${crp.id})}"
+                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${crp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
                        hx-target="#default-modal"
                        hx-swap="outerHTML"
                        href=""
@@ -226,7 +226,7 @@
             <div class="flex items-center space-x-2">
                 <label for="cirurgiasPageSize" class="text-sm font-medium text-gray-700">Linhas por página:</label>
                 <select id="cirurgiasPageSize" name="cirurgiasPageSize"
-                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA')}"
+                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA', confirmed = ${selectedStatus})}"
                         hx-target="#cirurgias"
                         hx-swap="outerHTML"
                         class="border-gray-300 rounded-md shadow-md focus:ring-gray-500 focus:border-gray-500 p-2">
@@ -238,7 +238,7 @@
             <div class="flex items-center space-x-4">
                 <button id="cirurgiasPrevPage"
                         th:disabled="${!cirurgiasPage.hasPrevious()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA')}"
+                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA', confirmed = ${selectedStatus})}"
                         hx-target="#cirurgias"
                         hx-include="[name='cirurgiasPageSize']"
                         hx-trigger="click"
@@ -252,7 +252,7 @@
                 </span>
                 <button id="cirurgiasNextPage"
                         th:disabled="${!cirurgiasPage.hasNext()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA')}"
+                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA', confirmed = ${selectedStatus})}"
                         hx-target="#cirurgias"
                         hx-include="[name='cirurgiasPageSize']"
                         hx-trigger="click"
