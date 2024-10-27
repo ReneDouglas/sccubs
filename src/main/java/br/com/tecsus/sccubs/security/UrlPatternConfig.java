@@ -12,7 +12,8 @@ public final class UrlPatternConfig {
             "/error",
             "/expired",
             "/webjars/**",
-            "/favicon.ico"
+            "/favicon.ico",
+            /*"/actuator/**"*/
     };
 
     public static final String[] PRIVATE_MATCHERS = {

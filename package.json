@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build:postcss": "postcss src/main/resources/static/css/style.tailwind.css -o target/classes/static/css/style.build.tailwind.css",
-    "watch:postcss": "postcss src/main/resources/static/css/style.tailwind.css -o target/classes/static/css/style.dev.tailwind.css -w"
+    "watch:postcss": "postcss src/main/resources/static/css/style.tailwind.css -o target/classes/static/css/style.build.tailwind.css -w"
   },
   "keywords": [],
   "author": "",

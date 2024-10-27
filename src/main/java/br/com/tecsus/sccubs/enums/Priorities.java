@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Priorities {
-    MAIS_DE_3_MESES(1, "Mais de 3 meses", false), // Prioridade passiva
+    MAIS_DE_3_MESES(1, "Mais de 4 meses", false), // Prioridade passiva
     URGENCIA(2, "Urgência", true), // Prioridade ativa
     RETORNO(3, "Retorno", true), // Prioridade ativa
     //COM_HISTORICO(3, "Com histórico", true), // Prioridade ativa: É utilizado para exames e cirurgias
