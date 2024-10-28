@@ -14,9 +14,9 @@ public class QueueController {
 
     }
 
-    @GetMapping
-    public String getQueuePage() {
-        return "queueManagement/queue-management";
-    }
+//    @GetMapping
+//    public String getQueuePage() {
+//        return "queueManagement/queue-management";
+//    }
 
 }
