@@ -37,12 +37,12 @@
 
 
 
-                <div class="relative group flex flex-1 px-1 justify-center">
-                    <button class="flex flex-1 px-2 justify-center items-center py-2 text-sm hover:bg-blue-200 rounded-lg" th:attrappend="hx-get=@{/patient-list/history(id = ${patient.id}, pagination = ${false})}"
+                <div class="relative group flex flex-1 px-1 justify-center cursor-pointer">
+                    <a class="flex flex-1 px-1 justify-center items-center hover:bg-slate-200 rounded-lg" th:attrappend="hx-get=@{/patient-list/history(id = ${patient.id}, pagination = ${false})}"
                             hx-target="#patientHistoryDatatable"
                             hx-trigger="click">
                         <span class="material-symbols-sharp">schedule</span>
-                    </button>
+                    </a>
                     <div class="absolute right-full top-1/2 transform -translate-y-1/2 -translate-x-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1">
                         Histórico
                     </div>
