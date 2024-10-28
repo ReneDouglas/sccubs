@@ -3,134 +3,185 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head th:replace="~{fragments/template :: head}"></head>
-<body class="flex w-full min-h-screen justify-between bg-slate-900">
+
+<body class="flex w-full h-screen justify-between items-center bg-slate-300">
     <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
-    <main class="flex flex-col w-full mx-auto bg-slate-100">
+
+    <!-- Main Container-->
+    <main class="flex flex-col h-full w-full ">
         <header th:replace="~{fragments/navbar :: header}"></header>
-        <th:block th:switch="${error}">
-            <div th:case="${false}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
-                <div class="bg-green-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
-                    Sucesso
-                    <button class="ml-auto text-green-800 font-bold" style="font-size: 1.5rem;" onclick="this.parentElement.parentElement.style.display='none'">&#215;</button>
-                </div>
-                <div class="border border-t-0 border-green-400 rounded-b bg-green-100 px-4 py-3 text-green-700">
-                    <p th:text="${message}"></p>
-                </div>
-            </div>
-            <div th:case="${true}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
-                <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
-                    Erro
-                    <button class="ml-auto text-red-800 font-bold" style="font-size: 1.5rem;" onclick="this.parentElement.parentElement.style.display='none'">&#215;</button>
-                </div>
-                <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                    <p th:text="${message}"></p>
-                </div>
-            </div>
-        </th:block>
-        <div class="flex flex-1 bg-slate-100 my-8 flex-col space-y-4">
-            <div class="w-full">
-                <input type="checkbox" id="panel1" class="peer hidden" th:checked="${true}">
-                <label for="panel1" class="block bg-gray-700 text-white p-4 cursor-pointer">
-                    Buscar paciente
-                </label>
-                <div class="peer-checked:max-h-screen max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
-                    <div class="p-4 bg-white border border-gray-300">
-                        <form id="searchPatientForm" th:action="@{/patient-list}" th:object="${patient}" th:method="get">
-                            <label for="name">Nome:</label>
-                            <input type="text" id="name" th:field="*{name}" name="name">
 
-                            <label for="cpf">CPF:</label>
-                            <input type="text" id="cpf" th:field="*{cpf}" name="cpf">
+        <!--Wrap Container -->
+        <section class="flex flex-col flex-1 overflow-auto">
 
-                            <label for="susNumber">Cartão SUS:</label>
-                            <input type="text" id="susNumber" th:field="*{susNumber}" name="susNumber">
-
-                            <label for="addressStreet">Logradouro:</label>
-                            <input type="text" id="addressStreet" th:field="*{addressStreet}" name="addressStreet">
-
-                            <label for="acsName">ACS:</label>
-                            <input type="text" id="acsName" th:field="*{acsName}" name="acsName">
-
-                            <label for="socialSituationRating">Situação Social:</label>
-                            <select id="socialSituationRating" name="socialSituationRating" th:field="*{socialSituationRating}">
-                                <option th:value="${null}" th:selected="${patient.socialSituationRating == null}">Selecione</option>
-                                <option th:each="situation : ${T(br.com.tecsus.sccubs.enums.SocialSituationRating).values()}"
-                                        th:value="${situation}"
-                                        th:text="${situation.description}"
-                                        th:selected="*{socialSituationRating == null} ? ${situation} == null  : ${situation} == *{socialSituationRating}">
-                                </option>
-                            </select>
-
-                            <button type="submit">Pesquisar</button>
-                            <button type="submit" th:formaction="@{/patient-list/clear}">Limpar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="w-full">
-                <input type="checkbox" id="panel2" class="peer hidden" th:checked="${true}">
-                <label for="panel2" class="block bg-gray-700 text-white p-4 cursor-pointer">
-                    Pacientes cadastrados
-                </label>
-                <div class="peer-checked:max-h-[2000px] max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
-                    <div class="p-4 bg-white border border-gray-300">
-                        <div th:replace="~{patientManagement/patientFragments/patient-datatable :: patientDatatable}"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="w-full">
-                <input type="checkbox" id="panel3" class="peer hidden" th:checked="${true}">
-                <label for="panel3" class="block bg-gray-700 text-white p-4 cursor-pointer">
-                    Histórico do paciente
-                </label>
-                <div class="peer-checked:max-h-screen max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
-                    <div class="p-4 bg-white border border-gray-300">
-                        <div id="patientHistoryDatatable">
-                            <table>
-                                <thead>
-                                <tr>
-                                    <th>N.</th>
-                                    <th>Data da Requisição</th>
-                                    <th>Data da Contemplação</th>
-                                    <th>Cancelado</th>
-                                    <th>Contemplado por</th>
-                                    <th>Prioridade</th>
-                                    <th>Confirmado</th>
-                                    <th>Marcação</th>
-                                    <th>Procedimento</th>
-                                    <th>Especialidade</th>
-                                    <th>Ações</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td colspan="11">Sem registro</td>
-                                </tr>
-                                </tbody>
-                            </table>
+            <!--Err classes -->
+            <div class="flex flex-col mx-4 justify-start items-center">
+                <th:block th:switch="${error}">
+                    <div th:case="${false}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
+                        <div class="bg-green-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
+                            Sucesso
+                            <button class="ml-auto text-green-800 font-bold" style="font-size: 1.5rem;" onclick="this.parentElement.parentElement.style.display='none'">&#215;</button>
                         </div>
-                        <!-- Main modal -->
-                        <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                            <div class="relative p-4 w-full max-w-2xl max-h-full">
-                                <!-- Modal content -->
-                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <!-- Modal header -->
-                                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                            Observações
-                                        </h3>
-                                        <button type="button" onclick="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                            </svg>
-                                            <span class="sr-only">Close modal</span>
-                                        </button>
+                        <div class="border border-t-0 border-green-400 rounded-b bg-green-100 px-4 py-3 text-green-700">
+                            <p th:text="${message}"></p>
+                        </div>
+                    </div>
+                    <div th:case="${true}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
+                        <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
+                            Erro
+                            <button class="ml-auto text-red-800 font-bold" style="font-size: 1.5rem;" onclick="this.parentElement.parentElement.style.display='none'">&#215;</button>
+                        </div>
+                        <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+                            <p th:text="${message}"></p>
+                        </div>
+                    </div>
+                </th:block>
+
+                <!--Start Card -->
+                <div>
+
+                    <!--Panel 1-->
+                    <div class="w-full bg-white rounded-lg">
+                        <input type="checkbox" id="panel1" class="peer hidden" th:checked="${true}">
+                        <label for="panel1" class="text-slate-200 tracking-wide block bg-slate-900 py-4 px-4 mt-4 rounded-lg cursor-pointer border-2 border-slate-600 hover:bg-slate-800 hover:border-blue-500">
+                            <div class="flex items-center">
+                                <span class="material-symbols-outlined mr-4">person_search</span> Buscar Paciente
+                            </div>
+                        </label>
+                        <div class="peer-checked:max-h-screen max-h-0 overflow-hidden overscroll-contain transition-max-height duration-500 ease-in-out">
+                            <form class="grid grid-flow-row grid-cols-12 rounded-lg gap-x-8 gap-y-2 py-4 px-4" id="searchPatientForm" th:action="@{/patient-list}" th:object="${patient}" th:method="get">
+
+                                    <div class="col-span-6">
+                                        <label class="text-sm" for="name">Nome:</label>
+                                        <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
+                                               placeholder="Digite o Nome do Paciente" type="text" id="name" th:field="*{name}" name="name">
                                     </div>
-                                    <!-- Modal body -->
-                                    <div class="p-4 md:p-5 space-y-4">
-                                        <p class="text-base leading-relaxed text-gray-900 dark:text-gray-100" id="modal-observacoes"></p>
+
+
+                                    <div class="col-span-3">
+                                        <label class="text-sm" for="cpf">CPF:</label>
+                                        <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
+                                               placeholder="Digite o CPF do Paciente" type="text" id="cpf" th:field="*{cpf}" name="cpf">
+                                    </div>
+
+                                    <div class="col-span-3">
+                                        <label class="text-sm" for="susNumber">Cartão SUS:</label>
+                                        <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
+                                               placeholder="Digite o Cartão SUS" type="text" id="susNumber" th:field="*{susNumber}" name="susNumber">
+                                    </div>
+
+                                    <div class="col-span-4">
+                                        <label class="text-sm" for="addressStreet">Logradouro:</label>
+                                        <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
+                                               placeholder="Digite Endereço" type="text" id="addressStreet" th:field="*{addressStreet}" name="addressStreet">
+                                    </div>
+
+                                    <div class="col-span-2">
+                                        <label class="text-sm" for="acsName">ACS:</label>
+                                        <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
+                                               placeholder="Digite o ACS Responsável" type="text" id="acsName" th:field="*{acsName}" name="acsName">
+
+                                    </div>
+                                    <div class="col-span-3">
+                                        <label class="text-sm" for="socialSituationRating">Situação Social:</label>
+                                        <select class="rounded-lg border border-stroke py-2.5 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 text-gray-700 transition duration-200" id="socialSituationRating" name="socialSituationRating" th:field="*{socialSituationRating}">
+                                            <option th:value="${null}" th:selected="${patient.socialSituationRating == null}">Selecione</option>
+                                            <option th:each="situation : ${T(br.com.tecsus.sccubs.enums.SocialSituationRating).values()}"
+                                                    th:value="${situation}"
+                                                    th:text="${situation.description}"
+                                                    th:selected="*{socialSituationRating == null} ? ${situation} == null  : ${situation} == *{socialSituationRating}">
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-span-3 flex items-end justify-between">
+                                        <div class="col-span-1">
+                                            <button class="flex justify-between rounded-lg bg-slate-900 py-2 px-10 text-white cursor-pointer hover:bg-blue-500" type="submit">
+                                                <span class="material-symbols-outlined mr-2">search</span>Pesquisar</button>
+                                        </div>
+                                        <div class="col-span-1">
+                                            <button class="flex justify-between rounded-lg bg-slate-900 py-2 px-8 text-white cursor-pointer hover:bg-red-500" type="submit" th:formaction="@{/patient-list/clear}">
+                                                <span class="material-symbols-outlined mr-2">close_small</span>Limpar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+
+                    <!--Panel 2-->
+                    <div class="w-full bg-white rounded-lg">
+                        <input type="checkbox" id="panel2" class="peer hidden" th:checked="${true}">
+                        <label for="panel2" class=" block bg-slate-900 text-slate-200 tracking-wide py-4 px-4 mt-4 rounded-lg cursor-pointer border-2 border-slate-600 hover:bg-slate-800 hover:border-blue-500">
+                            <div class="flex items-center">
+                                <span class="material-symbols-outlined mr-2">patient_list</span>Pacientes Cadastrados
+                            </div>
+                        </label>
+                        <div class="peer-checked:max-h-[2000px] max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
+                            <div class="p-4 rounded-lg">
+                                <div th:replace="~{patientManagement/patientFragments/patient-datatable :: patientDatatable}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Painel3-->
+                    <div class="w-full bg-white rounded-lg">
+                        <input type="checkbox" id="panel3" class="peer hidden" th:checked="${true}">
+                        <label for="panel3" class="block bg-slate-900 text-slate-200 tracking-wide py-4 px-4 mt-4 rounded-lg cursor-pointer border-2 border-slate-600 hover:bg-slate-800 hover:border-blue-500">
+                            <div class="flex items-center">
+                                <span class="material-symbols-outlined mr-2">demography</span>Histórico do Paciente
+                            </div>
+                        </label>
+                        <div class="peer-checked:max-h-screen max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
+                            <div class="p-4 rounded-lg">
+                                <div id="patientHistoryDatatable">
+<!--                                    <div th:replace="~{patientManagement/patientFragments/patient-history :: patientHistoryDatatable}"></div>-->
+
+                                    <table class="w-full table-auto text-base">
+                                        <thead class="font-light text-sm text-slate-600 text-left tracking-wide">
+                                        <tr class="bg-slate-200">
+                                            <th class="rounded-l-lg py-2 px-4 ">Nº</th>
+                                            <th>Data da Requisição</th>
+                                            <th>Data da Contemplação</th>
+                                            <th>Cancelado</th>
+                                            <th>Contemplado por</th>
+                                            <th>Prioridade</th>
+                                            <th>Confirmado</th>
+                                            <th>Marcação</th>
+                                            <th>Procedimento</th>
+                                            <th>Especialidade</th>
+                                            <th class="rounded-r-lg py-2 px-4">Ações</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="border-b border-slate-200 text-slate-600">
+                                            <td class="py-2 px-4 col-span-12">Sem registro</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Main modal -->
+                                <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                    <div class="relative p-4 w-full max-w-2xl max-h-full">
+                                        <!-- Modal content -->
+                                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                            <!-- Modal header -->
+                                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                                    Observações
+                                                </h3>
+                                                <button type="button" onclick="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                    </svg>
+                                                    <span class="sr-only">Close modal</span>
+                                                </button>
+                                            </div>
+                                            <!-- Modal body -->
+                                            <div class="p-4 md:p-5 space-y-4">
+                                                <p class="text-base leading-relaxed text-gray-900 dark:text-gray-100" id="modal-observacoes"></p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -138,10 +189,13 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <footer th:replace="~{fragments/footer :: footer}"></footer>
+        </section>
+
+        <footer class="absolue inset-x-0 bottom-0 border" th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </body>
+
+<!--Modal Logic-->
 <script>
     function openModal(observacoes) {
         let modal = document.getElementById("default-modal");
@@ -151,7 +205,6 @@
         modal.classList.add("flex");
         modal.classList.add("opacity-100");
         console.log(observacoes)
-
     }
 
     function closeModal() {

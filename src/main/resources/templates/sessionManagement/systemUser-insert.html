@@ -1,76 +1,114 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="https://www.thymeleaf.org"
+<html lang="en pt-br" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head th:replace="~{fragments/template :: head}"></head>
 
-<body class="flex w-full h-screen justify-between items-center bg-slate-900">
+<body class="flex w-full h-screen justify-between items-center bg-slate-300">
     <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
-    <main class="flex flex-col h-screen w-full mx-auto bg-slate-100">
+
+    <!--Start Container Principal-->
+    <main class="flex flex-col h-screen w-full">
         <header th:replace="~{fragments/navbar :: header}"></header>
-        <div>
-            <h1>Formulário de Cadastro</h1>
-            <form th:action="${systemUser.id == null} ? @{/systemUser-insert/create} : @{/systemUser-insert/update}"
-                  method="post"
-                  th:object="${systemUser}">
-                <div>
-                    <label for="username">Login:</label>
-                    <input type="text" id="username" th:field="*{username}" th:disabled="${systemUser.username != null}"
-                           name="username" required>
+        <!--Start Card Formulario-->
+        <section class="flex flex-col h-screen mx-10 justify-center items-center relative">
+
+            <div class="flex flex-col w-full rounded-lg shadow-lg bg-white">
+                <div class="flex w-full rounded-t-md py-5 px-10 shadow-lg bg-slate-900">
+                    <p class="text-xl text-slate-200">Cadastro de Usuários</p>
                 </div>
 
-                <div>
-                    <label for="password">Senha:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
 
-                <div>
-                    <label for="confirmPassword">Confirmar senha:</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
-                </div>
+                <form class=" flex flex-col justify-around rounded-b-lg border border-slate-200 h-full" th:action="${systemUser.id == null} ? @{/systemUser-insert/create} : @{/systemUser-insert/update}"
+                      method="post"
+                      th:object="${systemUser}">
 
-                <div>
-                    <label for="name">Nome:</label>
-                    <input type="text" id="name" th:field="*{name}" name="name" required>
-                </div>
+                    <div class="grid grid-flow-row grid-cols-2 rounded-lg gap-10 py-8 px-10">
 
-                <div>
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" th:field="*{email}" name="email" required>
-                </div>
-                <div>
-                    <label for="basicHealthUnit">UBS:</label>
-                    <select id="basicHealthUnit" name="basicHealthUnit">
-                        <option th:each="ubs : ${basicHealthUnits}"
-                                th:value="${ubs.id}"
-                                th:text="${ubs.name}"
-                                th:selected="*{basicHealthUnit == null} ? ${ubs.id} == 1 : ${ubs.id} == *{basicHealthUnit.id}"></option>
-                    </select>
-                </div>
-                <div>
-                    <label for="selectedRoleId">Perfil:</label>
-                    <select id="selectedRoleId" name="selectedRoleId">
-                        <option th:each="role : ${rolesList}"
-                                th:value="${role.id}"
-                                th:text="${role.title}"
-                                th:selected="*{roles.isEmpty()} ? ${role.id} == 2 : ${role.id} == *{getFirstRole()}"></option>
-                    </select>
-                </div>
-                <div th:if="*{id}">
-                    <label for="active">Ativo:</label>
-                    <select id="active" name="active">
-                        <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
-                        <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
-                    </select>
-                </div>
-                <input type="hidden" id="id" th:field="*{id} "/>
-                <div>
-                    <button type="submit">Enviar</button>
-                </div>
-            </form>
-            <p th:if="${message}" th:text="${message}"></p>
-        </div>
-        <footer th:replace="~{fragments/footer :: footer}"></footer>
+                        <div>
+                            <label for="username">Nome de Usuário:</label>
+                            <input class="rounded-lg border border-stroke py-2 pl-4 w-full mt-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500"
+                                   type="text" id="username" th:field="*{username}" th:disabled="${systemUser.username != null}"
+                                   placeholder="Digite aqui o seu nome de usuário" name="username" required>
+                        </div>
+
+                        <div>
+                            <label for="email">E-mail:</label>
+                            <input class="rounded-lg border border-stroke py-2 pl-4 w-full mt-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500"
+                                    placeholder="Digite seu E-mail" type="email" id="email" th:field="*{email}" name="email" required>
+                        </div>
+                        <div>
+                            <label for="password">Senha de Acesso:</label>
+                            <input class="rounded-lg border border-stroke py-2 pl-4 w-full mt-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500"
+                                   placeholder="Digite uma Senha" type="password" id="password"  name="password" required>
+                        </div>
+                        <div>
+                            <label for="confirmPassword">Confirmação de Senha:</label>
+                            <input class="rounded-lg border border-stroke py-2 pl-4 w-full mt-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500"
+                                   placeholder="Confirme a sua Senha" type="password" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label for="name">Nome Completo:</label>
+                            <input class="col-span-2 rounded-lg border border-stroke py-2 pl-4 w-full mt-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500"
+                                   placeholder="Digite o Nome Completo do Usuário" type="text" id="name" th:field="*{name}" name="name" required>
+                        </div>
+
+                        <div class="flex flex-col w-full">
+                            <label for="basicHealthUnit">Selecione a Ubs do Novo Usuário:</label>
+                            <select class="rounded-lg border border-stroke py-2.5 pl-4 w-full mt-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 text-gray-700" id="basicHealthUnit" name="basicHealthUnit">
+                                <option value="" disabled
+                                        th:selected="*{basicHealthUnit == null}">Selecione UBS</option>
+
+                                <!--                            <option th:each="ubs : ${basicHealthUnits}"-->
+                                <!--                                    th:value="${ubs.id}"-->
+                                <!--                                    th:text="${ubs.name}"-->
+                                <!--                                    th:selected="*{basicHealthUnit == null} ? ${ubs.id} == 1 : ${ubs.id} == *{basicHealthUnit.id}">Selecione Ubs</option>-->
+                                <option th:each="ubs : ${basicHealthUnits}"
+                                        th:value="${ubs.id}"
+                                        th:text="${ubs.name}"
+                                        th:selected="*{basicHealthUnit != null} ? ${ubs.id} == *{basicHealthUnit.id} : false"></option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col w-full">
+                            <label for="basicHealthUnit">Selecione o Perfil do Novo Usuário:</label>
+                            <select class="rounded-lg border border-stroke py-2.5 pl-4 w-full mt-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 text-gray-700" id="selectedRoleId" name="selectedRoleId" >
+                                <option value="" disabled
+                                        th:selected="*{selectedRoleId == null}">Perfil Usuário</option>
+                                <option th:each="role : ${rolesList}"
+                                        th:value="${role.id}"
+                                        th:text="${role.title}"
+                                        th:selected="*{roles.isEmpty()} ? ${role.id} == 2 : ${role.id} == *{getFirstRole()}"></option>
+                            </select>
+                        </div>
+
+                        <div th:if="*{id}">
+                            <label for="active">Ativo:</label>
+                            <select id="active" name="active">
+                                <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
+                                <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" id="id" th:field="*{id} "/>
+
+                        <div class="col-span-2 text-center px-4 py-2">
+                            <button class="rounded-lg bg-slate-900 py-2 px-10 text-white cursor-pointer transition duration-200 hover:bg-blue-500" type="submit">Enviar</button>
+                        </div>
+                    </div>
+                    <div th:if="${message}" class="flex bg-red-200 m-2 rounded-lg p-2 justify-center">
+                        <p class="text-red-500" th:text="${message}"></p>
+                    </div>
+                </form>
+
+            </div>
+
+
+        </section>
+        <footer class="absolute inset-x-0 bottom-0" th:replace="~{fragments/footer :: footer}"></footer>
+
+
     </main>
+
 </body>
 </html>
