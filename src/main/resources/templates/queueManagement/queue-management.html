@@ -16,7 +16,7 @@
                 </label>
                 <div class="peer-checked:max-h-[2000px] max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
                     <div class="p-4 bg-white border border-gray-300">
-                        <form th:action="@{/contemplation-management/search}" th:method="get">
+                        <form th:action="@{/queue-management/search}" th:method="get">
                             <div class="flex w-full justify-start">
                                 <div class="mb-4 p-4">
                                     <label for="ubs"
@@ -69,13 +69,13 @@
                         </div>
                         <!-- Conteúdo das abas -->
                         <div id="contentPanel">
-                            <div id="consultas" th:replace="~{contemplationManagement/contemplationFragments/contemplation-tabs :: consultas-datatable}" class="tab-content p-4 bg-gray-100">
+                            <div id="consultas" th:replace="~{queueManagement/queueFragments/queue-tabs :: consultas-datatable}" class="tab-content p-4 bg-gray-100">
                                 <p>Conteúdo da aba Consultas.</p>
                             </div>
-                            <div id="exames" th:replace="~{contemplationManagement/contemplationFragments/contemplation-tabs :: exames-datatable}" class="tab-content p-4 bg-gray-100 hidden">
+                            <div id="exames" th:replace="~{queueManagement/queueFragments/queue-tabs :: exames-datatable}" class="tab-content p-4 bg-gray-100 hidden">
                                 <p>Conteúdo da aba Exames.</p>
                             </div>
-                            <div id="cirurgias" th:replace="~{contemplationManagement/contemplationFragments/contemplation-tabs :: cirurgias-datatable}" class="tab-content p-4 bg-gray-100 hidden">
+                            <div id="cirurgias" th:replace="~{queueManagement/queueFragments/queue-tabs :: cirurgias-datatable}" class="tab-content p-4 bg-gray-100 hidden">
                                 <p>Conteúdo da aba Cirurgias.</p>
                             </div>
                         </div>
@@ -95,7 +95,7 @@
                 </div>
             </div>
         </div>
-        <div id="default-modal"></div>
+        <div id="patientAppointment-modal"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </body>
@@ -148,7 +148,7 @@
     }
 
     function closeModal() {
-        let modal = document.getElementById("default-modal");
+        let modal = document.getElementById("patientAppointment-modal");
         modal.classList.add("opacity-0");
         modal.classList.add("hidden");
         modal.classList.remove("flex");

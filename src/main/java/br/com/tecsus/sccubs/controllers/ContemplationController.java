@@ -10,12 +10,11 @@ import br.com.tecsus.sccubs.services.ContemplationService;
 import br.com.tecsus.sccubs.services.SpecialtyService;
 import br.com.tecsus.sccubs.services.exceptions.CancelContemplationException;
 import br.com.tecsus.sccubs.services.exceptions.ConfirmContemplationException;
-import jakarta.servlet.http.HttpServletResponse;
+import br.com.tecsus.sccubs.utils.DefaultValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,29 +23,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
 
 @Slf4j
 @Controller
 @SessionScope
 public class ContemplationController {
 
-    private final BasicHealthUnitService basicHealthUnitService;
-    private final SpecialtyService specialtyService;
     private final ContemplationService contemplationService;
     private final List<BasicHealthUnit> basicHealthUnits;
     private final List<Specialty> specialties;
 
     @Autowired
     public ContemplationController(BasicHealthUnitService basicHealthUnitService, SpecialtyService specialtyService, ContemplationService contemplationService) {
-        this.basicHealthUnitService = basicHealthUnitService;
-        this.specialtyService = specialtyService;
         this.contemplationService = contemplationService;
         this.basicHealthUnits = basicHealthUnitService.findAllUBS();
         this.specialties = specialtyService.findSpecialties();
@@ -57,9 +48,9 @@ public class ContemplationController {
 
         model.addAttribute("basicHealthUnits", this.basicHealthUnits);
         model.addAttribute("specialties", this.specialties);
-        model.addAttribute("consultasPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, 10), 0));
-        model.addAttribute("examesPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, 10), 0));
-        model.addAttribute("cirurgiasPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, 10), 0));
+        model.addAttribute("consultasPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
+        model.addAttribute("examesPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
+        model.addAttribute("cirurgiasPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
         model.addAttribute("hide", "hidden");
         return "contemplationManagement/contemplation-management";
     }
@@ -79,7 +70,7 @@ public class ContemplationController {
                         specialty,
                         referenceMonth,
                         confirmed,
-                        PageRequest.of(0, 10));
+                        PageRequest.of(0, DefaultValues.PAGE_SIZE));
         var exames = contemplationService
                 .findContemplationsByUBSAndSpecialty(
                         ProcedureType.EXAME,
@@ -87,7 +78,7 @@ public class ContemplationController {
                         specialty,
                         referenceMonth,
                         confirmed,
-                        PageRequest.of(0, 10));
+                        PageRequest.of(0, DefaultValues.PAGE_SIZE));
         var cirurgias = contemplationService
                 .findContemplationsByUBSAndSpecialty(
                         ProcedureType.CIRURGIA,
@@ -95,7 +86,7 @@ public class ContemplationController {
                         specialty,
                         referenceMonth,
                         confirmed,
-                        PageRequest.of(0, 10));
+                        PageRequest.of(0, DefaultValues.PAGE_SIZE));
 
         model.addAttribute("selectedUBS", basicHealthUnit);
         model.addAttribute("basicHealthUnits", this.basicHealthUnits);
@@ -122,9 +113,9 @@ public class ContemplationController {
     @GetMapping("/contemplation-management/paginated")
     public String getMedicalSlotsPaginated(Model model,
                                            @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
-                                           @RequestParam(value = "consultasPageSize", defaultValue = "10", required = false) int consultasPageSize,
-                                           @RequestParam(value = "examesPageSize", defaultValue = "10", required = false) int examesPageSize,
-                                           @RequestParam(value = "cirurgiasPageSize", defaultValue = "10", required = false) int cirurgiasPageSize,
+                                           @RequestParam(value = "consultasPageSize", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int consultasPageSize,
+                                           @RequestParam(value = "examesPageSize", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int examesPageSize,
+                                           @RequestParam(value = "cirurgiasPageSize", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int cirurgiasPageSize,
                                            @RequestParam(value = "ubs") Long ubs,
                                            @RequestParam(value = "specialty") Long specialty,
                                            @RequestParam(value = "month") String referenceMonth,

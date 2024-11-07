@@ -40,7 +40,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointment-management")
-    public String getPatientInsertPage(Model model) {
+    public String getAppointmentPage(Model model) {
 
         Appointment appointment = new Appointment();
         appointment.setPatient(new Patient());

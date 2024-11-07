@@ -81,7 +81,6 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
                 AND MONTH(ms.referenceMonth) = :month
                 AND YEAR(ms.referenceMonth) = :year
                 AND c.canceled IS FALSE
-                ORDER BY p.name
             """, Long.class);
 
             count.setParameter("ubsId", ubsId);
@@ -104,7 +103,6 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
             JOIN FETCH a.patient p
             JOIN FETCH mp.specialty s
             WHERE c.id IN :contemplationIds
-            ORDER BY p.name
         """, Contemplation.class);
 
         contemplationsQuery.setParameter("contemplationIds", contemplationIdsPaginated);

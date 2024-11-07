@@ -1,5 +1,6 @@
 package br.com.tecsus.sccubs.entities;
 
+import br.com.tecsus.sccubs.entities.converters.PriorityConverter;
 import br.com.tecsus.sccubs.enums.Priorities;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class Appointment {
     @Column(name = "request_date", updatable = false)
     private LocalDateTime requestDate;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Convert(converter = PriorityConverter.class)
     private Priorities priority;
 
     private String observation;

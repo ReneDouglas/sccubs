@@ -5,6 +5,7 @@ import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.SystemUserService;
 import br.com.tecsus.sccubs.services.exceptions.InvalidConfirmPasswordException;
+import br.com.tecsus.sccubs.utils.DefaultValues;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class SessionController {
 
     @GetMapping("/expired")
     public String getExpiredPage() {
-        return "sessionManagement/expired";
+        return "expired";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
@@ -118,7 +119,7 @@ public class SessionController {
     public String getSystemUserListPage(Model model,
                                         @ModelAttribute SystemUser systemUser,
                                         @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
-                                        @RequestParam(value = "size", defaultValue = "5", required = false) int pageSize,
+                                        @RequestParam(value = "size", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int pageSize,
                                         HttpServletRequest request) {
 
         Page<SystemUser> systemUsersPage;
@@ -158,7 +159,7 @@ public class SessionController {
     public String getSystemUserListPageTest(Model model, @RequestParam(required = false) String keyword,
                                         @ModelAttribute SystemUser systemUser,
                                         @RequestParam(value = "page", defaultValue = "0",required = false) int page,
-                                        @RequestParam(value = "size", defaultValue = "5",required = false) int size,
+                                        @RequestParam(value = "size", defaultValue = "" + DefaultValues.PAGE_SIZE,required = false) int size,
                                         HttpServletRequest request) {
 
         Page<SystemUser> systemUsersPage;
@@ -240,15 +241,4 @@ public class SessionController {
         return "redirect:/systemUser-list";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/admin")
-    public String getAdminPage() {
-        return "admin";
-    }
-
-    /*@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @GetMapping("/user")
-    public String getUserPage() {
-        return "user";
-    }*/
 }

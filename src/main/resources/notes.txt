@@ -119,3 +119,14 @@ id, agendamento, contemplado
 -- desistencia [perde a vaga]
 -- resposta em 5 dias
 -- cancelamento [a critério da SMS [marcar vaga de encaixe, contemplação automática [sms]]]
+
+
+### DAASHBOARD ###
+
+- Total de agendamentos em aberto por UBS (tamanho das filas de espera por UBS [incluindo todas as especialidades])
+- Total de contemplados no mês corrente por UBS
+
+-> Gráfico de linha diário ou semanal: marcações realizadas no total (todas as UBS)
+
+- Gráficos de pizza: perfis dos pacientes cadastrados (sexo, situação social)
+- Gráfico de pizza: perfil dos agendamentos cadastrados (classificação de risco)

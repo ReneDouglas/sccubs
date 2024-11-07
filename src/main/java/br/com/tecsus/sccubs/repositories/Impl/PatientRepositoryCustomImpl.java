@@ -8,7 +8,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -101,7 +100,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         }
 
         TypedQuery<Patient> patientsQuery = em.createQuery("""
-                   SELECT p FROM Patient p WHERE p.id IN :ids ORDER BY p.name
+                   SELECT p FROM Patient p WHERE p.id IN :ids
         """, Patient.class);
 
         patientsQuery.setParameter("ids", patientsIdsPaginated);
@@ -167,7 +166,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                           mp.procedureType,
                           mp.description,
                           s.title,
-                          COALESCE(a.observation, "Sem observações."),
+                          COALESCE(a.observation, 'Sem observações.'),
                           mp.id,
                           a.id,
                           COALESCE(c.id, null),
@@ -179,7 +178,6 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 LEFT JOIN mp.specialty s
                 LEFT JOIN a.patient p
                 WHERE a.id IN :ids
-                ORDER BY a.requestDate DESC
                 """, PatientAppointmentsHistoryDTO.class);
 
         appointmentsHistoryQuery.setParameter("ids", appointmentsHistoryIdsPaginated);

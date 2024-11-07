@@ -1,5 +1,6 @@
 package br.com.tecsus.sccubs.entities;
 
+import br.com.tecsus.sccubs.entities.converters.PriorityConverter;
 import br.com.tecsus.sccubs.enums.Priorities;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class Contemplation {
     private LocalDateTime contemplationDate;
 
     @Column(name = "contemplated_by")
-    @Enumerated(EnumType.ORDINAL)
+    @Convert(converter = PriorityConverter.class)
     private Priorities contemplatedBy;
 
     private boolean confirmed;
@@ -32,7 +33,7 @@ public class Contemplation {
     @JoinColumn(name = "id_appointment")
     private Appointment appointment;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_available_medical_slot")
     private MedicalSlot medicalSlot;
 

@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface MedicalProcedureRepository extends JpaRepository<MedicalProcedure, Long> {
 
+    @Transactional(readOnly = true)
     List<MedicalProcedure> findAllBySpecialtyAndProcedureType(Specialty specialty, ProcedureType procedureType);
 
     @Transactional(readOnly = true)

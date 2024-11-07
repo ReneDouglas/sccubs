@@ -7,6 +7,7 @@ import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.MedicalSlotService;
 import br.com.tecsus.sccubs.services.SpecialtyService;
 import br.com.tecsus.sccubs.services.exceptions.DistinctAvailableMedicalSlotException;
+import br.com.tecsus.sccubs.utils.DefaultValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,7 +41,7 @@ public class MedicalSlotController {
 
         model.addAttribute("basicHealthUnits", basicHealthUnitService.findAllUBS());
         model.addAttribute("specialties", specialtyService.findSpecialties());
-        model.addAttribute("medicalSlotsPage", medicalSlotService.findMedicalSlotsPaginated(PageRequest.of(0, 10)));
+        model.addAttribute("medicalSlotsPage", medicalSlotService.findMedicalSlotsPaginated(PageRequest.of(0, DefaultValues.PAGE_SIZE)));
 
         return "medicalSlotManagement/medicalSlot-management";
     }
@@ -90,7 +91,7 @@ public class MedicalSlotController {
     @GetMapping("/medicalSlot-management/paginated")
     public String getMedicalSlotsPaginated(Model model,
                                            @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
-                                           @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+                                           @RequestParam(value = "pageSize", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int pageSize) {
 
         model.addAttribute("medicalSlotsPage", medicalSlotService.findMedicalSlotsPaginated(PageRequest.of(currentPage, pageSize)));
         return "medicalSlotManagement/medicalSlotFragments/medicalSlot-datatable :: medicalSlotsDatatable";

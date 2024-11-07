@@ -1,6 +1,5 @@
 package br.com.tecsus.sccubs.services;
 
-import br.com.tecsus.sccubs.dtos.PatientAppointmentsHistoryDTO;
 import br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO;
 import br.com.tecsus.sccubs.entities.Appointment;
 import br.com.tecsus.sccubs.entities.MedicalProcedure;
@@ -14,6 +13,8 @@ import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.exceptions.AppointmentRegistrationFailureException;
 import br.com.tecsus.sccubs.services.exceptions.CancelAppointmentException;
 import br.com.tecsus.sccubs.services.exceptions.DuplicateAppointmentRegistrationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,15 +41,14 @@ public class AppointmentService {
         return medicalProcedureRepository.findAllBySpecialtyAndProcedureType(specialty, procedureType);
     }
 
-    @Transactional(readOnly = true)
     public List<PatientOpenAppointmentDTO> findPatientOpenAppointments(Long patientId) {
-        return appointmentRepository.findOpenAppointmentsById(patientId);
+        return appointmentRepository.findPatientOpenAppointments(patientId);
     }
 
     @Transactional
     public void registerAppointment(Appointment appointment, SystemUserDetails loggedUser) throws AppointmentRegistrationFailureException, DuplicateAppointmentRegistrationException {
 
-        List<PatientOpenAppointmentDTO> patientOpenAppointments = appointmentRepository.findOpenAppointmentsById(appointment.getPatient().getId());
+        List<PatientOpenAppointmentDTO> patientOpenAppointments = appointmentRepository.findPatientOpenAppointments(appointment.getPatient().getId());
 
         boolean isDuplicated = patientOpenAppointments
                 .stream()
@@ -82,6 +82,16 @@ public class AppointmentService {
 
         appointmentRepository.save(appt);
 
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PatientOpenAppointmentDTO> findOpenAppointmentsQueuePaginated(ProcedureType type, Long ubsId, Long specialtyId, Pageable pageable) {
+        return appointmentRepository.findOpenAppointmentsQueuePaginated(type, ubsId, specialtyId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Appointment findById(Long id) {
+        return appointmentRepository.findById(id).orElse(null);
     }
 
 }

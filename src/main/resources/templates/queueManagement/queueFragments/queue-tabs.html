@@ -4,37 +4,33 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <body>
 
-    <!--    <div th:fragment="contemplationContentPanel" id="contemplationContentPanel">-->
     <div id="consultas" th:fragment="consultas-datatable" class="tab-content p-4 bg-gray-100">
         <table class="min-w-full bg-white divide-y divide-gray-200">
             <thead class="bg-gray-50">
             <tr class="bg-gray-700 text-white">
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">N.</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Paciente</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">CPF</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplado por</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplação</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Confirmado</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Idade</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Situação Social</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-            <tr th:each="cp, iStat : ${consultasPage}"
-                th:classappend="${cp.confirmed} ? 'bg-green-300 hover:bg-green-400 transition-colors duration-200' : 'hover:bg-gray-200 transition-colors duration-200'">
+            <tr th:each="cp, iStat : ${consultasPage}">
                 <td class="px-4 py-2 text-gray-700"
                     th:text="${consultasPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (consultasPage.number * consultasPage.size)}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.patient.name}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.patient.cpf}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.priority.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${cp.contemplatedBy.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.contemplationDate, 'dd/MM/yyyy')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${cp.confirmed ? 'Sim' : 'Não'}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${cp.patientName}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.requestDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${cp.priority.getDescription()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${cp.patientGender}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${cp.getBirthDateWithAge()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${cp.patientSocialSituationRating.getDescription()}"></td>
                 <td class="px-4 py-2 text-gray-700">
-                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${cp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
-                       hx-target="#default-modal"
+                    <a th:attrappend="hx-get=@{/queue-management/{id}/load(id = ${cp.appointmentId}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty})}"
+                       hx-target="#patientAppointment-modal"
                        hx-swap="outerHTML"
                        href=""
                        class="flex items-center bg-indigo-500 text-white px-2 py-1 rounded-md hover:bg-indigo-400 focus:outline-none transition-colors duration-300"
@@ -52,7 +48,7 @@
             <div class="flex items-center space-x-2">
                 <label for="consultasPageSize" class="text-sm font-medium text-gray-700">Linhas por página:</label>
                 <select id="consultasPageSize" name="consultasPageSize"
-                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', confirmed = ${selectedStatus})}"
+                        th:attrappend="hx-get=@{/queue-management/paginated(page = ${consultasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'CONSULTA')}"
                         hx-target="#consultas"
                         hx-swap="outerHTML"
                         class="border-gray-300 rounded-md shadow-md focus:ring-gray-500 focus:border-gray-500 p-2">
@@ -64,7 +60,7 @@
             <div class="flex items-center space-x-4">
                 <button id="consultasPrevPage"
                         th:disabled="${!consultasPage.hasPrevious()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', confirmed = ${selectedStatus})}"
+                        th:attrprepend="hx-get=@{/queue-management/paginated(page = ${consultasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'CONSULTA')}"
                         hx-target="#consultas"
                         hx-include="[name='consultasPageSize']"
                         hx-trigger="click"
@@ -78,7 +74,7 @@
                 </span>
                 <button id="consultasNextPage"
                         th:disabled="${!consultasPage.hasNext()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', confirmed = ${selectedStatus})}"
+                        th:attrprepend="hx-get=@{/queue-management/paginated(page = ${consultasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'CONSULTA')}"
                         hx-target="#consultas"
                         hx-include="[name='consultasPageSize']"
                         hx-trigger="click"
@@ -96,32 +92,27 @@
             <tr class="bg-gray-700 text-white">
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">N.</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Paciente</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">CPF</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Exame</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplado por</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplação</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Confirmado</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Idade</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Situação Social</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-            <tr th:each="exp, iStat : ${examesPage}"
-                th:classappend="${exp.confirmed} ? 'bg-green-300 hover:bg-green-400 transition-colors duration-200' : 'hover:bg-gray-200 transition-colors duration-200'">
+            <tr th:each="exp, iStat : ${examesPage}">
                 <td class="px-4 py-2 text-gray-700"
                     th:text="${examesPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (examesPage.number * examesPage.size)}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.patient.name}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.patient.cpf}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.medicalProcedure.description}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.priority.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.contemplatedBy.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.contemplationDate, 'dd/MM/yyyy')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.confirmed ? 'Sim' : 'Não'}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${exp.patientName}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.requestDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${exp.priority.getDescription()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${exp.patientGender}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${exp.getBirthDateWithAge()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${exp.patientSocialSituationRating.getDescription()}"></td>
                 <td class="px-4 py-2 text-gray-700">
-                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${exp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
-                       hx-target="#default-modal"
+                    <a th:attrappend="hx-get=@{/queue-management/{id}/load(id = ${exp.appointmentId}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty})}"
+                       hx-target="#patientAppointment-modal"
                        hx-swap="outerHTML"
                        href=""
                        class="flex items-center bg-indigo-500 text-white px-2 py-1 rounded-md hover:bg-indigo-400 focus:outline-none transition-colors duration-300"
@@ -139,7 +130,7 @@
             <div class="flex items-center space-x-2">
                 <label for="examesPageSize" class="text-sm font-medium text-gray-700">Linhas por página:</label>
                 <select id="examesPageSize" name="examesPageSize"
-                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME', confirmed = ${selectedStatus})}"
+                        th:attrappend="hx-get=@{/queue-management/paginated(page = ${examesPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'EXAME')}"
                         hx-target="#exames"
                         hx-swap="outerHTML"
                         class="border-gray-300 rounded-md shadow-md focus:ring-gray-500 focus:border-gray-500 p-2">
@@ -151,7 +142,7 @@
             <div class="flex items-center space-x-4">
                 <button id="examesPrevPage"
                         th:disabled="${!examesPage.hasPrevious()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME', confirmed = ${selectedStatus})}"
+                        th:attrprepend="hx-get=@{/queue-management/paginated(page = ${examesPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'EXAME')}"
                         hx-target="#exames"
                         hx-include="[name='examesPageSize']"
                         hx-trigger="click"
@@ -165,7 +156,7 @@
                 </span>
                 <button id="examesNextPage"
                         th:disabled="${!examesPage.hasNext()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${examesPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'EXAME', confirmed = ${selectedStatus})}"
+                        th:attrprepend="hx-get=@{/queue-management/paginated(page = ${examesPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'EXAME')}"
                         hx-target="#exames"
                         hx-include="[name='examesPageSize']"
                         hx-trigger="click"
@@ -183,32 +174,27 @@
             <tr class="bg-gray-700 text-white">
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">N.</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Paciente</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">CPF</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Cirurgia</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplado por</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplação</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Confirmado</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Idade</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Situação Social</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-            <tr th:each="crp, iStat : ${cirurgiasPage}"
-                th:classappend="${crp.confirmed} ? 'bg-green-300 hover:bg-green-400 transition-colors duration-200' : 'hover:bg-gray-200 transition-colors duration-200'">
+            <tr th:each="crp, iStat : ${cirurgiasPage}">
                 <td class="px-4 py-2 text-gray-700"
                     th:text="${cirurgiasPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (cirurgiasPage.number * cirurgiasPage.size)}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.patient.name}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.patient.cpf}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.medicalProcedure.description}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.priority.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.contemplatedBy.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.contemplationDate, 'dd/MM/yyyy')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.confirmed ? 'Sim' : 'Não'}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${crp.patientName}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.requestDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${crp.priority.getDescription()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${crp.patientGender}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${crp.getBirthDateWithAge()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${crp.patientSocialSituationRating.getDescription()}"></td>
                 <td class="px-4 py-2 text-gray-700">
-                    <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${crp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
-                       hx-target="#default-modal"
+                    <a th:attrappend="hx-get=@{/queue-management/{id}/load(id = ${crp.appointmentId}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty})}"
+                       hx-target="#patientAppointment-modal"
                        hx-swap="outerHTML"
                        href=""
                        class="flex items-center bg-indigo-500 text-white px-2 py-1 rounded-md hover:bg-indigo-400 focus:outline-none transition-colors duration-300"
@@ -226,7 +212,7 @@
             <div class="flex items-center space-x-2">
                 <label for="cirurgiasPageSize" class="text-sm font-medium text-gray-700">Linhas por página:</label>
                 <select id="cirurgiasPageSize" name="cirurgiasPageSize"
-                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA', confirmed = ${selectedStatus})}"
+                        th:attrappend="hx-get=@{/queue-management/paginated(page = ${cirurgiasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'CIRURGIA')}"
                         hx-target="#cirurgias"
                         hx-swap="outerHTML"
                         class="border-gray-300 rounded-md shadow-md focus:ring-gray-500 focus:border-gray-500 p-2">
@@ -238,7 +224,7 @@
             <div class="flex items-center space-x-4">
                 <button id="cirurgiasPrevPage"
                         th:disabled="${!cirurgiasPage.hasPrevious()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA', confirmed = ${selectedStatus})}"
+                        th:attrprepend="hx-get=@{/queue-management/paginated(page = ${cirurgiasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'CIRURGIA')}"
                         hx-target="#cirurgias"
                         hx-include="[name='cirurgiasPageSize']"
                         hx-trigger="click"
@@ -252,7 +238,7 @@
                 </span>
                 <button id="cirurgiasNextPage"
                         th:disabled="${!cirurgiasPage.hasNext()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${cirurgiasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CIRURGIA', confirmed = ${selectedStatus})}"
+                        th:attrprepend="hx-get=@{/queue-management/paginated(page = ${cirurgiasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, type = 'CIRURGIA')}"
                         hx-target="#cirurgias"
                         hx-include="[name='cirurgiasPageSize']"
                         hx-trigger="click"
@@ -263,7 +249,5 @@
             </div>
         </div>
     </div>
-    <!--    </div>-->
-
 </body>
 </html>

@@ -7,6 +7,7 @@ import br.com.tecsus.sccubs.entities.SystemUser;
 import br.com.tecsus.sccubs.enums.SocialSituationRating;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.PatientService;
+import br.com.tecsus.sccubs.utils.DefaultValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -115,7 +116,7 @@ public class PatientController {
                                   @ModelAttribute Patient patient,
                                   @AuthenticationPrincipal SystemUserDetails loggedUser,
                                   @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
-                                  @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+                                  @RequestParam(value = "pageSize", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int pageSize,
                                   @RequestParam(value = "pagination", defaultValue = "false", required = false) boolean isPagination){
 
         if (!isPagination) {
@@ -138,7 +139,7 @@ public class PatientController {
                                                 @AuthenticationPrincipal SystemUserDetails loggedUser,
                                                 @RequestParam(value = "id", required = false) Long patientId,
                                                 @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
-                                                @RequestParam(value = "pageSizeHistory", defaultValue = "10", required = false) int pageSizeHistory,
+                                                @RequestParam(value = "pageSizeHistory", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int pageSizeHistory,
                                                 @RequestParam(value = "pagination", defaultValue = "false", required = false) boolean isPagination) {
 
         if (!isPagination) {

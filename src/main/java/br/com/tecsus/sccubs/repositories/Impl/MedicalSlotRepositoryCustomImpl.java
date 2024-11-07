@@ -59,7 +59,6 @@ public class MedicalSlotRepositoryCustomImpl implements MedicalSlotRepositoryCus
                     JOIN FETCH ms.medicalProcedure mp
                     JOIN FETCH mp.specialty s
                     WHERE ms.id IN :ids
-                    ORDER BY ms.creationDate DESC
         """, MedicalSlot.class);
 
         medicalSlotsQuery.setParameter("ids", medicalSlotIdsPaginated);

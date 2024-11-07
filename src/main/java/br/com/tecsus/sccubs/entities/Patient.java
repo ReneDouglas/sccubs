@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 @Getter
@@ -91,6 +92,19 @@ public class Patient {
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return this.birthDate.format(formatter);
+    }
+
+    public String getBirthDateWithAge() {
+        if (this.birthDate == null) {
+            return null;
+        }
+        Period period = Period.between(this.birthDate, LocalDate.now());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = this.birthDate.format(formatter);
+        if (period.getMonths() > 0) {
+            return formattedDate + " (" + period.getYears() + " anos e " + period.getMonths() + " meses)";
+        }
+        return formattedDate + " (" + period.getYears() + " anos)";
     }
 
 }

@@ -47,4 +47,8 @@ public class MedicalSlotService {
     public Page<MedicalSlot> findMedicalSlotsPaginated(Pageable page) {
         return medicalSlotRepository.findMedicalSlotsPaginated(null, page);
     }
+
+    public MedicalSlot findAvailableSlots(MedicalSlot medicalSlot) {
+        return medicalSlotRepository.findByMedicalProcedureAndBasicHealthUnitAndContemplationsIsNull(medicalSlot.getMedicalProcedure(), medicalSlot.getBasicHealthUnit());
+    }
 }

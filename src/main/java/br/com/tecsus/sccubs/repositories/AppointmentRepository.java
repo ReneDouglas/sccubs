@@ -1,16 +1,16 @@
 package br.com.tecsus.sccubs.repositories;
 
-import br.com.tecsus.sccubs.dtos.PatientAppointmentsHistoryDTO;
 import br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO;
 import br.com.tecsus.sccubs.entities.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
+public interface AppointmentRepository extends JpaRepository<Appointment, Long>, AppointmentRepositoryCustom {
 
+    @Transactional(readOnly = true)
     @Query("""
         SELECT
             new br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO(
@@ -22,7 +22,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
                 s.title,
                 COALESCE(a.observation, "Sem observações."),
                 a.id,
-                a.patient.id)
+                a.patient.id,
+                null,
+                null,
+                null,
+                null)
         FROM
             Appointment a
         LEFT JOIN a.contemplation c
@@ -34,6 +38,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
         AND a.canceled = false
         ORDER BY a.requestDate DESC
     """)
-    List<PatientOpenAppointmentDTO> findOpenAppointmentsById(@Param("id") Long id);
+    List<PatientOpenAppointmentDTO> findPatientOpenAppointments(@Param("id") Long id);
 
 }

@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,6 +32,9 @@ public class MedicalSlot {
 
     @Column(name = "current_slots")
     private Integer currentSlots;
+
+    @OneToMany(mappedBy = "medicalSlot")
+    private Set<Contemplation> contemplations = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "id_medical_procedure", updatable = false)
