@@ -17,10 +17,11 @@ public class PriorityConverter implements AttributeConverter<Priorities, Integer
             case MAIS_DE_QUATRO_MESES -> 1;
             case URGENCIA -> 2;
             case RETORNO -> 3;
-            case IDADE -> 4;
-            case SITUACAO_SOCIAL -> 5;
-            case SEXO -> 6;
-            case ELETIVO -> 7;
+            case PRIORITARIO -> 4;
+            case IDADE -> 5;
+            case SITUACAO_SOCIAL -> 6;
+            case SEXO -> 7;
+            case ELETIVO -> 8;
         };
     }
 
@@ -34,10 +35,11 @@ public class PriorityConverter implements AttributeConverter<Priorities, Integer
             case 1 -> Priorities.MAIS_DE_QUATRO_MESES;
             case 2 -> Priorities.URGENCIA;
             case 3 -> Priorities.RETORNO;
-            case 4 -> Priorities.IDADE;
-            case 5 -> Priorities.SITUACAO_SOCIAL;
-            case 6 -> Priorities.SEXO;
-            case 7 -> Priorities.ELETIVO;
+            case 4 -> Priorities.PRIORITARIO;
+            case 5 -> Priorities.IDADE;
+            case 6 -> Priorities.SITUACAO_SOCIAL;
+            case 7 -> Priorities.SEXO;
+            case 8 -> Priorities.ELETIVO;
             default -> throw new IllegalStateException("Unexpected value: " + dbData);
         };
 
