@@ -4,18 +4,19 @@
 
 <head th:replace="~{fragments/template :: head}"></head>
 
-<body class="flex w-screen h-screen items-center bg-blue-800">
-    <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
-    <main class="flex flex-col justify-between h-screen w-full mx-auto bg-white">
-        <header th:replace="~{fragments/navbar :: header}"></header>
-        <div class="flex flex-col justify-between container h-screen w-full mx-auto bg-white py-8">
-            <section class="flex flex-1 bg-slate-100 my-8">
-
-            </section>
-            <section class="flex flex-1 bg-slate-100 my-8">
-
-            </section>
-        </div>
+<body id="body" class="flex w-screen h-screen items-center bg-blue-800 absolute">
+    <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+    <main class="flex flex-col h-full w-full relative">
+        <!--Wrap Container -->
+        <section class="flex flex-col h-screen w-full overflow-y-scroll no-scrollbar">
+            <header th:replace="~{fragments/navbar :: header}"></header>
+            <div class="flex flex-col justify-center items-center h-screen w-full bg-white xl:block xl:w-1/2">
+                <div class="inline-flex gap-2 items-center">
+                    <div class="w-8 h-8 border-4 border-x-4 border-slate-200 border-solid rounded-full animate-spin border-x-slate-700"></div>
+                    <p class="text-2xl text-slate-700 font-bold">Dashboard em construção</p>
+                </div>
+            </div>
+        </section>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </body>
