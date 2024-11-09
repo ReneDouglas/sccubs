@@ -13,7 +13,6 @@
             <div id="search-panel">
                 <div th:replace="~{sessionManagement/sessionFragments/systemUserList-search :: systemUser-search}"></div>
             </div>
-            <hr style="height: 2px; background-color: #333; width: 70%; margin: 20px auto 20px 0;">
             <div id="datatable-panel">
                 <div th:replace="~{sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable}"></div>
                 <p th:if="${message}" th:text="${message}"></p>

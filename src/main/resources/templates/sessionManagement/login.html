@@ -4,47 +4,45 @@
 
 <head th:replace="~{fragments/template :: head}"><title>Login</title></head>
 
-<body class="flex flex-col h-screen w-full justify-evenly items-center bg-slate-900">
-
+<body class="flex flex-col h-screen w-full items-center bg-slate-900">
     <!--Start Container Principal-->
-    <main class="flex flex-col w-full h-screen mx-auto justify-center items-center">
+    <main class="flex flex-col h-screen w-full justify-center flex1 sm:items-center sm:p-4">
         <!--Start Card -->
-        <section class="flex flex-col h-2/8 w-1/4 justify-evenly items-center bg-white rounded-lg drop-shadow-xl py-10 px-10 space-y-4">
-            <div class=" flex flex-col justify-center items-center space-y-2">
-                <a href=""><img class="w-36 transition hover:opacity-80" th:src="@{/images/logo-v2.svg}" alt="logo-principal"></a>
-                <a href="/"><img class="w-36 transition hover:opacity-80" th:src="@{/images/siga-ubs.svg}" alt="nome-logo-principal"></a>
+        <section class="flex sm:relative flex-col justify-center items-center space-y-4 h-full bg-white p-4 sm:h-auto sm:w-96 sm:rounded-lg">
+            <div class="flex flex-col justify-center items-center space-y-2">
+                <a href="/"><img class="w-32" th:src="@{/images/logo-v2.svg}" alt="logo-principal"></a>
+                <a href="/"><img class="w-36" th:src="@{/images/siga-ubs.svg}" alt="nome-logo-principal"></a>
             </div>
-            <form class="flex flex-col w-full rounded-lg justify-between items-center px-4 space-y-6 pb-6 " th:action="@{/login}" method="post">
+            <form class="flex flex-col items-center space-y-4 sm:w-96 sm:px-8 " th:action="@{/login}" method="post">
 
-                    <input id="username" name="username" type="text" placeholder="Nome de Usuário"
-                           class=" rounded-lg border border-stroke py-2 pl-4 w-full outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg">
+                <input id="username" name="username" type="text" placeholder="Nome de Usuário"
+                       class="block w-64 sm:w-full rounded-lg border-2 border-stroke py-2 pl-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:drop-shadow-lg  focus:border-white focus:ring-blue-500 transition transition-300">
+
+                <input id="password" name="password" type="password" placeholder="Senha"
+                       class="block w-64 sm:w-full rounded-lg border-2 border-stroke py-2 pl-2 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:drop-shadow-lg  focus:border-white focus:ring-blue-500 transition transition-300">
 
 
-
-                        <input id="password" name="password" type="password" placeholder="Senha"
-                               class=" rounded-lg border border-stroke py-2 pl-4 w-full outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg">
-
-                        <div th:if="${param.error}" class="flex bg-red-200 w-full m-2 rounded-lg p-2 justify-center">
-                            <p  class="error text-red-500">Usuário ou senha incorretos.</p>
-                        </div>
-
-                    <input type="hidden"
-                           th:name="${_csrf.parameterName}"
-                           th:value="${_csrf.token}"/>
-
-                    <input type="submit" value="Entrar"
-                           class="mt-2 rounded-lg bg-slate-900 py-2 px-8 text-white cursor-pointer transition duration-200 hover:bg-blue-500">
-
+                <input type="submit" value="Entrar"
+                       class="w-full py-2 px-4 rounded-lg bg-slate-900 text-white cursor-pointer active:bg-blue-400 hover:bg-blue-500 transition transition-300">
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
+                <div class="text-nowrap text-sm">
+                    <span class="text-gray-500">Esqueceu a Senha? <a href="/" class="text-blue-500 hover:text-slate-900 transition transition-300">Recuperar</a> </span>
+                </div>
             </form>
-            <div class="text-center">
-                <span class="text-gray-500">Esqueceu a Senha? <a href="/" class="text-blue-500 hover:text-slate-900">Recuperar</a> </span>
-            </div>
         </section>
+        <div th:if="${param.error}"
+             class="inline-flex justify-center items-center bg-red-200 sm:text-md text-xs border-t-2 hover:bg-red-100 border-red-400 w-64 sm:w-96 h-10 rounded-lg p-2 absolute left-1/2 bottom-16 sm:bottom-20 transform -translate-x-1/2 transition-all duration-300">
+            <span class="material-symbols-outlined inline-block align-middle text-red-400 mr-2">report</span>
+            <span class="error text-red-500">Usuário ou senha incorretos.</span>
+        </div>
+
     </main>
 
-    <div class="flex h-20 mx-auto w-full">
-        <footer th:replace="~{fragments/footer :: footer}"></footer>
-    </div>
+    <footer class="flex items-center justify-center text-xs h-12 sm:h-16 mx-auto w-full bg-slate-950 text-white text-nowrap">
+        <a href="/" class="hover:text-blue-500 transition transition-300">© 2024 Halotec. Todos os direitos reservados.</a>
+    </footer>
 
 </body>
 </html>

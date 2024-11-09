@@ -3,12 +3,12 @@
        @mouseenter="open = true"
        @mouseleave="open = false"
        id="sidebar" th:fragment="sidebar"
-       class="flex flex-col absolute z-9999 left-0 top-0 justify-between h-screen p-4 bg-slate-900 sm:static overflow-hidden transition-all duration-300 ease-in-out">
+       class="px-2.5 flex flex-col absolute z-9999 left-0 top-0 justify-between h-screen pb-2.5 bg-slate-900 sm:static overflow-hidden transition-all duration-300 ease-in-out">
     
-    <div class="flex flex-col h-screen space-y-4">
+    <div class="flex flex-col h-screen justify-between flex-wrap overflow-hidden">
         <div class="flex flex-col w-full h-24 justify-center items-center">
 
-            <button @click="open = !open" x-show="!open" class="bg-white grid place-items-center h-6 w-6 text-slate-900 m-2-6 absolute rounded-full">
+            <button @click="open = !open" x-show="!open" class="bg-white grid place-items-center h-6 w-6 text-slate-900 m-2 absolute rounded-full">
                 <svg  class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
@@ -21,114 +21,73 @@
         </div>
 
         <!--Buttons-Section--->
-        <div class="flex flex-col flex-1 space-y-4 transition-all duration-300 ease-in-out">
+        <div class="flex flex-col flex-1 space-y-2.5 overflow-auto">
             <!--Dashboard Item-->
-            <a th:href="@{/#}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span  class="material-symbols-outlined inline-block align-middle">dashboard</span>
-                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Dashboard</span>
+            <a th:href="@{/#}" class="bg-slate-950 inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span  class="material-symbols-outlined inline-block align-middle ">dashboard</span>
+                <span :class="open ? 'block' : 'hidden'" class="text-nowrap ">Dashboard</span>
             </a>
-            <hr class="text-slate-600">
 
             <!--User Item-->
-            <a  th:href="@{/systemUser-insert}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
+            <a  th:href="@{/systemUser-insert}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
                 <span class="material-symbols-outlined inline-block align-middle">account_circle</span>
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Usuários</span>
             </a>
 
-            <!--                RotaPreservada-->
-            <!--                <a th:href="@{/systemUser-list}" class="text-sm inline-flex items-center tracking-wide py-2 text-white ml-2 hover:text-blue-400">-->
-            <!--                    <span class="material-symbols-outlined text-green-400 inline-block align-middle">search</span>-->
-            <!--                    <span>Buscar Usuário</span>-->
-            <!--                </a>-->
-
-<!--            &lt;!&ndash;Patient Item Accordion&ndash;&gt;-->
-<!--            <div class="accordion-item">-->
-<!--                <button class="accordion-header inline-flex flex-nowrap text-sm font-medium tracking-wide w-full p-1 text-white justify-between items-center hover:bg-white hover:text-slate-900 hover:rounded-lg active:bg-opacity-85 cursor-pointer">-->
-<!--                    <div class="inline-flex items-center gap-x-2">-->
-<!--                        <span class="material-symbols-outlined inline-block align-middle">accessibility_new</span>-->
-<!--                        <span :class="open ? 'block' : 'hidden'"  class="textMenu">Pacientes</span>-->
-<!--                    </div>-->
-<!--                    <div :class="open ? 'block' : 'hidden'" >-->
-<!--                        <span class="arrow material-symbols-outlined transform transition-transform duration-500">keyboard_arrow_down</span>-->
-<!--                    </div>-->
-<!--                </button>-->
-<!--                <div class="accordion-content flex flex-col w-full pl-2 mt-1 h-0 overflow-hidden">-->
-<!--                    <a th:href="@{/patient-management}" class="inline-flex text-sm tracking-wide gap-2 p-2 text-white hover:text-blue-400">-->
-<!--                        <span class="material-symbols-outlined text-blue-400 inline-block align-middle">add</span>-->
-<!--                        <span :class="open ? 'block' : 'hidden'"  class="textMenu">Novo Paciente</span>-->
-<!--                    </a>-->
-<!--                    <a th:href="@{/patient-list}" class="inline-flex text-sm tracking-wide gap-2 p-2 text-white hover:text-green-400">-->
-<!--                        <span class="material-symbols-outlined text-green-400 inline-block align-middle">search</span>-->
-<!--                        <span :class="open ? 'block' : 'hidden'"  class="textMenu">Buscar Pacientes</span>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--            </div>-->
-
-            <a th:href="@{/patient-management}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span class="material-symbols-outlined inline-block align-middle">add</span>
+            <!--New Patient Item-->
+            <a th:href="@{/patient-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">add</span>
                 <span :class="open ? 'block' : 'hidden'"  class="text-nowrap">Novo Paciente</span>
             </a>
-            <a th:href="@{/patient-list}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span class="material-symbols-outlined inline-block align-middle">search</span>
+
+            <!--Search Patient Item-->
+            <a th:href="@{/patient-list}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">search</span>
                 <span :class="open ? 'block' : 'hidden'"  class="text-nowrap">Buscar Pacientes</span>
             </a>
 
             <!--UBS Item-->
-            <a  th:href="@{/basicHealthUnit-management}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span class="material-symbols-outlined inline-block align-middle">apartment</span>
+            <a  th:href="@{/basicHealthUnit-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">apartment</span>
                 <span :class="open ? 'block' : 'hidden'">UBS</span>
             </a>
 
             <!--Appointment Item-->
-            <a  th:href="@{/appointment-management}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span class="material-symbols-outlined inline-block align-middle">heart_plus</span>
+            <a  th:href="@{/appointment-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-red-600">heart_plus</span>
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Marcação</span>
             </a>
 
-
             <!--Specialty Item-->
-            <a th:href="@{/specialty-management}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span class="material-symbols-outlined inline-block align-middle">health_and_safety</span>
+            <a th:href="@{/specialty-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-green-600">health_and_safety</span>
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Especialidades</span>
             </a>
 
-<!--            &lt;!&ndash;Manage Specialty Item&ndash;&gt;-->
-<!--            <a class="text-sm inline-flex flex-nowrap items-center p-1 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">-->
-<!--                <span class="material-symbols-outlined inline-block align-middle mr-4">manage_search</span>-->
-<!--                <span>Listar Especialidades</span>-->
-<!--            </a>-->
-
             <!--MedicalSlot Item-->
-            <a  th:href="@{/medicalSlot-management}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span class="material-symbols-outlined inline-block align-middle">note_stack_add</span>
+            <a  th:href="@{/medicalSlot-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">note_stack_add</span>
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Vagas Médicas</span>
             </a>
 
             <!--Contemplation Item-->
-            <a  th:href="@{/contemplation-management}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span class="material-symbols-outlined inline-block align-middle">groups</span>
+            <a  th:href="@{/contemplation-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">groups</span>
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Contemplados</span>
             </a>
 
             <!--Queue Item-->
-            <a  th:href="@{/queue-management}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-                <span class="material-symbols-outlined inline-block align-middle">patient_list</span>
+            <a  th:href="@{/queue-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">patient_list</span>
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Filas de Espera</span>
             </a>
         </div>
         <!--Buttons-Section End----->
-
-
-        <!--Loggout-Section-->
-        <div class="flex flex-col space-y-2 overflow-hidden">
-            <a th:href="@{/logout}" class="text-sm inline-flex flex-nowrap items-center p-1 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden">
-<!--                <button class="flex flex-1 items-center w-full gap-x-2">-->
-                    <span class="material-symbols-outlined inline-block align-middle">logout</span>
-                    <p :class="open ? 'block' : 'hidden'" class="text-nowrap">Sair</p>
-<!--                </button>-->
-            </a>
-        </div>
-            <!--Loggout End-->
-
+    </div>
+    <div class="flex flex-col flex-1 mt-2.5">
+        <a th:href="@{/logout}" class="text-sm inline-flex flex-nowrap p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle">logout</span>
+                <p :class="open ? 'block' : 'hidden'" class="text-nowrap">Sair</p>
+        </a>
     </div>
 </aside>

@@ -32,10 +32,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     links.forEach(link => {
         if (link.getAttribute('href') === currentUrl) {
-            link.classList.add('bg-blue-300', 'text-slate-900', 'rounded-lg');
-            link.classList.remove('text-white');
+            link.classList.add('bg-blue-500', 'rounded-lg');
         } else {
-            link.classList.remove('bg-blue-300');
+            link.classList.remove('bg-blue-400');
             link.classList.add('text-white', 'active:bg-opacity-85');
         }
     });
