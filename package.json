@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build:postcss": "postcss src/main/resources/static/css/style.tailwind.css -o target/classes/static/css/style.build.tailwind.css",
+    "build:postcss": "postcss src/main/resources/static/css/style.tailwind.css -o target/classes/static/css/style.build.tailwind.css --minify",
     "watch:postcss": "postcss src/main/resources/static/css/style.tailwind.css -o target/classes/static/css/style.build.tailwind.css -w"
   },
   "keywords": [],

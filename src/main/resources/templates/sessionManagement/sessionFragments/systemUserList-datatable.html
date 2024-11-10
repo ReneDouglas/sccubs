@@ -31,11 +31,11 @@
                 <td th:text="${user.basicHealthUnit} ? ${user.basicHealthUnit.name} : 'Desvinculado'"></td>
                 <td th:text="${user.active ? 'Sim' : 'Não'}"></td>
                 <td>
-                    <form th:action="@{/systemUser-insert}" method="post" style="display:inline;">
+                    <form th:action="@{/systemUser-management}" method="post" style="display:inline;">
                         <input type="hidden" name="id" th:value="${user.id}"/>
                         <button type="submit">Editar</button>
                     </form>
-                    <form th:action="@{/systemUser-list/delete}" method="post" style="display:inline;">
+                    <form th:action="@{/systemUser-management/delete}" method="post" style="display:inline;">
                         <input type="hidden" name="id" th:value="${user.id}"/>
                         <button type="submit">Deletar</button>
                     </form>
@@ -58,11 +58,5 @@
             <a href="" id="nextPage" th:disabled="${!systemUsersPage.hasNext()}" onclick="goToNextPage(event)">Próximo</a>
         </div>
     </div>
-
-    <a th:fragment="paging(pageNum, label, tooltip)" class="page-link"
-       th:href="@{'/tutorials?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} + 'page=' + ${pageNum} + '&size=' + ${pageSize}}"
-       th:title="${tooltip}" rel="tooltip">
-        [[${label}]]
-    </a>
 </body>
 </html>

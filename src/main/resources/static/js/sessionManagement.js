@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let currentPage = 0; // Use currentPage instead of page
 
     function updateTable(queryString) {
-        fetch(`/systemUser-list?${queryString}`, {
+        fetch(`/systemUser-management?${queryString}`, {
             method: "GET",
             headers: {
                 "X-Requested-With": "searchRequest"

@@ -18,8 +18,7 @@ public final class UrlPatternConfig {
 
     public static final String[] PRIVATE_MATCHERS = {
             "/",
-            "/systemUser-insert/**",
-            "/systemUser-list/**",
+            "/systemUser-management/**",
             "/basicHealthUnit-management/**",
             "/patient-management/**",
             "/patient-list/**",

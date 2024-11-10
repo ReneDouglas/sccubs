@@ -5,7 +5,7 @@
 <head th:replace="~{fragments/template :: head}"></head>
 <body>
     <div th:fragment="systemUser-search">
-        <form id="searchForm" th:action="@{/systemUser-list}" th:object="${systemUser}" th:method="get">
+        <form id="searchForm" th:action="@{/systemUser-management}" th:object="${searchUser}" th:method="get">
             <label for="username">Login:</label>
             <input type="text" id="username" th:field="*{username}" name="username">
 
