@@ -8,7 +8,7 @@
     <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
 
     <!-- Main Container-->
-    <main class="flex flex-col h-full w-full">
+    <main class="flex flex-col h-full w-full overflow-hidden">
         <header th:replace="~{fragments/header :: header}"></header>
 
         <!--Wrap Container -->
@@ -117,15 +117,18 @@
                     </label>
 
                     <!--Start Card Formulario Busca e Listagem-->
-                    <div class="flex flex-col justify-center peer-checked:max-h-screen max-h-0 overflow-hidden overscroll-contain transition-max-height duration-500 ease-in-out">
+                    <div class="flex flex-col justify-center peer-checked:max-h-full max-h-0 overflow-hidden overscroll-contain transition-max-height duration-500 ease-in-out">
                         <div id="search-panel">
                             <div th:replace="~{sessionManagement/sessionFragments/systemUserList-search :: systemUser-search}"></div>
                         </div>
-
-                        <div class="pb-4 px-4 rounded-lg" id="datatable-panel">
-                            <div th:replace="~{sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable}"></div>
+                        <div class="mt-2">
+                            <div class="pb-4 px-4 rounded-lg" id="datatable-panel">
+                                <div th:replace="~{sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable}"></div>
+                            </div>
                         </div>
+
                     </div>
+
                 </div>
             </div>
         </section>
