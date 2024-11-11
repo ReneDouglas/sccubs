@@ -3,9 +3,9 @@
        @mouseenter="open = true"
        @mouseleave="open = false"
        id="sidebar" th:fragment="sidebar"
-       class="px-2.5 flex flex-col absolute z-9999 left-0 top-0 justify-between h-screen pb-2.5 bg-slate-900 sm:static overflow-hidden transition-all duration-300 ease-in-out">
+       class="hidden flex-col absolute z-9999 left-0 top-0 justify-between h-full pb-2.5 px-2.5 bg-slate-900 md:static md:flex overflow-auto transition-all duration-300 ease-in-out">
     
-    <div class="flex flex-col h-screen justify-between flex-wrap overflow-hidden">
+    <div class="flex flex-col h-screen justify-between flex-wrap overflow-hidden overscroll-contain">
         <div class="flex flex-col w-full h-24 justify-center items-center">
 
             <button @click="open = !open" x-show="!open" class="bg-white grid place-items-center h-6 w-6 text-slate-900 m-2 absolute rounded-full">
@@ -36,13 +36,15 @@
 
             <!--New Patient Item-->
             <a th:href="@{/patient-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
-                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">add</span>
+<!--                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">add</span>-->
+                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">personal_injury</span>
                 <span :class="open ? 'block' : 'hidden'"  class="text-nowrap">Novo Paciente</span>
             </a>
 
             <!--Search Patient Item-->
             <a th:href="@{/patient-list}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
-                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">search</span>
+<!--                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">search</span>-->
+                <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">conditions</span>
                 <span :class="open ? 'block' : 'hidden'"  class="text-nowrap">Buscar Pacientes</span>
             </a>
 
@@ -84,7 +86,7 @@
         </div>
         <!--Buttons-Section End----->
     </div>
-    <div class="flex flex-col flex-1 mt-2.5">
+    <div class="flex flex-col flex-1 mt-2.5 bg-white bg-opacity-5 rounded-lg">
         <a th:href="@{/logout}" class="text-sm inline-flex items-center flex-nowrap p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
             <span class="material-symbols-outlined inline-block align-middle hover:text-red-500">logout</span>
             <p :class="open ? 'block' : 'hidden'" class="text-nowrap">Sair</p>

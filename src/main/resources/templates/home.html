@@ -4,20 +4,20 @@
 
 <head th:replace="~{fragments/template :: head}"></head>
 
-<body id="body" class="flex w-screen h-screen items-center bg-blue-800">
+<body id="body" class="flex w-screen h-dvh items-center">
     <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
     <main class="flex flex-col h-full w-full">
         <!--Wrap Container -->
         <section class="flex flex-col h-screen w-full justify-center items-center overflow-hidden">
-            <header th:replace="~{fragments/navbar :: header}"></header>
+            <header th:replace="~{fragments/header :: header}"></header>
             <div class="flex flex-col flex-1 justify-center items-center h-full w-full bg-white">
-                <div class="flex gap-2 justify-center">
+                <div class="flex flex-col sm:flex-row gap-2 justify-center items-center">
                     <div class="w-8 h-8 border-4 border-x-4 border-slate-200 border-solid rounded-full animate-spin border-x-slate-700"></div>
-                    <p class="text-2xl text-slate-700 font-bold">Dashboard em construção</p>
+                    <p class="text-xl text-slate-700 font-bold">Dashboard em construção</p>
                 </div>
             </div>
         </section>
-        <footer th:replace="~{fragments/footer :: footer}"></footer>
+<!--        <footer th:replace="~{fragments/footer :: footer}"></footer>-->
     </main>
 </body>
 </html>

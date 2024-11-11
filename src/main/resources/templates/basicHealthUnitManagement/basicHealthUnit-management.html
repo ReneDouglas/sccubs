@@ -4,7 +4,7 @@
 <body class="flex w-full min-h-screen justify-between bg-slate-900">
     <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
     <main class="flex flex-col w-full mx-auto bg-slate-100">
-        <header th:replace="~{fragments/navbar :: header}"></header>
+        <header th:replace="~{fragments/header :: header}"></header>
         <th:block th:switch="${error}">
             <div th:case="${false}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
                 <div class="bg-green-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
