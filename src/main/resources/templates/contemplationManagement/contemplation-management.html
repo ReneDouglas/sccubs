@@ -155,6 +155,16 @@
         document.getElementById(tabId).classList.remove('hidden');
     }
 
+    function showModalTab(tabId) {
+
+        document.getElementById('patient-details').classList.add('hidden');
+        document.getElementById('appointment-details').classList.add('hidden');
+        //document.getElementById('patientHistory-details').classList.add('hidden');
+
+        // Mostra o conteúdo da aba clicada
+        document.getElementById(tabId).classList.remove('hidden');
+    }
+
     function openModal(observacoes) {
         let modal = document.getElementById("default-modal");
         let modalObservacoes = modal.querySelector("#modal-observacoes")
@@ -166,8 +176,14 @@
 
     }
 
+    // function closeModal() {
+    //     let modal = document.getElementById("default-modal");
+    //     modal.classList.add("opacity-0");
+    //     modal.classList.add("hidden");
+    //     modal.classList.remove("flex");
+    // }
     function closeModal() {
-        let modal = document.getElementById("default-modal");
+        let modal = document.getElementById("patientAppointment-modal");
         modal.classList.add("opacity-0");
         modal.classList.add("hidden");
         modal.classList.remove("flex");

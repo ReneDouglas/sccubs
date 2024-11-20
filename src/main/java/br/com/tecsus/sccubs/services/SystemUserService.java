@@ -10,7 +10,6 @@ import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.exceptions.InvalidConfirmPasswordException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -149,4 +149,9 @@ public class SystemUserService implements UserDetailsService {
         systemUserRepository.saveAll(systemUsers);
     }
 
+    @Transactional(readOnly = true)
+    public boolean validateSystemUserByPassword(String password, SystemUserDetails loggedUser) {
+        SystemUser su = systemUserRepository.findByUsername(loggedUser.getUsername()).orElse(new SystemUser());
+        return passwordEncoder.matches(password, su.getPassword());
+    }
 }

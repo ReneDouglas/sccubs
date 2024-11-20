@@ -9,9 +9,8 @@
             <th class="px-4">Contato</th>
             <th class="px-4">CPF</th>
             <th class="px-4">Cartão SUS</th>
-            <th class="px-4">Logradouro</th>
-            <th class="px-4">Situação Social</th>
-            <th class="px-4">ACS</th>
+            <th class="px-4">Data de Nascimento</th>
+            <th class="px-4">ACS Responsável</th>
             <th class="rounded-r-lg">Ações</th>
         </tr>
         </thead>
@@ -24,8 +23,7 @@
             <td class="px-4" th:text="${patient.phoneNumber}"></td>
             <td class="px-4" th:text="${patient.cpf}"></td>
             <td class="px-4" th:text="${patient.susNumber}"></td>
-            <td class="px-4" th:text="${patient.addressStreet}"></td>
-            <td class="px-4" th:text="${patient.socialSituationRating.getDescription()}"></td>
+            <td class="px-4" th:text="${patient.getBirthDateWithAge()}"></td>
             <td class="px-4" th:text="${patient.acsName}"></td>
             <td class="inline-flex gap-x-2 items-baseline justify-center">
                 <div class="relative group">

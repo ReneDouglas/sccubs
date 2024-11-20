@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -50,5 +51,9 @@ public class MedicalSlotService {
 
     public MedicalSlot findAvailableSlots(MedicalSlot medicalSlot) {
         return medicalSlotRepository.findByMedicalProcedureAndBasicHealthUnitAndContemplationsIsNull(medicalSlot.getMedicalProcedure(), medicalSlot.getBasicHealthUnit());
+    }
+
+    public Optional<MedicalSlot> findAvailableSlotsV2(MedicalSlot medicalSlot) {
+        return medicalSlotRepository.findAvailableSlotsByMedicalProcedureAndUBS(medicalSlot.getMedicalProcedure().getId(), medicalSlot.getBasicHealthUnit().getId());
     }
 }

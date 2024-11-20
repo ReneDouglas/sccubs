@@ -13,6 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -186,6 +188,27 @@ public class SessionController {
         }
 
         return "redirect:/systemUser-management";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
+    @PostMapping("/systemUser-management/validate")
+    public ResponseEntity<String> validateSystemUserByPassword(@RequestParam String password,
+                                                       @AuthenticationPrincipal SystemUserDetails loggedUser){
+
+        try {
+            log.info("Validando senha do usuário: {}", loggedUser.getName());
+            boolean isValid = systemUserService.validateSystemUserByPassword(password, loggedUser);
+            if (isValid) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.badRequest()
+                        .body("Senha inválida");
+            }
+        } catch (Exception e) {
+            log.error("Erro ao validar senha: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao validar senha.");
+        }
     }
 
 }

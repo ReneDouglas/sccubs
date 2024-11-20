@@ -37,7 +37,7 @@ public class MedicalSlotRepositoryCustomImpl implements MedicalSlotRepositoryCus
         medicalSlotIdsQueryPaginated.setMaxResults(page.getPageSize());
 
         var medicalSlotIdsPaginated = medicalSlotIdsQueryPaginated.getResultList();
-        long totalCountMedicalSlots = page.getPageSize();
+        long totalCountMedicalSlots = medicalSlotIdsPaginated.size();
 
         if (medicalSlotIdsPaginated.size() >= page.getPageSize()) {
             TypedQuery<Long> count = entityManager.createQuery("""

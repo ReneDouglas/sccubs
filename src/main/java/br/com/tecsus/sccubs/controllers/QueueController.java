@@ -1,23 +1,30 @@
 package br.com.tecsus.sccubs.controllers;
 
+import br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO;
 import br.com.tecsus.sccubs.entities.*;
+import br.com.tecsus.sccubs.enums.Priorities;
 import br.com.tecsus.sccubs.enums.ProcedureType;
-import br.com.tecsus.sccubs.services.AppointmentService;
-import br.com.tecsus.sccubs.services.BasicHealthUnitService;
-import br.com.tecsus.sccubs.services.MedicalSlotService;
-import br.com.tecsus.sccubs.services.SpecialtyService;
+import br.com.tecsus.sccubs.security.SystemUserDetails;
+import br.com.tecsus.sccubs.services.*;
+import br.com.tecsus.sccubs.services.exceptions.CancelContemplationException;
 import br.com.tecsus.sccubs.utils.DefaultValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -28,13 +35,15 @@ public class QueueController {
     private final MedicalSlotService medicalSlotService;
     private final List<BasicHealthUnit> basicHealthUnits;
     private final List<Specialty> specialties;
+    private final ContemplationService contemplationService;
 
     @Autowired
-    public QueueController(BasicHealthUnitService basicHealthUnitService, SpecialtyService specialtyService, List<BasicHealthUnit> basicHealthUnits, List<Specialty> specialties, AppointmentService appointmentService, MedicalSlotService medicalSlotService) {
+    public QueueController(BasicHealthUnitService basicHealthUnitService, SpecialtyService specialtyService, AppointmentService appointmentService, MedicalSlotService medicalSlotService, ContemplationService contemplationService) {
         this.basicHealthUnits = basicHealthUnitService.findAllUBS();
         this.specialties = specialtyService.findSpecialties();
         this.appointmentService = appointmentService;
         this.medicalSlotService = medicalSlotService;
+        this.contemplationService = contemplationService;
     }
 
     @GetMapping("/queue-management")
@@ -48,6 +57,40 @@ public class QueueController {
         model.addAttribute("hide", "hidden");
 
         return "queueManagement/queue-management";
+    }
+
+    @GetMapping("/queue-management/v2")
+    public String getQueuePageV2(Model model,
+                                 @RequestParam(required = false) Long basicHealthUnit,
+                                 @RequestParam(required = false) Long specialty,
+                                 @RequestParam(required = false) Long medicalProcedure,
+                                 @RequestParam(required = false) String procedureType) {
+
+        model.addAttribute("basicHealthUnits", this.basicHealthUnits);
+        model.addAttribute("specialties", this.specialties);
+
+        if (basicHealthUnit == null && specialty == null && medicalProcedure == null && procedureType == null) {
+            model.addAttribute("queuePage", new PageImpl<>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
+        } else {
+            var queuePage = appointmentService
+                    .findOpenAppointmentsQueuePaginatedV2(
+                            basicHealthUnit,
+                            specialty,
+                            medicalProcedure,
+                            PageRequest.of(0, DefaultValues.PAGE_SIZE));
+            List<MedicalProcedure> procedures = loadProcedures(procedureType, specialty);
+
+            model.addAttribute("queuePage", queuePage);
+            model.addAttribute("selectedUBS", basicHealthUnit);
+            model.addAttribute("selectedSpecialty", specialty);
+            model.addAttribute("selectedMedicalProcedure", medicalProcedure);
+            model.addAttribute("selectedProcedureType", procedureType);
+            model.addAttribute("procedures", procedures);
+
+        }
+
+        return "queueManagement/queue-management-v2";
+
     }
 
     @GetMapping("/queue-management/search")
@@ -75,6 +118,9 @@ public class QueueController {
                         specialty,
                         PageRequest.of(0, DefaultValues.PAGE_SIZE));
 
+        var totalProceduresType = appointmentService.findProcedureTypeTotal(basicHealthUnit, specialty);
+        var totalMedicalProcedures = appointmentService.findMedicalProceduresTotal(basicHealthUnit, specialty);
+
         model.addAttribute("selectedUBS", basicHealthUnit);
         model.addAttribute("basicHealthUnits", this.basicHealthUnits);
         model.addAttribute("selectedSpecialty", specialty);
@@ -82,9 +128,38 @@ public class QueueController {
         model.addAttribute("consultasPage", consultas);
         model.addAttribute("examesPage", exames);
         model.addAttribute("cirurgiasPage", cirurgias);
+        model.addAttribute("totalProceduresType", totalProceduresType);
+        model.addAttribute("totalMedicalProcedures", totalMedicalProcedures);
         model.addAttribute("hide", "hidden");
 
         return "queueManagement/queue-management";
+    }
+
+    @GetMapping("/queue-management/v2/search")
+    public String searchOpenAppointmentsQueueV2(@RequestParam Long basicHealthUnit,
+                                                @RequestParam Long specialty,
+                                                @RequestParam Long medicalProcedure,
+                                                @RequestParam String procedureType,
+                                                Model model) {
+
+
+        var queuePage = appointmentService
+                .findOpenAppointmentsQueuePaginatedV2(
+                        basicHealthUnit,
+                        specialty,
+                        medicalProcedure,
+                        PageRequest.of(0, DefaultValues.PAGE_SIZE));
+
+
+        model.addAttribute("selectedUBS", basicHealthUnit);
+        model.addAttribute("basicHealthUnits", this.basicHealthUnits);
+        model.addAttribute("selectedSpecialty", specialty);
+        model.addAttribute("selectedMedicalProcedure", medicalProcedure);
+        model.addAttribute("selectedProcedureType", procedureType);
+        model.addAttribute("specialties", this.specialties);
+        model.addAttribute("queuePage", queuePage);
+
+        return "queueManagement/queueFragments/queue-tabs-v2 :: queue-datatable";
     }
 
     @GetMapping("/queue-management/paginated")
@@ -129,23 +204,161 @@ public class QueueController {
         return "queueManagement/queue-management";
     }
 
+    @GetMapping("/queue-management/v2/paginated")
+    public String getOpenAppointmentsQueuePaginatedV2(Model model,
+                                                    @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                                    @RequestParam(value = "size", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int size,
+                                                    @RequestParam(value = "ubs") Long ubs,
+                                                    @RequestParam(value = "specialty") Long specialty,
+                                                    @RequestParam(value = "medicalProcedure") Long medicalProcedure,
+                                                    @RequestParam(value = "procedureType") String procedureType) {
+
+        model.addAttribute("selectedUBS", ubs);
+        model.addAttribute("selectedSpecialty", specialty);
+        model.addAttribute("selectedMedicalProcedure", medicalProcedure);
+        model.addAttribute("selectedProcedureType", procedureType);
+
+        model.addAttribute("queuePage", appointmentService
+                .findOpenAppointmentsQueuePaginatedV2(
+                        ubs,
+                        specialty,
+                        medicalProcedure,
+                        PageRequest.of(page, size)));
+
+        return "queueManagement/queueFragments/queue-tabs-v2 :: queue-datatable";
+    }
+
     @GetMapping("/queue-management/{id}/load")
     public String loadOpenAppointment(@PathVariable long id,
-                                   @RequestParam Long ubs,
-                                   @RequestParam Long specialty,
-                                   Model model) {
+                                      @RequestParam Long ubs,
+                                      @RequestParam Long specialty,
+                                      Model model) {
 
         Appointment appointment = appointmentService.findById(id);
         MedicalSlot medicalSlot = new MedicalSlot();
         medicalSlot.setMedicalProcedure(appointment.getMedicalProcedure());
         medicalSlot.setBasicHealthUnit(appointment.getPatient().getBasicHealthUnit());
 
+        List<PatientOpenAppointmentDTO> patientOpenAppointments = appointmentService.findPatientOpenAppointments(appointment.getPatient().getId());
+        patientOpenAppointments.removeIf(openAppt -> openAppt.appointmentId().equals(id));
+
+        Optional<MedicalSlot> availableSlots = medicalSlotService.findAvailableSlotsV2(medicalSlot);
+        int quantity = availableSlots.map(MedicalSlot::getCurrentSlots).orElse(0);
+
         model.addAttribute("selectedUBS", ubs);
         model.addAttribute("selectedSpecialty", specialty);
         model.addAttribute("appointment", appointment);
-        model.addAttribute("availableSlots", medicalSlotService.findAvailableSlots(medicalSlot).getCurrentSlots());
+        model.addAttribute("isContemplated", false);
+        model.addAttribute("availableSlots", quantity);
+        model.addAttribute("medicalSlotId", medicalSlot.getId());
+        model.addAttribute("patientOpenAppointments", patientOpenAppointments);
 
         return "queueManagement/queueFragments/patientAppointment-info :: patientAppointmentInfo";
+    }
+
+    @GetMapping("/queue-management/v2/{id}/load")
+    public String loadOpenAppointmentV2(@PathVariable long id,
+                                      @RequestParam Long ubs,
+                                      @RequestParam Long specialty,
+                                      @RequestParam Long medicalProcedure,
+                                      @RequestParam String procedureType,
+                                      Model model) {
+
+        Appointment appointment = appointmentService.findById(id);
+        MedicalSlot medicalSlot = new MedicalSlot();
+        medicalSlot.setMedicalProcedure(appointment.getMedicalProcedure());
+        medicalSlot.setBasicHealthUnit(appointment.getPatient().getBasicHealthUnit());
+
+        List<PatientOpenAppointmentDTO> patientOpenAppointments = appointmentService.findPatientOpenAppointments(appointment.getPatient().getId());
+        patientOpenAppointments.removeIf(openAppt -> openAppt.appointmentId().equals(id));
+
+        Optional<MedicalSlot> availableSlots = medicalSlotService.findAvailableSlotsV2(medicalSlot);
+        int quantity = availableSlots.map(MedicalSlot::getCurrentSlots).orElse(0);
+
+        model.addAttribute("selectedUBS", ubs);
+        model.addAttribute("selectedSpecialty", specialty);
+        model.addAttribute("selectedMedicalProcedure", medicalProcedure);
+        model.addAttribute("selectedProcedureType", procedureType);
+        model.addAttribute("appointment", appointment);
+        model.addAttribute("isContemplated", false);
+        model.addAttribute("availableSlots", quantity);
+        model.addAttribute("medicalSlotId", availableSlots.map(MedicalSlot::getId).orElse(null));
+        model.addAttribute("patientOpenAppointments", patientOpenAppointments);
+
+        return "queueManagement/queueFragments/patientAppointment-info :: patientAppointmentInfo";
+    }
+
+    @PostMapping(value = "/queue-management/contemplate")
+    public String contemplateByAdmin(@RequestParam String reason,
+                                     @RequestParam Long ubs,
+                                     @RequestParam Long specialty,
+                                     @RequestParam Long appointmentId,
+                                     @RequestParam Long medicalSlotId,
+                                     @AuthenticationPrincipal SystemUserDetails loggedUser,
+                                     RedirectAttributes redirectAttributes) {
+
+
+        try {
+            log.info("Iniciando contemplação de paciente.");
+            contemplationService.contemplateAppointmentByAdmin(appointmentId, reason, medicalSlotId, loggedUser);
+            redirectAttributes.addFlashAttribute("error", false);
+            redirectAttributes.addFlashAttribute("message", "Paciente contemplado com sucesso.");
+            log.info("Paciente [Appoinment.id={}] contemplado com sucesso pelo usuário[nome={}].", appointmentId, loggedUser.getName());
+        } catch (CancelContemplationException e) {
+            redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute("message", "Erro ao cancelar contemplação.");
+            log.info("Erro ao contemplar paciente [Appoinment.id={}][SystemUser={}].", appointmentId, loggedUser.getName());
+        }
+
+        return "redirect:/queue-management/search?basicHealthUnit=" + ubs + "&specialty=" + specialty;
+    }
+
+    @PostMapping(value = "/queue-management/v2/contemplate")
+    public String contemplateByAdminV2(@RequestParam String reason,
+                                     @RequestParam Long ubs,
+                                     @RequestParam Long specialty,
+                                     @RequestParam Long medicalProcedure,
+                                     @RequestParam String procedureType,
+                                     @RequestParam Long appointmentId,
+                                     @RequestParam Long medicalSlotId,
+                                     @AuthenticationPrincipal SystemUserDetails loggedUser,
+                                     RedirectAttributes redirectAttributes) {
+
+
+        try {
+            log.info("Iniciando contemplação de paciente.");
+            //contemplationService.contemplateAppointmentByAdmin(appointmentId, reason, medicalSlotId, loggedUser);
+            redirectAttributes.addFlashAttribute("error", false);
+            redirectAttributes.addFlashAttribute("message", "Paciente contemplado com sucesso.");
+            log.info("Paciente [Appoinment.id={}] contemplado com sucesso pelo usuário[nome={}].", appointmentId, loggedUser.getName());
+        } catch (CancelContemplationException e) {
+            redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute("message", "Erro ao cancelar contemplação.");
+            log.info("Erro ao contemplar paciente [Appoinment.id={}][SystemUser={}].", appointmentId, loggedUser.getName());
+        }
+
+        return "redirect:/queue-management/v2?basicHealthUnit=" + ubs + "&specialty=" + specialty + "&medicalProcedure=" + medicalProcedure + "&procedureType=" + procedureType;
+    }
+
+    @GetMapping(value = "/queue-management/v2/procedures", produces = MediaType.TEXT_HTML_VALUE)
+    public String loadProcedure(@RequestParam("procedureType") String procedureType,
+                                            @RequestParam("specialty") Long specialtyId,
+                                            Model model) {
+
+        List<MedicalProcedure> procedures = loadProcedures(procedureType, specialtyId);
+        model.addAttribute("procedures", procedures);
+
+        return "queueManagement/queueFragments/medicalProcedures :: medicalProcedures";
+    }
+
+    private List<MedicalProcedure> loadProcedures(String procedureType, Long specialtyId) {
+        if (procedureType.equals(ProcedureType.CONSULTA.toString())) {
+            return appointmentService.findBySpecialtyIdAndProcedureType(specialtyId, ProcedureType.CONSULTA);
+        } else if (procedureType.equals(ProcedureType.EXAME.toString())){
+            return appointmentService.findBySpecialtyIdAndProcedureType(specialtyId, ProcedureType.EXAME);
+        } else {
+            return appointmentService.findBySpecialtyIdAndProcedureType(specialtyId, ProcedureType.CIRURGIA);
+        }
     }
 
 }

@@ -9,6 +9,7 @@
         <th:block th:replace="~{fragments/dialogs :: confirmDialog}"></th:block>
 
         <div class="flex flex-1 bg-slate-100 my-8 flex-col space-y-4">
+            <div th:replace="~{fragments/loading :: loading-style-1}"></div>
             <div class="w-full">
                 <input type="checkbox" id="panel1" class="peer hidden" th:checked="${true}">
                 <label for="panel1" class="block bg-gray-700 text-white p-4 cursor-pointer">
@@ -17,7 +18,12 @@
                 <div class="peer-checked:max-h-[2000px] max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
                     <div class="p-4 bg-white border border-gray-300">
                         <div class="flex">
-                            <form th:action="@{/queue-management/search}" th:method="get" class="border border-black w-1/2">
+<!--                            <div th:replace="~{fragments/loading :: loading-style-1}"></div>-->
+                            <form th:attrappend="hx-get=@{/queue-management/v2/search}"
+                                  th:method="get"
+                                  hx-target="#queue-datatable"
+                                  hx-swap="outerHTML"
+                                  hx-indicator=".animate-pulse">
                                 <div class="flex w-full justify-start">
                                     <div class="mb-4 p-4">
                                         <label for="ubs"
@@ -34,7 +40,7 @@
                                         </select>
                                     </div>
                                     <div class="mb-4 p-4">
-                                        <label for="specialty" class="inline-flex text-sm font-medium text-gray-700">Especialidade: </label>
+                                        <label for="specialty" class="inline-flex text-sm font-medium text-gray-700">Especialidade:</label>
                                         <select id="specialty" th:name="specialty"
                                                 class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                                 required>
@@ -45,6 +51,25 @@
                                                     th:selected="${specialty.id == selectedSpecialty}"></option>
                                         </select>
                                     </div>
+                                    <div class="mb-4 p-4">
+                                        <label for="procedureType" class="inline-flex text-sm font-medium text-gray-700">Marcação:</label>
+                                        <select id="procedureType" th:name="procedureType"
+                                                hx-get="/queue-management/v2/procedures"
+                                                hx-target="#selectMedicalProcedure"
+                                                hx-include="[name='specialty']"
+                                                hx-swap="outerHTML"
+                                                class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                                th:disabled="${selectedProcedureType == null}" required>
+                                            <option th:value="${null}">Selecione</option>
+                                            <option th:each="type : ${T(br.com.tecsus.sccubs.enums.ProcedureType).values()}"
+                                                    th:value="${type.toString()}"
+                                                    th:text="${type.description}"
+                                                    th:selected="${type.toString() == selectedProcedureType}"></option>
+                                        </select>
+                                    </div>
+                                    <div id="selectMedicalProcedure" class="mb-4 p-4"
+                                         th:replace="~{queueManagement/queueFragments/medicalProcedures :: medicalProcedures}">
+                                    </div>
                                     <div class="ml-4 mt-11 flex justify-start h-1/2">
                                         <button type="submit"
                                                 class="px-4 p-1.5 bg-blue-600 text-white font-medium rounded-md shadow-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors duration-300">
@@ -53,55 +78,15 @@
                                     </div>
                                 </div>
                             </form>
-                            <div id="statistics-panel" class="border border-black w-1/2 grid grid-cols-2" th:classappend="${#lists.isEmpty(totalProceduresType)} ? 'hidden' : ''"
-                                 onmouseenter="showStatics(event)" onmouseleave="hideStatics()">
-                                <th:block th:each="type : ${totalProceduresType}">
-                                    <span class="font-semibold text-gray-700 text-right" th:text="${type.procedureType().getDescription()}"></span>
-                                    <span class="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg" th:text="${type.total + ' pacientes'}"></span>
-                                </th:block>
-<!--                                <span class="font-semibold text-gray-700 text-right">teste</span>-->
-<!--                                <span class="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg">10 pacientes</span>-->
-                            </div>
+<!--                            <div id="statistics-panel" class="border border-black w-1/2 grid grid-cols-2" th:classappend="${#lists.isEmpty(totalProceduresType)} ? 'hidden' : ''"-->
+<!--                                 onmouseenter="showStatics(event)" onmouseleave="hideStatics()">-->
+<!--                                <th:block th:each="type : ${totalProceduresType}">-->
+<!--                                    <span class="font-semibold text-gray-700 text-right" th:text="${type.procedureType().getDescription()}"></span>-->
+<!--                                    <span class="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg" th:text="${type.total + ' pacientes'}"></span>-->
+<!--                                </th:block>-->
+<!--                            </div>-->
                         </div>
-                        <!-- Abas -->
-                        <div class="flex space-x-4 border-b border-gray-300 mb-4 shadow-xl">
-                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
-                                    onclick="showTab('consultas')">
-                                Consultas
-                            </button>
-                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
-                                    onclick="showTab('exames')">
-                                Exames
-                            </button>
-                            <button class="w-1/3 py-2 text-center bg-gray-200 hover:bg-gray-300 focus:outline-none focus:bg-gray-300"
-                                    onclick="showTab('cirurgias')">
-                                Cirurgias
-                            </button>
-                        </div>
-                        <!-- Conteúdo das abas -->
-                        <div id="contentPanel">
-                            <div id="consultas" th:replace="~{queueManagement/queueFragments/queue-tabs :: consultas-datatable}" class="tab-content p-4 bg-gray-100">
-                                <p>Conteúdo da aba Consultas.</p>
-                            </div>
-                            <div id="exames" th:replace="~{queueManagement/queueFragments/queue-tabs :: exames-datatable}" class="tab-content p-4 bg-gray-100 hidden">
-                                <p>Conteúdo da aba Exames.</p>
-                            </div>
-                            <div id="cirurgias" th:replace="~{queueManagement/queueFragments/queue-tabs :: cirurgias-datatable}" class="tab-content p-4 bg-gray-100 hidden">
-                                <p>Conteúdo da aba Cirurgias.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="w-full">
-                <input type="checkbox" id="panel2" class="peer hidden" th:checked="${true}">
-                <label for="panel2" class="block bg-gray-700 text-white p-4 cursor-pointer">
-                    Histórico
-                </label>
-                <div class="peer-checked:max-h-[2000px] max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
-                    <div class="p-4 bg-white border border-gray-300">
-
+                        <div id="queue-datatable" th:replace="~{queueManagement/queueFragments/queue-tabs-v2 :: queue-datatable}" class="tab-content p-4 bg-gray-100"></div>
                     </div>
                 </div>
             </div>
@@ -166,6 +151,19 @@
     </main>
 </body>
 <script>
+
+    $('#specialty').change(function () {
+        // Verificar se o valor selecionado é válido (diferente de nulo)
+        if ($(this).val()) {
+            // Habilitar o select procedureType
+            $('#procedureType').prop('disabled', false).val(null);
+            $('#medicalProcedure').prop('disabled', true).empty().append('<option th:value="${null}">Selecione</option>');
+            $('#priority').prop('disabled', true).empty().append('<option th:value="${null}">Selecione</option>');
+        } else {
+            // Desabilitar o select procedureType se o valor for nulo
+            $('#procedureType').prop('disabled', true).val(null);
+        }
+    });
 
     //let reasonText;
     let ubsId;

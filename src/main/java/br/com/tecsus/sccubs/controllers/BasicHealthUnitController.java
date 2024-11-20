@@ -1,15 +1,12 @@
 package br.com.tecsus.sccubs.controllers;
 
-import br.com.tecsus.sccubs.dtos.AvailableMedicalSlotsFormDTO;
 import br.com.tecsus.sccubs.dtos.UBSsystemUserDTO;
-import br.com.tecsus.sccubs.entities.MedicalSlot;
 import br.com.tecsus.sccubs.entities.BasicHealthUnit;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.CityHallService;
 import br.com.tecsus.sccubs.services.SpecialtyService;
 import br.com.tecsus.sccubs.services.SystemUserService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,9 +14,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 @Slf4j

@@ -29,7 +29,7 @@
                 <td class="border-b text-sm py-2 pr-4"
                     th:text="${user.basicHealthUnit} ? ${user.basicHealthUnit.name} : 'Desvinculado'"></td>
                 <td class="border-b text-sm py-2">
-                    <div x-data="{ active: true }" :class="active ? 'bg-green-400' : 'bg-red-400'"
+                    <div th:classappend="${user.active ? 'bg-green-400' : 'bg-red-400'}"
                          class="inline-block px-4  rounded-xl" th:text="${user.active ? 'Sim' : 'Não'}"></div>
                 </td>
                 <td class="border-b text-sm py-2">

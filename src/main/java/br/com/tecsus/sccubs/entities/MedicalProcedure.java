@@ -1,8 +1,18 @@
 package br.com.tecsus.sccubs.entities;
 
-import br.com.tecsus.sccubs.entities.converters.ProcedureTypeAttrConverter;
 import br.com.tecsus.sccubs.enums.ProcedureType;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;

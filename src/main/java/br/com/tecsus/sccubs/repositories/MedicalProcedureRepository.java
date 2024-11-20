@@ -1,5 +1,7 @@
 package br.com.tecsus.sccubs.repositories;
 
+import br.com.tecsus.sccubs.dtos.MedicalProceduresTotalDTO;
+import br.com.tecsus.sccubs.dtos.ProcedureTypeTotalDTO;
 import br.com.tecsus.sccubs.entities.MedicalProcedure;
 import br.com.tecsus.sccubs.entities.Specialty;
 import br.com.tecsus.sccubs.enums.ProcedureType;
@@ -23,4 +25,5 @@ public interface MedicalProcedureRepository extends JpaRepository<MedicalProcedu
         WHERE mp.id = :id
     """)
     MedicalProcedure findFetchedMedicalProcedure(long id);
+
 }

@@ -48,7 +48,7 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
             AND MONTH(ms.referenceMonth) = :month
             AND YEAR(ms.referenceMonth) = :year
             AND c.canceled IS FALSE
-            ORDER BY p.name
+            ORDER BY mp.description, p.name
         """, Long.class);
 
         contemplationIdsQueryPaginated.setParameter("ubsId", ubsId);
@@ -62,7 +62,7 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
         contemplationIdsQueryPaginated.setMaxResults(pageable.getPageSize());
 
         var contemplationIdsPaginated = contemplationIdsQueryPaginated.getResultList();
-        long totalCountContemplations = pageable.getPageSize();
+        long totalCountContemplations = contemplationIdsPaginated.size();
 
         if (contemplationIdsPaginated.size() >= pageable.getPageSize()) {
             TypedQuery<Long> count = em.createQuery("""

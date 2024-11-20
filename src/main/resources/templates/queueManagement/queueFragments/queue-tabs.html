@@ -12,9 +12,9 @@
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Paciente</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Idade</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Situação Social</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
@@ -25,9 +25,9 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.patientName}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.requestDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.priority.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${cp.patientGender}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.getBirthDateWithAge()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.patientSocialSituationRating.getDescription()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${cp.patientGender}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/queue-management/{id}/load(id = ${cp.appointmentId}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty})}"
                        hx-target="#patientAppointment-modal"
@@ -94,9 +94,9 @@
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Paciente</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Idade</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Situação Social</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
@@ -107,9 +107,9 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.patientName}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.requestDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.priority.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.patientGender}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.getBirthDateWithAge()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.patientSocialSituationRating.getDescription()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${exp.patientGender}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/queue-management/{id}/load(id = ${exp.appointmentId}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty})}"
                        hx-target="#patientAppointment-modal"
@@ -176,9 +176,9 @@
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Paciente</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Idade</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Situação Social</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
@@ -189,9 +189,9 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.patientName}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.requestDate, 'dd/MM/yyyy HH:mm:ss')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.priority.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.patientGender}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.getBirthDateWithAge()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.patientSocialSituationRating.getDescription()}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${crp.patientGender}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/queue-management/{id}/load(id = ${crp.appointmentId}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty})}"
                        hx-target="#patientAppointment-modal"

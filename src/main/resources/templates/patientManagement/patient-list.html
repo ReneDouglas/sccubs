@@ -56,11 +56,18 @@
                               id="searchPatientForm" th:action="@{/patient-list}" th:object="${patient}"
                               th:method="get">
 
-                            <div class="col-span-6">
-                                <label class="text-sm" for="name">Nome:</label>
+                            <div class="col-span-6 relative">
+                                <label class="text-sm" for="patientSearch">Nome:</label>
                                 <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
-                                       placeholder="Digite o Nome do Paciente" type="text" id="name" th:field="*{name}"
-                                       name="name">
+                                       placeholder="Digite o Nome do Paciente" type="search" id="patientSearch" th:field="*{name}"
+                                       name="name"
+                                       hx-get="/appointment-management/search"
+                                       hx-trigger="input changed delay:500ms, patientSearch"
+                                       hx-vals="js:{'autocomplete':true}"
+                                       hx-target="#dropdown"
+                                       hx-swap="outerHTML">
+                                <div id="dropdown"
+                                     class="absolute bg-white border border-gray-300 w-full mt-1 rounded shadow-lg hidden z-10"></div>
                             </div>
 
 
@@ -221,6 +228,20 @@
 
 <!--Modal Logic-->
 <script>
+
+    $(document).click(function (event) {
+        var target = $(event.target);
+        if (!target.closest('#dropdown').length && !target.closest('#patientSearch').length) {
+            $('#dropdown').hide();
+        }
+    });
+
+    function autocompleteInputSearch(patientName) {
+        console.log("entrou no autocomplete");
+        document.getElementById('patientSearch').value = patientName;
+        document.getElementById('dropdown').classList.add('hidden');
+    }
+
     function openModal(observacoes) {
         let modal = document.getElementById("default-modal");
         let modalObservacoes = modal.querySelector("#modal-observacoes")

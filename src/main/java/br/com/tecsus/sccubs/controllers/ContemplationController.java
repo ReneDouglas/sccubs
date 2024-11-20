@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 
@@ -173,8 +174,10 @@ public class ContemplationController {
         model.addAttribute("selectedSpecialty", specialty);
         model.addAttribute("selectedMonth", month);
         model.addAttribute("contemplated", contemplationService.loadContemplatedById(id));
+        model.addAttribute("isContemplated", true);
 
-        return "contemplationManagement/contemplationFragments/contemplation-info :: contemplationInfo";
+        //return "contemplationManagement/contemplationFragments/contemplation-info :: contemplationInfo";
+        return "queueManagement/queueFragments/patientAppointment-info :: patientAppointmentInfo";
     }
 
     @PostMapping(value = "/contemplation-management/cancel")
@@ -188,6 +191,7 @@ public class ContemplationController {
 
 
         try {
+            log.info("Cancelando contemplação[id={}] pelo usuário[nome={}].", contemplationId, loggedUser.getName());
             contemplationService.cancelContemplation(contemplationId, reason, loggedUser);
             redirectAttributes.addFlashAttribute("error", false);
             redirectAttributes.addFlashAttribute("message", "Contemplação cancelada com sucesso.");

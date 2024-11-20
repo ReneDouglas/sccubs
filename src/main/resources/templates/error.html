@@ -2,12 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{fragments/template :: head}"></head>
-<body>
-    <p>Status</p>
-    <p th:text="${status}"></p>
-    <p>Error</p>
-    <p th:text="${error}"></p>
+<body class="min-h-screen flex flex-col justify-center items-center bg-slate-900 text-white">
+    <div class="max-w-lg w-full bg-white text-slate-900 rounded-lg shadow-lg p-8 text-center">
+        <h1 class="text-6xl font-bold mb-4">Erro</h1>
+        <p class="text-5xl font-bold text-red-600 mb-8" th:text="${status}"></p>
+        <h3 class="text-2xl font-bold mb-4">Mensagem</h3>
+        <p class="text-xl font-bold text-red-600 mb-8" th:text="${error}"></p>
 
-    <a href="/">Back to Home Page</a>
+        <a href="/" class="inline-block px-6 py-3 bg-slate-900 text-white font-medium rounded hover:bg-slate-700">
+            Voltar para a página inicial
+        </a>
+    </div>
 </body>
 </html>

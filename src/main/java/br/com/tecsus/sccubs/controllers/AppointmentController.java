@@ -1,8 +1,8 @@
 package br.com.tecsus.sccubs.controllers;
 
+import br.com.tecsus.sccubs.entities.Appointment;
 import br.com.tecsus.sccubs.entities.MedicalProcedure;
 import br.com.tecsus.sccubs.entities.Patient;
-import br.com.tecsus.sccubs.entities.Appointment;
 import br.com.tecsus.sccubs.enums.Priorities;
 import br.com.tecsus.sccubs.enums.ProcedureType;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
@@ -12,9 +12,7 @@ import br.com.tecsus.sccubs.services.SpecialtyService;
 import br.com.tecsus.sccubs.services.exceptions.AppointmentRegistrationFailureException;
 import br.com.tecsus.sccubs.services.exceptions.CancelAppointmentException;
 import br.com.tecsus.sccubs.services.exceptions.DuplicateAppointmentRegistrationException;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 @Slf4j
@@ -56,22 +55,34 @@ public class AppointmentController {
     }
 
     @GetMapping(value = "/appointment-management/search", produces = MediaType.TEXT_HTML_VALUE)
-    public String searchPatient(@RequestParam("patientSearch") String patient,
+    public String searchPatient(@RequestParam("name") String patient,
+                                @RequestParam(value = "autocomplete", defaultValue = "false", required = false) boolean autocomplete,
                                 @AuthenticationPrincipal SystemUserDetails loggedUser,
                                 Model model) {
 
         if (patient.isEmpty()) {
             model.addAttribute("patients", List.of());
+            if (autocomplete) {
+                return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
+            }
             return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatient";
         }
 
         final int THRESHOLD = 4;
         if (patient.length() < THRESHOLD) {
             model.addAttribute("patients", List.of());
+            if (autocomplete) {
+                return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
+            }
             return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatient";
         }
 
         model.addAttribute("patients", patientService.searchNativePatients(patient, loggedUser.getBasicHealthUnitId()));
+
+        if (autocomplete) {
+            return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
+        }
+
         return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatient";
     }
 

@@ -1,24 +1,24 @@
 package br.com.tecsus.sccubs.services;
 
+import br.com.tecsus.sccubs.dtos.MedicalProceduresTotalDTO;
 import br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO;
-import br.com.tecsus.sccubs.entities.Appointment;
-import br.com.tecsus.sccubs.entities.MedicalProcedure;
-import br.com.tecsus.sccubs.entities.Patient;
-import br.com.tecsus.sccubs.entities.Specialty;
+import br.com.tecsus.sccubs.dtos.ProcedureTypeTotalDTO;
+import br.com.tecsus.sccubs.entities.*;
+import br.com.tecsus.sccubs.enums.Priorities;
 import br.com.tecsus.sccubs.enums.ProcedureType;
-import br.com.tecsus.sccubs.repositories.MedicalProcedureRepository;
-import br.com.tecsus.sccubs.repositories.AppointmentRepository;
-import br.com.tecsus.sccubs.repositories.PatientRepository;
+import br.com.tecsus.sccubs.repositories.*;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.exceptions.AppointmentRegistrationFailureException;
 import br.com.tecsus.sccubs.services.exceptions.CancelAppointmentException;
 import br.com.tecsus.sccubs.services.exceptions.DuplicateAppointmentRegistrationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,11 +28,18 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final MedicalProcedureRepository medicalProcedureRepository;
     private final PatientRepository patientRepository;
+    private MedicalSlotRepository medicalSlotRepository;
+    private ContemplationRepository contemplationRepository;
 
     public AppointmentService(AppointmentRepository appointmentRepository, MedicalProcedureRepository medicalProcedureRepository, PatientRepository patientRepository) {
         this.appointmentRepository = appointmentRepository;
         this.medicalProcedureRepository = medicalProcedureRepository;
         this.patientRepository = patientRepository;
+    }
+
+    @Autowired
+    public void setMedicalSlotRepository(MedicalSlotRepository medicalSlotRepository) {
+        this.medicalSlotRepository = medicalSlotRepository;
     }
 
     public List<MedicalProcedure> findBySpecialtyIdAndProcedureType(Long specialtyId, ProcedureType procedureType) {
@@ -90,8 +97,21 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
+    public Page<PatientOpenAppointmentDTO> findOpenAppointmentsQueuePaginatedV2(Long ubsId, Long specialtyId, Long medicalProcedureId, Pageable pageable) {
+        return appointmentRepository.findOpenAppointmentsQueuePaginatedV2(ubsId, specialtyId, medicalProcedureId, pageable);
+    }
+
+    @Transactional(readOnly = true)
     public Appointment findById(Long id) {
         return appointmentRepository.findById(id).orElse(null);
+    }
+
+    public List<ProcedureTypeTotalDTO> findProcedureTypeTotal(Long ubsId, Long specialtyId) {
+        return appointmentRepository.totalByProcedureTypeAndUBSAndSpecialty(ubsId, specialtyId);
+    }
+
+    public List<MedicalProceduresTotalDTO> findMedicalProceduresTotal(Long ubsId, Long specialtyId) {
+        return appointmentRepository.totalByMedicalProceduresAndUBSAndSpecialty(ubsId, specialtyId);
     }
 
 }

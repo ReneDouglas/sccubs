@@ -178,6 +178,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 LEFT JOIN mp.specialty s
                 LEFT JOIN a.patient p
                 WHERE a.id IN :ids
+                ORDER BY a.requestDate DESC
                 """, PatientAppointmentsHistoryDTO.class);
 
         appointmentsHistoryQuery.setParameter("ids", appointmentsHistoryIdsPaginated);

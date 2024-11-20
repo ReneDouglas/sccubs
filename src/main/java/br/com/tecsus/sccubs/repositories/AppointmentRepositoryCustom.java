@@ -1,13 +1,9 @@
 package br.com.tecsus.sccubs.repositories;
 
 import br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO;
-import br.com.tecsus.sccubs.entities.Appointment;
-import br.com.tecsus.sccubs.entities.Contemplation;
 import br.com.tecsus.sccubs.enums.ProcedureType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.time.YearMonth;
 
 public interface AppointmentRepositoryCustom {
 
@@ -16,4 +12,8 @@ public interface AppointmentRepositoryCustom {
                                                                                     Long specialtyId,
                                                                                     Pageable pageable);
 
+    public Page<PatientOpenAppointmentDTO> findOpenAppointmentsQueuePaginatedV2(Long ubsId,
+                                                                              Long specialtyId,
+                                                                              Long medicalProcedureId,
+                                                                              Pageable pageable);
 }

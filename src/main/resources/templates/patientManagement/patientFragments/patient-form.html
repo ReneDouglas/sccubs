@@ -1,9 +1,10 @@
 <div th:fragment="patientForm">
+
     <form
           th:attr="hx-post=${patient.id == null} ? @{/patient-management/create} : @{/patient-management/update}"
           hx-target="this"
           hx-swap="outerHTML"
-          hx-indicator=".htmx-indicator"
+          hx-indicator=".animate-pulse"
           th:object="${patient}">
         <!--    th:attr="${patient.id == null} ? hx-post=@{/patient-management/create} : hx-post=@{/patient-management/update}"-->
         <!--      th:action="${patient.id == null} ? @{/patient-management/create} : @{/patient-management/update}"-->

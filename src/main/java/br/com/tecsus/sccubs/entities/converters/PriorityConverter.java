@@ -22,6 +22,7 @@ public class PriorityConverter implements AttributeConverter<Priorities, Integer
             case SITUACAO_SOCIAL -> 6;
             case SEXO -> 7;
             case ELETIVO -> 8;
+            case ADMINISTRATIVO -> 9;
         };
     }
 
@@ -40,6 +41,7 @@ public class PriorityConverter implements AttributeConverter<Priorities, Integer
             case 6 -> Priorities.SITUACAO_SOCIAL;
             case 7 -> Priorities.SEXO;
             case 8 -> Priorities.ELETIVO;
+            case 9 -> Priorities.ADMINISTRATIVO;
             default -> throw new IllegalStateException("Unexpected value: " + dbData);
         };
 
