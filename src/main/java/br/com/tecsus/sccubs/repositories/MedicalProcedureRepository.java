@@ -26,4 +26,13 @@ public interface MedicalProcedureRepository extends JpaRepository<MedicalProcedu
     """)
     MedicalProcedure findFetchedMedicalProcedure(long id);
 
+    @Transactional(readOnly = true)
+    @Query("""
+        SELECT mp
+        FROM MedicalProcedure mp
+        WHERE mp.procedureType = :procedureType
+        AND mp.specialty.id = :specialtyId
+    """)
+    MedicalProcedure findMedicalProcedureIdByTypeAndSpecialt(ProcedureType procedureType, Long specialtyId);
+
 }

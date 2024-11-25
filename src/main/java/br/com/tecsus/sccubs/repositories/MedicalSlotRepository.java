@@ -25,4 +25,15 @@ public interface MedicalSlotRepository extends JpaRepository<MedicalSlot, Long>,
     """)
     Optional<MedicalSlot> findAvailableSlotsByMedicalProcedureAndUBS(Long medicalProcedureId, Long ubsId);
 
+    @Transactional(readOnly = true)
+    @Query("""
+        SELECT ms
+        FROM MedicalSlot ms
+        LEFT JOIN FETCH ms.medicalProcedure
+        LEFT JOIN FETCH ms.basicHealthUnit
+        WHERE MONTH(ms.referenceMonth) = MONTH(NOW())
+        AND ms.currentSlots > 0
+    """)
+    List<MedicalSlot> findAllAvailableSlotsByReferenceMonth();
+
 }

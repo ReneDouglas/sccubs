@@ -58,10 +58,15 @@
         </div>
         <div>
             <label for="phoneNumber">Telefone:</label>
-            <input type="text" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" autocomplete="off" required>
+            <input type="text" id="phoneNumber"
+                   name="phoneNumber"
+                   th:field="*{phoneNumber}"
+                   autocomplete="off"
+                   maxlength="15"
+                   required>
         </div>
         <div>
-            <label for="addressStreet">Logradouro: (rua; comunidade ou sítio para zona rural):</label>
+            <label for="addressStreet">Logradouro: (rua, lote, comunidade ou sítio para zona rural):</label>
             <input type="text" id="addressStreet" name="addressStreet" th:field="*{addressStreet}" autocomplete="off" required>
         </div>
         <div>

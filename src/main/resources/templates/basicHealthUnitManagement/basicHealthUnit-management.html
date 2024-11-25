@@ -183,11 +183,11 @@
                 // Adicionar uma nova linha à tabela
                 const newRow = `
                     <tr>
-                        <td>${totalSlots}<input type="hidden" name="totalSlots"></td>
+                        <td>${totalSlots}<input procedureType="hidden" name="totalSlots"></td>
                         <td>${specialtyName}</td>
                         <td>${procedureType}</td>
                         <td>${medicalProcedure}</td>
-                        <td><button type="button" class="remove-row-btn">Remover</button></td>
+                        <td><button procedureType="button" class="remove-row-btn">Remover</button></td>
                     </tr>
                 `;
 
@@ -200,7 +200,7 @@
                 //procedures.push({ description: procedureName, procedureType: procedureType });
 
                 // Limpar os campos de entrada
-                $('#procedure').val('').prop('disabled', false);
+                $('#medicalProcedureDescription').val('').prop('disabled', false);
                 $('#procedureType').prop('selectedIndex', 0);
             } else {
                 alert("Por favor, preencha todos os campos corretamente e adicione um número de vagas válido.");

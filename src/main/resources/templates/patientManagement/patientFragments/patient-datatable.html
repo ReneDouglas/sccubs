@@ -16,7 +16,11 @@
         </thead>
 
         <tbody>
-        <tr class="border-slate-200 text-slate-600" th:each="patient, iStat : ${patientsPage.content}">
+        <tr class="border-b border-slate-200 text-slate-600"
+            th:if="${!patientsPage.hasContent()}">
+            <td class="py-2 px-4 col-span-8">Sem registro</td>
+        </tr>
+        <tr class="border-slate-200 text-slate-600" th:each="patient, iStat : ${patientsPage}">
             <td class="py-2 px-4"
                 th:text="${patientsPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (patientsPage.number * patientsPage.size)}"></td>
             <td class="px-4" th:text="${patient.name}"></td>
@@ -40,7 +44,7 @@
                 <div class="relative group cursor-pointer">
                     <a class="inline-flex p-1 hover:text-orange-500 rounded-lg"
                        th:attrappend="hx-get=@{/patient-list/history(id = ${patient.id}, pagination = ${false})}" hx-target="#patientHistoryDatatable" hx-trigger="click">
-                       <span class="material-symbols-outlined inline-block text-center">history</span></a>
+                        <span class="material-symbols-outlined inline-block text-center">history</span></a>
                     <div class="absolute right-full top-1/2 transform -translate-y-1/2 -translate-x-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1">
                         Histórico
                     </div>
@@ -50,43 +54,48 @@
         </tbody>
     </table>
 
-    <!--Pagination Start-->
-    <div class="flex w-full justify-between pt-4 items-center" id="paginationPanel"
-         th:if="${patientsPage.totalPages > 0}">
-        <div>
-            <label class="text-sm text-slate-500" for="pageSize">Linhas por página:</label>
-            <select id="pageSize" name="pageSize"
-                    class="rounded-lg text-sm text-slate-500 border border-stroke py-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500"
-                    th:attrappend="hx-get=@{/patient-list(page = ${patientsPage.number}, pagination = ${true})}"
-                    hx-target="#patientsDatatable">
-                <option th:value="${10}" th:selected="${patientsPage.size == 10}">10</option>
-                <option th:value="${15}" th:selected="${patientsPage.size == 15}">15</option>
-                <option th:value="${30}" th:selected="${patientsPage.size == 30}">30</option>
-            </select>
-        </div>
-        <div class="flex items-center">
-            <button id="prevPage"
-                    class="flex flex-col justify-center rounded-lg bg-slate-600 py-1 px-4 text-white cursor-pointer transition duration-200 hover:bg-blue-500"
-                    th:disabled="${!patientsPage.hasPrevious()}"
-                    th:attrprepend="hx-get=@{/patient-list(page = ${patientsPage.number - 1}, pagination = ${true})}"
-                    hx-target="#patientsDatatable"
-                    hx-include="[name='pageSize']"
-                    hx-trigger="click"><span class="material-symbols-outlined">keyboard_double_arrow_left</span>
-            </button>
-            <span class="mx-2 text-sm text-slate-500">Página <span id="currentPage"
-                                                                   th:text="${patientsPage.number + 1}">1</span> de <span
-                    th:text="${patientsPage.totalPages}">Muitos</span></span>
+    <th:block th:if="${patientsPage.hasContent()}">
+        <!--Pagination Start-->
+        <div class="flex w-full justify-between pt-4 items-center" id="paginationPanel"
+             th:if="${patientsPage.totalPages > 0}">
+            <div>
+                <label class="text-sm text-slate-500" for="pageSize">Linhas por página:</label>
+                <select id="pageSize" name="pageSize"
+                        class="rounded-lg text-sm text-slate-500 border border-stroke py-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500"
+                        th:attrappend="hx-get=@{/patient-list(page = ${patientsPage.number}, pagination = ${true})}"
+                        hx-target="#patientsDatatable"
+                        hx-swap="outerHTML">
+                    <option th:value="${10}" th:selected="${patientsPage.size == 10}">10</option>
+                    <option th:value="${15}" th:selected="${patientsPage.size == 15}">15</option>
+                    <option th:value="${30}" th:selected="${patientsPage.size == 30}">30</option>
+                </select>
+            </div>
+            <div class="flex items-center">
+                <button id="prevPage"
+                        class="flex flex-col justify-center rounded-lg bg-slate-600 py-1 px-4 text-white cursor-pointer transition duration-200 hover:bg-blue-500"
+                        th:disabled="${!patientsPage.hasPrevious()}"
+                        th:attrprepend="hx-get=@{/patient-list(page = ${patientsPage.number - 1}, pagination = ${true})}"
+                        hx-target="#patientsDatatable"
+                        hx-include="[name='pageSize']"
+                        hx-swap="outerHTML"
+                        hx-trigger="click"><span class="material-symbols-outlined">keyboard_double_arrow_left</span>
+                </button>
+                <span class="mx-2 text-sm text-slate-500">Página <span id="currentPage"
+                                                                       th:text="${patientsPage.number + 1}">1</span> de <span
+                        th:text="${patientsPage.totalPages}">Muitos</span></span>
 
-            <button id="nextPage"
-                    class="flex flex-col justify-center rounded-lg bg-slate-600 py-1 px-4 text-slate-200 cursor-pointer transition duration-200 hover:bg-blue-500"
-                    th:disabled="${!patientsPage.hasNext()}"
-                    th:attrprepend="hx-get=@{/patient-list(page = ${patientsPage.number + 1}, pagination = ${true})}"
-                    hx-target="#patientsDatatable"
-                    hx-include="[name='pageSize']"
-                    hx-trigger="click"><span class="material-symbols-outlined">keyboard_double_arrow_right</span>
-            </button>
+                <button id="nextPage"
+                        class="flex flex-col justify-center rounded-lg bg-slate-600 py-1 px-4 text-slate-200 cursor-pointer transition duration-200 hover:bg-blue-500"
+                        th:disabled="${!patientsPage.hasNext()}"
+                        th:attrprepend="hx-get=@{/patient-list(page = ${patientsPage.number + 1}, pagination = ${true})}"
+                        hx-target="#patientsDatatable"
+                        hx-include="[name='pageSize']"
+                        hx-swap="outerHTML"
+                        hx-trigger="click"><span class="material-symbols-outlined">keyboard_double_arrow_right</span>
+                </button>
+            </div>
         </div>
-    </div>
+    </th:block>
 </div>
 
 <!--Empty Table-->

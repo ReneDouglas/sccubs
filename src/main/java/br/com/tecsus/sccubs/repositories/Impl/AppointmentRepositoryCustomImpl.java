@@ -12,6 +12,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaContext;
 
+import java.time.LocalDate;
+
+import static br.com.tecsus.sccubs.utils.DefaultValues.QUATRO_MESES;
+
 
 public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCustom {
 
@@ -98,6 +102,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                     a.id,
                     p.id,
                     p.name,
+                    p.cpf,
                     p.gender,
                     p.birthDate,
                     p.socialSituationRating)
@@ -130,11 +135,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             LEFT JOIN a.patient p
             LEFT JOIN p.basicHealthUnit ubs
             WHERE c.appointment IS NULL
-                AND s.id = :specialtyId
                 AND mp.id = :medicalProcedureId
                 AND ubs.id = :ubsId
                 AND a.canceled = false
             ORDER BY
+                    CASE WHEN a.requestDate <= :dateLimit THEN 1 ELSE 2 END ASC,
                     a.priority ASC,
                     p.birthDate ASC,
                     p.socialSituationRating ASC,
@@ -143,8 +148,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         //   CASE WHEN a.priority = br.com.tecsus.sccubs.enums.Priorities.ELETIVO THEN p.birthDate END ASC,
         //   CASE WHEN a.priority = br.com.tecsus.sccubs.enums.Priorities.ELETIVO THEN p.socialSituationRating END ASC,
 
-
-        openAppointmentsIdsQueryPaginated.setParameter("specialtyId", specialtyId);
+        // remover specialtyId. Não é necessário
+        //openAppointmentsIdsQueryPaginated.setParameter("specialtyId", specialtyId);
+        openAppointmentsIdsQueryPaginated.setParameter("dateLimit", LocalDate.now().minusMonths(QUATRO_MESES));
         openAppointmentsIdsQueryPaginated.setParameter("medicalProcedureId", medicalProcedureId);
         openAppointmentsIdsQueryPaginated.setParameter("ubsId", ubsId);
 
@@ -166,13 +172,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 LEFT JOIN a.patient p
                 LEFT JOIN p.basicHealthUnit ubs
                 WHERE c.appointment IS NULL
-                    AND s.id = :specialtyId
                     AND mp.id = :medicalProcedureId
                     AND ubs.id = :ubsId
                     AND a.canceled = false
             """, Long.class);
 
-            count.setParameter("specialtyId", specialtyId);
+            //count.setParameter("specialtyId", specialtyId);
             count.setParameter("medicalProcedureId", medicalProcedureId);
             count.setParameter("ubsId", ubsId);
 
@@ -192,6 +197,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                     a.id,
                     p.id,
                     p.name,
+                    p.cpf,
                     p.gender,
                     p.birthDate,
                     p.socialSituationRating)
@@ -201,8 +207,15 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 LEFT JOIN mp.specialty s
                 LEFT JOIN a.patient p
                 WHERE a.id IN :ids
+                ORDER BY
+                    CASE WHEN a.requestDate <= :dateLimit THEN 1 ELSE 2 END ASC,
+                    a.priority ASC,
+                    p.birthDate ASC,
+                    p.socialSituationRating ASC,
+                    a.requestDate ASC
             """, PatientOpenAppointmentDTO.class);
 
+        openAppointmentsQueueQuery.setParameter("dateLimit", LocalDate.now().minusMonths(QUATRO_MESES));
         openAppointmentsQueueQuery.setParameter("ids", openAppointmentsQueueIdsPaginated);
         var openAppointmentsQueue = openAppointmentsQueueQuery.getResultList();
 

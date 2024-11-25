@@ -30,7 +30,7 @@ public class MedicalSlotRepositoryCustomImpl implements MedicalSlotRepositoryCus
                             ms.id
                         FROM
                             MedicalSlot ms
-                        ORDER BY ms.creationDate DESC
+                        ORDER BY ms.referenceMonth DESC
         """, Long.class);
 
         medicalSlotIdsQueryPaginated.setFirstResult(page.getPageNumber() * page.getPageSize());
@@ -59,6 +59,7 @@ public class MedicalSlotRepositoryCustomImpl implements MedicalSlotRepositoryCus
                     JOIN FETCH ms.medicalProcedure mp
                     JOIN FETCH mp.specialty s
                     WHERE ms.id IN :ids
+                    ORDER BY ms.referenceMonth DESC
         """, MedicalSlot.class);
 
         medicalSlotsQuery.setParameter("ids", medicalSlotIdsPaginated);

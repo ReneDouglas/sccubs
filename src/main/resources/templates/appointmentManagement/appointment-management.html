@@ -119,9 +119,9 @@
                             <tr th:each="openAppt : ${patientOpenAppointments}">
                                 <td th:text="${openAppt.formattedRequestDate()}"></td>
                                 <td th:text="${openAppt.priority().getDescription()}"></td>
-                                <td th:text="${openAppt.type().getDescription()}"></td>
+                                <td th:text="${openAppt.procedureType().getDescription()}"></td>
                                 <td th:text="${openAppt.specialty()}"></td>
-                                <td th:text="${openAppt.procedure()}"></td>
+                                <td th:text="${openAppt.medicalProcedureDescription()}"></td>
                                 <td>
                                     <form th:action="@{/appointment-management/{id}/cancel(id=${openAppt.appointmentId}, patientId=${openAppt.patientId})}"
                                           th:method="put">

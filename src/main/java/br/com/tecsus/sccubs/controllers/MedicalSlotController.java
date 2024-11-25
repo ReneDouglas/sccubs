@@ -1,8 +1,11 @@
 package br.com.tecsus.sccubs.controllers;
 
 import br.com.tecsus.sccubs.dtos.AvailableMedicalSlotsFormDTO;
+import br.com.tecsus.sccubs.entities.MedicalProcedure;
 import br.com.tecsus.sccubs.entities.MedicalSlot;
+import br.com.tecsus.sccubs.enums.ProcedureType;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
+import br.com.tecsus.sccubs.services.AppointmentService;
 import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.MedicalSlotService;
 import br.com.tecsus.sccubs.services.SpecialtyService;
@@ -10,12 +13,15 @@ import br.com.tecsus.sccubs.services.exceptions.DistinctAvailableMedicalSlotExce
 import br.com.tecsus.sccubs.utils.DefaultValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -25,12 +31,14 @@ public class MedicalSlotController {
     private final BasicHealthUnitService basicHealthUnitService;
     private final SpecialtyService specialtyService;
     private final MedicalSlotService medicalSlotService;
+    private final AppointmentService appointmentService;
     private AvailableMedicalSlotsFormDTO availableMedicalSlotsFormDTO;
 
-    public MedicalSlotController(BasicHealthUnitService basicHealthUnitService, SpecialtyService specialtyService, MedicalSlotService medicalSlotService) {
+    public MedicalSlotController(BasicHealthUnitService basicHealthUnitService, SpecialtyService specialtyService, MedicalSlotService medicalSlotService, AppointmentService appointmentService) {
         this.basicHealthUnitService = basicHealthUnitService;
         this.specialtyService = specialtyService;
         this.medicalSlotService = medicalSlotService;
+        this.appointmentService = appointmentService;
     }
 
     @GetMapping("/medicalSlot-management")
@@ -94,5 +102,26 @@ public class MedicalSlotController {
 
         model.addAttribute("medicalSlotsPage", medicalSlotService.findMedicalSlotsPaginated(PageRequest.of(currentPage, pageSize)));
         return "medicalSlotManagement/medicalSlotFragments/medicalSlot-datatable :: medicalSlotsDatatable";
+    }
+
+    @GetMapping(value = "/medicalSlot-management/procedures", produces = MediaType.TEXT_HTML_VALUE)
+    public String loadProcedure(@RequestParam("procedureType") String procedureType,
+                                @RequestParam("specialty") Long specialtyId,
+                                Model model) {
+
+        List<MedicalProcedure> procedures;
+
+        if (procedureType.equals(ProcedureType.CONSULTA.toString())) {
+            procedures = appointmentService.findBySpecialtyIdAndProcedureType(specialtyId, ProcedureType.CONSULTA);
+            model.addAttribute("isConsultation", true);
+        } else if (procedureType.equals(ProcedureType.EXAME.toString())){
+            procedures = appointmentService.findBySpecialtyIdAndProcedureType(specialtyId, ProcedureType.EXAME);
+        } else {
+            procedures = appointmentService.findBySpecialtyIdAndProcedureType(specialtyId, ProcedureType.CIRURGIA);
+        }
+
+        model.addAttribute("procedures", procedures);
+
+        return "medicalSlotManagement/medicalSlotFragments/medicalProcedures :: medicalProcedures";
     }
 }

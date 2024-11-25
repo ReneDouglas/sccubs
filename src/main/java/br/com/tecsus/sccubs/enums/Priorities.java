@@ -13,7 +13,8 @@ public enum Priorities {
     SITUACAO_SOCIAL(6, "Situação Social", false), // Prioridade passiva
     SEXO(7, "Gênero", false), // Prioridade passiva
     ELETIVO(8, "Eletivo", true), // Caso eletivo, será escolhida uma prioridade passiva
-    ADMINISTRATIVO(9, "Administrativo", true); // Prioridade ativa: contemplação pela administração
+    ADMINISTRATIVO(9, "Administrativo", true), // Prioridade ativa: contemplação pela administração
+    DATA_DA_MARCACAO(10, "Data da Marcação", false); // Prioridade passiva: Último campo de desempate
 
 
     // 1 é o maior nível de prioridade.

@@ -63,8 +63,8 @@
                                     <div class="mb-4">
                                         <label for="procedureType" class="block text-sm font-medium text-gray-700">Marcação: </label>
                                         <select id="procedureType" name="procedureType"
-                                                hx-get="/appointment-management/procedures"
-                                                hx-target="#selectProcedureAndPriority"
+                                                hx-get="/medicalSlot-management/procedures"
+                                                hx-target="#selectMedicalProcedure"
                                                 hx-include="[name='specialty']"
                                                 hx-vals='{"slot":true}'
                                                 hx-swap="outerHTML"
@@ -77,13 +77,8 @@
                                         </select>
                                     </div>
 
-                                    <div id="selectProcedureAndPriority" class="mb-4">
-                                        <label for="medicalProcedure" class="block text-sm font-medium text-gray-700">Procedimento: </label>
-                                        <select id="medicalProcedure" name="medicalProcedure"
-                                                class="w-full mt-1 block p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                                disabled required>
-                                            <option th:value="${null}">Selecione</option>
-                                        </select>
+                                    <div id="selectMedicalProcedure"
+                                         th:replace="~{medicalSlotManagement/medicalSlotFragments/medicalProcedures :: medicalProcedures}">
                                     </div>
                                     <div class="mb-4">
                                             <label class="block text-sm font-medium text-gray-700" for="referenceMonth">Mês de Referência:</label>
@@ -184,11 +179,11 @@
                 // Adicionar uma nova linha à tabela
                 const newRow = `
                     <tr>
-                        <td>${totalSlots}<input type="hidden" name="totalSlots"></td>
+                        <td>${totalSlots}<input procedureType="hidden" name="totalSlots"></td>
                         <td>${specialtyName}</td>
                         <td>${procedureType}</td>
                         <td>${medicalProcedure}</td>
-                        <td><button type="button" class="remove-row-btn">Remover</button></td>
+                        <td><button procedureType="button" class="remove-row-btn">Remover</button></td>
                     </tr>
                 `;
 
@@ -201,7 +196,7 @@
                 //procedures.push({ description: procedureName, procedureType: procedureType });
 
                 // Limpar os campos de entrada
-                $('#procedure').val('').prop('disabled', false);
+                $('#medicalProcedureDescription').val('').prop('disabled', false);
                 $('#procedureType').prop('selectedIndex', 0);
             } else {
                 alert("Por favor, preencha todos os campos corretamente e adicione um número de vagas válido.");

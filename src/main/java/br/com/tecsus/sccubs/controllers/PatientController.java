@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -120,6 +123,7 @@ public class PatientController {
 
         Page<Patient> patientsPage = patientService.findPatientsPage(patientToSearch, PageRequest.of(currentPage, pageSize), loggedUser);
         model.addAttribute("patientsPage", patientsPage);
+        model.addAttribute("patientHistoryPage", new PageImpl<>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
         model.addAttribute("patient", patientToSearch);
 
         if (!isPagination) {

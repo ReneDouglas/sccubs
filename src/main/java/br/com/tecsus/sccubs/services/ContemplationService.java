@@ -119,4 +119,8 @@ public class ContemplationService {
 
     }
 
+    public void registerContemplation(Contemplation contemplation) {
+        contemplationRepository.save(contemplation);
+    }
+
 }

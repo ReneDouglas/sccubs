@@ -28,6 +28,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
                 null,
                 null,
                 null,
+                null,
                 null)
         FROM
             Appointment a

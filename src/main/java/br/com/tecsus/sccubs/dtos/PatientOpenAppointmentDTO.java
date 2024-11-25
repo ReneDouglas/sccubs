@@ -11,14 +11,15 @@ import java.time.format.DateTimeFormatter;
 
 public record PatientOpenAppointmentDTO(LocalDateTime requestDate,
                                         Priorities priority,
-                                        ProcedureType type,
+                                        ProcedureType procedureType,
                                         Long medicalProcedureId,
-                                        String procedure,
+                                        String medicalProcedureDescription,
                                         String specialty,
                                         String observations,
                                         Long appointmentId,
                                         Long patientId,
                                         String patientName,
+                                        String patientCPF,
                                         String patientGender,
                                         LocalDate patientBirthDate,
                                         SocialSituationRating patientSocialSituationRating) {

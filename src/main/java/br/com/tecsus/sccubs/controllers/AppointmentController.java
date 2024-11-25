@@ -114,6 +114,7 @@ public class AppointmentController {
         if (procedureType.equals(ProcedureType.CONSULTA.toString())) {
             procedures = appointmentService.findBySpecialtyIdAndProcedureType(specialtyId, ProcedureType.CONSULTA);
             priorities = List.of(Priorities.ELETIVO, Priorities.URGENCIA, Priorities.RETORNO);
+            model.addAttribute("isConsultation", true);
         } else if (procedureType.equals(ProcedureType.EXAME.toString())){
             procedures = appointmentService.findBySpecialtyIdAndProcedureType(specialtyId, ProcedureType.EXAME);
         } else {
@@ -122,7 +123,6 @@ public class AppointmentController {
 
         model.addAttribute("procedures", procedures);
         model.addAttribute("priorities", priorities);
-        model.addAttribute("fromMedicalSlotPage", fromMedicalSlotPage);
         return "appointmentManagement/appointmentFragments/appointment-procedureAndPriority :: proceduresAndPriorities";
     }
 

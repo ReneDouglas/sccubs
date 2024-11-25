@@ -80,9 +80,9 @@
                             </form>
 <!--                            <div id="statistics-panel" class="border border-black w-1/2 grid grid-cols-2" th:classappend="${#lists.isEmpty(totalProceduresType)} ? 'hidden' : ''"-->
 <!--                                 onmouseenter="showStatics(event)" onmouseleave="hideStatics()">-->
-<!--                                <th:block th:each="type : ${totalProceduresType}">-->
-<!--                                    <span class="font-semibold text-gray-700 text-right" th:text="${type.procedureType().getDescription()}"></span>-->
-<!--                                    <span class="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg" th:text="${type.total + ' pacientes'}"></span>-->
+<!--                                <th:block th:each="procedureType : ${totalProceduresType}">-->
+<!--                                    <span class="font-semibold text-gray-700 text-right" th:text="${procedureType.procedureType().getDescription()}"></span>-->
+<!--                                    <span class="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg" th:text="${procedureType.total + ' pacientes'}"></span>-->
 <!--                                </th:block>-->
 <!--                            </div>-->
                         </div>

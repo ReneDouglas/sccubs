@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,8 +27,6 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final MedicalProcedureRepository medicalProcedureRepository;
     private final PatientRepository patientRepository;
-    private MedicalSlotRepository medicalSlotRepository;
-    private ContemplationRepository contemplationRepository;
 
     public AppointmentService(AppointmentRepository appointmentRepository, MedicalProcedureRepository medicalProcedureRepository, PatientRepository patientRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -37,10 +34,6 @@ public class AppointmentService {
         this.patientRepository = patientRepository;
     }
 
-    @Autowired
-    public void setMedicalSlotRepository(MedicalSlotRepository medicalSlotRepository) {
-        this.medicalSlotRepository = medicalSlotRepository;
-    }
 
     public List<MedicalProcedure> findBySpecialtyIdAndProcedureType(Long specialtyId, ProcedureType procedureType) {
         Specialty specialty = new Specialty();
@@ -56,6 +49,7 @@ public class AppointmentService {
     public void registerAppointment(Appointment appointment, SystemUserDetails loggedUser) throws AppointmentRegistrationFailureException, DuplicateAppointmentRegistrationException {
 
         List<PatientOpenAppointmentDTO> patientOpenAppointments = appointmentRepository.findPatientOpenAppointments(appointment.getPatient().getId());
+        MedicalProcedure medicalProcedure;
 
         boolean isDuplicated = patientOpenAppointments
                 .stream()
@@ -65,11 +59,12 @@ public class AppointmentService {
             throw new DuplicateAppointmentRegistrationException("Existe, pelo menos, uma consulta marcada para este procedimento em aberto.");
         }
 
-        Patient patient = patientRepository.getReferenceById(appointment.getPatient().getId());
-        MedicalProcedure medicalProcedure = medicalProcedureRepository.getReferenceById(appointment.getMedicalProcedure().getId());
 
-        appointment.setPatient(patient);
-        appointment.setMedicalProcedure(medicalProcedure);
+        //Patient patient = patientRepository.getReferenceById(appointment.getPatient().getId());
+        //medicalProcedure = medicalProcedureRepository.getReferenceById(appointment.getMedicalProcedure().getId());
+
+        //appointment.setPatient(patient);
+        //appointment.setMedicalProcedure(medicalProcedure);
         appointment.setContemplation(null);
         appointment.setCreationUser(loggedUser.getName());
         appointment.setRequestDate(LocalDateTime.now());
