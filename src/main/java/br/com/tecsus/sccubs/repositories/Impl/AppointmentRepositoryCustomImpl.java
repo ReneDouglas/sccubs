@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaContext;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static br.com.tecsus.sccubs.utils.DefaultValues.QUATRO_MESES;
 
@@ -150,7 +151,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         // remover specialtyId. Não é necessário
         //openAppointmentsIdsQueryPaginated.setParameter("specialtyId", specialtyId);
-        openAppointmentsIdsQueryPaginated.setParameter("dateLimit", LocalDate.now().minusMonths(QUATRO_MESES));
+        openAppointmentsIdsQueryPaginated.setParameter("dateLimit", LocalDateTime.now().minusMonths(QUATRO_MESES));
         openAppointmentsIdsQueryPaginated.setParameter("medicalProcedureId", medicalProcedureId);
         openAppointmentsIdsQueryPaginated.setParameter("ubsId", ubsId);
 
@@ -215,7 +216,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                     a.requestDate ASC
             """, PatientOpenAppointmentDTO.class);
 
-        openAppointmentsQueueQuery.setParameter("dateLimit", LocalDate.now().minusMonths(QUATRO_MESES));
+        openAppointmentsQueueQuery.setParameter("dateLimit", LocalDateTime.now().minusMonths(QUATRO_MESES));
         openAppointmentsQueueQuery.setParameter("ids", openAppointmentsQueueIdsPaginated);
         var openAppointmentsQueue = openAppointmentsQueueQuery.getResultList();
 
