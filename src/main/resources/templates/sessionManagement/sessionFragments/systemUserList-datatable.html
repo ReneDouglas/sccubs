@@ -1,5 +1,7 @@
 <div th:fragment="systemUser-datatable">
     <div class="overflow-auto">
+
+        <!--Main Table Start-->
         <table class="table-auto w-full text-base" id="systemUserDatatable">
             <thead class="font-light text-sm text-slate-600 text-left tracking-wide">
             <tr class="bg-slate-200">
@@ -7,7 +9,7 @@
                 <th class="text-sm pr-4">Nome</th>
                 <th class="text-sm pr-4">Email</th>
                 <th class="text-sm pr-4">Perfil</th>
-                <th class="text-sm px-4">UBS</th>
+                <th class="text-sm pr-4">UBS</th>
                 <th class="text-sm">Ativo</th>
                 <th class="text-sm rounded-r-lg py-2">Ações</th>
             </tr>
@@ -43,8 +45,8 @@
                         </form>
                         <form th:action="@{/systemUser-management/delete}" method="post">
                             <input type="hidden" name="id" th:value="${user.id}"/>
-                            <button class="inline-flex p-2 rounded-lg hover:bg-slate-100 cursor-pointer" type="submit">
-                                <span class="material-symbols-outlined hover:text-red-400">delete</span>
+                            <button class="inline-flex p-2 rounded-lg hover:bg-slate-100 cursor-pointer transition transition-300" type="submit">
+                                <span class="material-symbols-outlined hover:text-red-400 transition transition-300">delete</span>
                             </button>
                         </form>
                     </div>

@@ -16,7 +16,7 @@
         <!--Wrap Container -->
         <section class="flex flex-col flex-1 overflow-auto">
 
-            <!--Card-Bars-->
+            <!--Card Bars-->
             <div class="flex flex-col mx-4 justify-start items-center">
 
                 <!--Panel 1-->
@@ -29,58 +29,60 @@
                         </div>
                     </label>
 
-                    <!--Start Card Formulario-->
-                    <div class="peer-checked:max-h-screen max-h-0 overflow-hidden overscroll-contain transition-max-height duration-500 ease-in-out">
-                        <form class="grid grid-flow-row grid-cols-12 rounded-lg gap-x-8 gap-y-2 py-4 px-4"
+                    <!--Início Card Formulario Busca-->
+                    <div class="peer-checked:max-h-screen max-h-0 overflow-hidden peer-checked:overflow-visible overscroll-contain transition-max-height duration-500 ease-in-out">
+                        <form class="grid grid-flow-row grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 rounded-lg gap-x-4 py-4 px-4 w-full"
                               id="searchPatientForm" th:action="@{/patient-list}" th:object="${patient}"
                               th:method="get">
 
-                            <div class="col-span-6 relative">
-                                <label class="text-sm" for="patientSearch">Nome:</label>
-                                <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
-                                       placeholder="Digite o Nome do Paciente" type="search" id="patientSearch" th:field="*{name}"
+                            <div class="text-sm flex flex-col w-full col-span-2 sm:col-span-3 lg:col-span-3 xl:col-span-3 relative">
+                                <label for="patientSearch">Nome:</label>
+                                <input class="rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
+                                       placeholder="Nome do Paciente" type="search" id="patientSearch" th:field="*{name}"
                                        name="name"
                                        hx-get="/appointment-management/search"
                                        hx-trigger="input changed delay:500ms, patientSearch"
                                        hx-vals="js:{'autocomplete':true}"
                                        hx-target="#dropdown"
                                        hx-swap="outerHTML">
-                                <div id="dropdown"
-                                     class="absolute bg-white border border-gray-300 w-full mt-1 rounded shadow-lg hidden z-10"></div>
+                                <div class="absolute top-full w-full z-50">
+                                    <div id="dropdown"
+                                         class="bg-white border border-gray-300 rounded shadow-lg opacity-0 invisible transition-opacity duration-300 peer-checked:opacity-100 peer-checked:visible">
+                                    </div>
+                                </div>
+
                             </div>
 
-
-                            <div class="col-span-3">
-                                <label class="text-sm" for="cpf">CPF:</label>
+                            <div class="flex flex-col text-sm w-full col-span-2 sm:col-span-1">
+                                <label for="cpf">CPF:</label>
                                 <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
-                                       placeholder="Digite o CPF do Paciente" type="text" id="cpf" th:field="*{cpf}"
+                                       placeholder="CPF do Paciente" type="text" id="cpf" th:field="*{cpf}"
                                        name="cpf">
                             </div>
 
-                            <div class="col-span-3">
-                                <label class="text-sm" for="susNumber">Cartão SUS:</label>
+                            <div class="flex flex-col text-sm w-full col-span-2 sm:col-span-2 lg:col-span-1">
+                                <label for="susNumber">Cartão SUS:</label>
                                 <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
                                        placeholder="Digite o Cartão SUS" type="text" id="susNumber"
                                        th:field="*{susNumber}" name="susNumber">
                             </div>
-
-                            <div class="col-span-4">
-                                <label class="text-sm" for="addressStreet">Logradouro:</label>
+                            <div class="flex flex-col w-full text-sm col-span-2 sm:col-span-2 lg:col-span-1">
+                                <label for="acsName">ACS:</label>
                                 <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
-                                       placeholder="Digite Endereço" type="text" id="addressStreet"
+                                       placeholder="ACS Responsável" type="text" id="acsName"
+                                       th:field="*{acsName}" name="acsName">
+                            </div>
+
+                            <div class="flex flex-col text-sm w-full col-span-2 sm:col-span-4 lg:col-span-2 xl:col-span-2">
+                                <label for="addressStreet">Logradouro:</label>
+                                <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
+                                       placeholder="Digite o Endereço" type="text" id="addressStreet"
                                        th:field="*{addressStreet}" name="addressStreet">
                             </div>
 
-                            <div class="col-span-2">
-                                <label class="text-sm" for="acsName">ACS:</label>
-                                <input class=" rounded-lg border border-stroke py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200 focus:shadow-lg"
-                                       placeholder="Digite o ACS Responsável" type="text" id="acsName"
-                                       th:field="*{acsName}" name="acsName">
-
-                            </div>
-                            <div class="col-span-3">
-                                <label class="text-sm" for="socialSituationRating">Situação Social:</label>
-                                <select class="rounded-lg border border-stroke py-2.5 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 text-gray-700 transition duration-200"
+                            <div class="flex flex-col text-sm w-full col-span-2 sm:col-span-2 lg:col-span-2 xl:col-span-1">
+                                <label for="socialSituationRating">Situação Social:</label>
+                                <select class="rounded-lg border border-stroke text-sm py-2 pl-4 w-full mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 text-gray-700 transition duration-200"
                                         id="socialSituationRating" name="socialSituationRating"
                                         th:field="*{socialSituationRating}">
                                     <option th:value="${null}" th:selected="${patient.socialSituationRating == null}">
@@ -94,19 +96,15 @@
                                 </select>
                             </div>
 
-                            <div class="col-span-3 flex items-end justify-between">
-                                <div class="col-span-1">
-                                    <button class="flex justify-between rounded-lg bg-slate-900 py-2 px-10 text-white cursor-pointer hover:bg-blue-500"
-                                            type="submit">
-                                        <span class="material-symbols-outlined mr-2">search</span>Pesquisar
-                                    </button>
-                                </div>
-                                <div class="col-span-1">
-                                    <button class="flex justify-between rounded-lg bg-slate-900 py-2 px-8 text-white cursor-pointer hover:bg-red-500"
-                                            type="submit" th:formaction="@{/patient-list/clear}">
-                                        <span class="material-symbols-outlined mr-2">close_small</span>Limpar
-                                    </button>
-                                </div>
+                            <div class="flex items-center justify-center sm:justify-end sm:items-end space-x-4 mt-2 sm:mt-0 col-span-2 sm:col-span-2 lg:col-span-1 w-full">
+                                <button class="inline-flex text-sm items-center rounded-lg bg-slate-900 p-2 text-white cursor-pointer active:bg-blue-400 hover:bg-blue-500 transition transition-300"
+                                        type="submit">
+                                    <span class="-ml-1 material-symbols-outlined mx-1">search</span>Buscar
+                                </button>
+                                <button class="inline-flex text-sm items-center rounded-lg bg-slate-900 p-2 text-white cursor-pointer active:bg-blue-400 hover:bg-red-500 transition duration-300"
+                                        type="submit" th:formaction="@{/patient-list/clear}">
+                                    <span class="-ml-1 material-symbols-outlined mx-1">close</span>Limpar
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -121,6 +119,7 @@
                             <span class="material-symbols-outlined mr-2">patient_list</span>Pacientes Cadastrados
                         </div>
                     </label>
+
                     <div class="peer-checked:max-h-[2000px] max-h-0 overflow-hidden transition-max-height duration-500 ease-in-out">
                         <div class="p-4 rounded-lg">
                             <div th:replace="~{patientManagement/patientFragments/patient-datatable :: patientDatatable}"></div>
