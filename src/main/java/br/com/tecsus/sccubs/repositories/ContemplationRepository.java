@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ContemplationRepository extends JpaRepository<Contemplation, Long>, ContemplationRepositoryCustom {
 
-    @Transactional(readOnly = true)
     @Query("""
            SELECT c
             FROM Contemplation c

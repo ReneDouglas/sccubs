@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PatientRepository extends JpaRepository<Patient, Long>, PatientRepositoryCustom {
 
-    public Patient findByIdAndBasicHealthUnit(Long id, BasicHealthUnit ubs);
+    Patient findByIdAndBasicHealthUnit(Long id, BasicHealthUnit ubs);
 
 }

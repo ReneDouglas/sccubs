@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +47,7 @@ public class QueueController {
         this.contemplationService = contemplationService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management")
     public String getQueuePage(Model model) {
 
@@ -59,6 +61,7 @@ public class QueueController {
         return "queueManagement/queue-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/v2")
     public String getQueuePageV2(Model model,
                                  @RequestParam(required = false) Long basicHealthUnit,
@@ -69,30 +72,33 @@ public class QueueController {
         model.addAttribute("basicHealthUnits", this.basicHealthUnits);
         model.addAttribute("specialties", this.specialties);
 
-        if (basicHealthUnit == null && specialty == null && medicalProcedure == null && procedureType == null) {
+        /*if (basicHealthUnit == null && specialty == null && medicalProcedure == null && procedureType == null) {
             model.addAttribute("queuePage", new PageImpl<>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
         } else {
-            var queuePage = appointmentService
-                    .findOpenAppointmentsQueuePaginatedV2(
-                            basicHealthUnit,
-                            specialty,
-                            medicalProcedure,
-                            PageRequest.of(0, DefaultValues.PAGE_SIZE));
-            List<MedicalProcedure> procedures = loadProcedures(procedureType, specialty);
 
-            model.addAttribute("queuePage", queuePage);
-            model.addAttribute("selectedUBS", basicHealthUnit);
-            model.addAttribute("selectedSpecialty", specialty);
-            model.addAttribute("selectedMedicalProcedure", medicalProcedure);
-            model.addAttribute("selectedProcedureType", procedureType);
-            model.addAttribute("procedures", procedures);
 
-        }
+        }*/
+
+        var queuePage = appointmentService
+                .findOpenAppointmentsQueuePaginatedV2(
+                        basicHealthUnit,
+                        specialty,
+                        medicalProcedure,
+                        PageRequest.of(0, DefaultValues.PAGE_SIZE));
+        //List<MedicalProcedure> procedures = loadProcedures(procedureType, specialty);
+
+        model.addAttribute("queuePage", queuePage);
+        model.addAttribute("selectedUBS", basicHealthUnit);
+        model.addAttribute("selectedSpecialty", specialty);
+        model.addAttribute("selectedMedicalProcedure", medicalProcedure);
+        model.addAttribute("selectedProcedureType", procedureType);
+        model.addAttribute("procedures", List.of());
 
         return "queueManagement/queue-management-v2";
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/search")
     public String searchOpenAppointmentsQueue(@RequestParam Long basicHealthUnit,
                                            @RequestParam Long specialty,
@@ -135,11 +141,12 @@ public class QueueController {
         return "queueManagement/queue-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/v2/search")
-    public String searchOpenAppointmentsQueueV2(@RequestParam Long basicHealthUnit,
-                                                @RequestParam Long specialty,
-                                                @RequestParam Long medicalProcedure,
-                                                @RequestParam String procedureType,
+    public String searchOpenAppointmentsQueueV2(@RequestParam(required = false) Long basicHealthUnit,
+                                                @RequestParam(required = false) Long specialty,
+                                                @RequestParam(required = false) Long medicalProcedure,
+                                                @RequestParam(required = false) String procedureType,
                                                 Model model) {
 
 
@@ -162,6 +169,7 @@ public class QueueController {
         return "queueManagement/queueFragments/queue-tabs-v2 :: queue-datatable";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/paginated")
     public String getOpenAppointmentsQueuePaginated(Model model,
                                            @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
@@ -204,14 +212,15 @@ public class QueueController {
         return "queueManagement/queue-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/v2/paginated")
     public String getOpenAppointmentsQueuePaginatedV2(Model model,
                                                     @RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                                     @RequestParam(value = "size", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int size,
-                                                    @RequestParam(value = "ubs") Long ubs,
-                                                    @RequestParam(value = "specialty") Long specialty,
-                                                    @RequestParam(value = "medicalProcedure") Long medicalProcedure,
-                                                    @RequestParam(value = "procedureType") String procedureType) {
+                                                    @RequestParam(value = "ubs", required = false) Long ubs,
+                                                    @RequestParam(value = "specialty", required = false) Long specialty,
+                                                    @RequestParam(value = "medicalProcedure", required = false) Long medicalProcedure,
+                                                    @RequestParam(value = "procedureType", required = false) String procedureType) {
 
         model.addAttribute("selectedUBS", ubs);
         model.addAttribute("selectedSpecialty", specialty);
@@ -228,6 +237,7 @@ public class QueueController {
         return "queueManagement/queueFragments/queue-tabs-v2 :: queue-datatable";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/{id}/load")
     public String loadOpenAppointment(@PathVariable long id,
                                       @RequestParam Long ubs,
@@ -256,12 +266,13 @@ public class QueueController {
         return "queueManagement/queueFragments/patientAppointment-info :: patientAppointmentInfo";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/v2/{id}/load")
     public String loadOpenAppointmentV2(@PathVariable long id,
-                                      @RequestParam Long ubs,
-                                      @RequestParam Long specialty,
-                                      @RequestParam Long medicalProcedure,
-                                      @RequestParam String procedureType,
+                                      @RequestParam(required = false) Long ubs,
+                                      @RequestParam(required = false) Long specialty,
+                                      @RequestParam(required = false) Long medicalProcedure,
+                                      @RequestParam(required = false) String procedureType,
                                       Model model) {
 
         Appointment appointment = appointmentService.findById(id);
@@ -288,6 +299,7 @@ public class QueueController {
         return "queueManagement/queueFragments/patientAppointment-info :: patientAppointmentInfo";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping(value = "/queue-management/contemplate")
     public String contemplateByAdmin(@RequestParam String reason,
                                      @RequestParam Long ubs,
@@ -313,12 +325,13 @@ public class QueueController {
         return "redirect:/queue-management/search?basicHealthUnit=" + ubs + "&specialty=" + specialty;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping(value = "/queue-management/v2/contemplate")
     public String contemplateByAdminV2(@RequestParam String reason,
-                                     @RequestParam Long ubs,
-                                     @RequestParam Long specialty,
-                                     @RequestParam Long medicalProcedure,
-                                     @RequestParam String procedureType,
+                                     @RequestParam(required = false) Long ubs,
+                                     @RequestParam(required = false) Long specialty,
+                                     @RequestParam(required = false) Long medicalProcedure,
+                                     @RequestParam(required = false) String procedureType,
                                      @RequestParam Long appointmentId,
                                      @RequestParam Long medicalSlotId,
                                      @AuthenticationPrincipal SystemUserDetails loggedUser,
@@ -340,6 +353,7 @@ public class QueueController {
         return "redirect:/queue-management/v2?basicHealthUnit=" + ubs + "&specialty=" + specialty + "&medicalProcedure=" + medicalProcedure + "&procedureType=" + procedureType;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping(value = "/queue-management/v2/procedures", produces = MediaType.TEXT_HTML_VALUE)
     public String loadProcedure(@RequestParam("procedureType") String procedureType,
                                             @RequestParam("specialty") Long specialtyId,
@@ -349,6 +363,12 @@ public class QueueController {
         model.addAttribute("procedures", procedures);
 
         return "queueManagement/queueFragments/medicalProcedures :: medicalProcedures";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
+    @GetMapping("/queue-management/v2/clear")
+    public String clearSearch() {
+        return "redirect:/queue-management/v2";
     }
 
     private List<MedicalProcedure> loadProcedures(String procedureType, Long specialtyId) {

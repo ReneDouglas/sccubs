@@ -4,6 +4,7 @@ import br.com.tecsus.sccubs.dtos.MedicalProceduresTotalDTO;
 import br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO;
 import br.com.tecsus.sccubs.dtos.ProcedureTypeTotalDTO;
 import br.com.tecsus.sccubs.entities.*;
+import br.com.tecsus.sccubs.enums.AppointmentStatus;
 import br.com.tecsus.sccubs.enums.Priorities;
 import br.com.tecsus.sccubs.enums.ProcedureType;
 import br.com.tecsus.sccubs.repositories.*;
@@ -26,12 +27,10 @@ public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final MedicalProcedureRepository medicalProcedureRepository;
-    private final PatientRepository patientRepository;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, MedicalProcedureRepository medicalProcedureRepository, PatientRepository patientRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, MedicalProcedureRepository medicalProcedureRepository) {
         this.appointmentRepository = appointmentRepository;
         this.medicalProcedureRepository = medicalProcedureRepository;
-        this.patientRepository = patientRepository;
     }
 
 
@@ -66,6 +65,7 @@ public class AppointmentService {
         //appointment.setPatient(patient);
         //appointment.setMedicalProcedure(medicalProcedure);
         appointment.setContemplation(null);
+        appointment.setStatus(AppointmentStatus.AGUARDANDO);
         appointment.setCreationUser(loggedUser.getName());
         appointment.setRequestDate(LocalDateTime.now());
 
@@ -78,7 +78,7 @@ public class AppointmentService {
 
         Appointment appt = appointmentRepository.getReferenceById(id);
 
-        appt.setCanceled(true);
+        appt.setStatus(AppointmentStatus.CANCELADO);
         appt.setUpdateUser(loggedUser.getName());
         appt.setUpdateDate(LocalDateTime.now());
 
@@ -98,7 +98,12 @@ public class AppointmentService {
 
     @Transactional(readOnly = true)
     public Appointment findById(Long id) {
-        return appointmentRepository.findById(id).orElse(null);
+        return appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Marcação não encontrada."));
+    }
+
+    @Transactional(readOnly = true)
+    public Appointment findReferenceById(Long id) {
+        return appointmentRepository.getReferenceById(id);
     }
 
     public List<ProcedureTypeTotalDTO> findProcedureTypeTotal(Long ubsId, Long specialtyId) {
@@ -108,5 +113,11 @@ public class AppointmentService {
     public List<MedicalProceduresTotalDTO> findMedicalProceduresTotal(Long ubsId, Long specialtyId) {
         return appointmentRepository.totalByMedicalProceduresAndUBSAndSpecialty(ubsId, specialtyId);
     }
+
+    @Transactional
+    public void updateAppointment(Appointment appointment) {
+        appointmentRepository.save(appointment);
+    }
+
 
 }

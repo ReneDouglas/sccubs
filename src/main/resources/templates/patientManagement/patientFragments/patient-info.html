@@ -56,7 +56,7 @@
             <label for="basicHealthUnit">UBS:</label>
             <select id="basicHealthUnit" th:name="basicHealthUnit.id"
                     disabled>
-                <option th:value="${null}" th:selected="${patient.id == null}">Selecione</option>
+<!--                <option th:value="${null}" th:selected="${patient.id == null}">Selecione</option>-->
                 <option th:value="${patient.basicHealthUnit.id}" th:text="${patient.basicHealthUnit.name}" th:selected="${patient.id != null}"></option>
             </select>
         </div>

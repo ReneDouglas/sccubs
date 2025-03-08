@@ -2,7 +2,7 @@
     <label for="medicalProcedure" class="inline-flex text-sm font-medium text-gray-700">Procedimento:</label>
     <select id="medicalProcedure" th:name="medicalProcedure"
             class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            th:disabled="${#lists.isEmpty(procedures)}" required>
+            th:disabled="${#lists.isEmpty(procedures)}">
         <option th:value="${null}">Selecione</option>
         <option th:each="procedure : ${procedures}"
                 th:value="${procedure.id}"

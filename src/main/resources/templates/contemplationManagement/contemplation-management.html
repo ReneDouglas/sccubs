@@ -51,16 +51,14 @@
                                     <input type="hidden" id="selectedMonth" th:value="${selectedMonth}">
                                 </div>
                                 <div class="mb-4 p-4">
-                                    <label for="confirmed"
-                                           class="inline-flex text-sm font-medium text-gray-700">Confirmado:</label>
-                                    <select id="confirmed" th:name="confirmed"
+                                    <label for="contemplationStatus"
+                                           class="inline-flex text-sm font-medium text-gray-700">Status:</label>
+                                    <select id="contemplationStatus" th:name="contemplationStatus"
                                             class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                        <option value="null"
-                                                th:selected="${confirmed eq null}">Todos</option>
-                                        <option value="true"
-                                                th:selected="${confirmed eq true}">Sim</option>
-                                        <option value="false"
-                                                th:selected="${confirmed eq false}">Não</option>
+                                        <option th:value="${null}">Todos</option>
+                                        <option th:each="status : ${T(br.com.tecsus.sccubs.enums.ContemplationStatus).values()}"
+                                                th:value="${status.description}"
+                                                th:text="${status.description}"></option>
                                     </select>
                                 </div>
                                 <div class="ml-4 mt-11 flex justify-start h-1/2">

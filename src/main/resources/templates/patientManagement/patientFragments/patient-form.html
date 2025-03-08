@@ -87,14 +87,32 @@
         </div>
         <div>
             <label for="basicHealthUnit">UBS:</label>
-<!--            Como o select está desabilitado, o thymeleaf não leva o id da UBS no form ao submeter. -->
-<!--            É preciso utilizar um input hidden (ver 'ubsid') levando o id da UBS -->
-            <select id="basicHealthUnit" th:name="basicHealthUnit.id" disabled>
-                <option th:value="${null}" th:selected="${patient.id == null}">Selecione</option>
-                <th:block th:if="${patient.id != null}">
-                    <option th:value="${patient.basicHealthUnit.id}" th:text="${patient.basicHealthUnit.name}" th:selected="${patient.id != null}"></option>
-                </th:block>
-            </select>
+
+            <th:block sec:authorize="hasAnyRole('ADMIN','SMS')">
+                <select id="ubs" th:name="basicHealthUnit.id"
+                        required>
+                    <option th:value="${null}">Selecione</option>
+                    <option th:each="ubs : ${basicHealthUnits}"
+                            th:value="${ubs.id}"
+                            th:text="${ubs.name}"
+                            th:selected="${patient.id != null} ? ${patient.basicHealthUnit.id} : false">
+                    </option>
+                </select>
+            </th:block>
+            <th:block sec:authorize="!hasAnyRole('ADMIN','SMS')">
+                <!--            Como o select está desabilitado, o thymeleaf não leva o id da UBS no form ao submeter. -->
+                <!--            É preciso utilizar um input hidden (ver 'ubsid') levando o id da UBS -->
+                <select id="basicHealthUnit" th:name="basicHealthUnit.id" disabled>
+                    <th:block th:if="${patient.id == null}">
+                        <option th:value="${systemUserUBS.id}" th:text="${systemUserUBS.name}"></option>
+                    </th:block>
+                    <th:block th:if="${patient.id != null}">
+                        <option th:value="${patient.basicHealthUnit.id}" th:text="${patient.basicHealthUnit.name}" th:selected="${patient.id != null}"></option>
+                    </th:block>
+                </select>
+
+            </th:block>
+
         </div>
         <input type="hidden" id="id" th:field="*{id}"/>
         <th:block th:if="${patient.id != null}">

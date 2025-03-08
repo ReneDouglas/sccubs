@@ -7,10 +7,9 @@
                 <th class="text-sm rounded-l-lg py-2 px-4">Nº</th>
                 <th class="text-sm pl-4 text-nowrap">Data da Requisição</th>
                 <th class="text-sm pl-4 text-nowrap">Data da Contemplação</th>
-                <th class="text-sm pl-4">Cancelado</th>
+                <th class="text-sm pl-4">Status</th>
                 <th class="text-sm pl-4 text-nowrap">Contemplado por</th>
                 <th class="text-sm pl-4">Prioridade</th>
-                <th class="text-sm pl-4">Confirmado</th>
                 <th class="text-sm pl-4">Marcação</th>
                 <th class="text-sm pl-4">Procedimento</th>
                 <th class="text-sm pl-4 text-nowrap">Especialidade</th>
@@ -28,10 +27,9 @@
                 <td class="border-b text-sm py-2 px-4" th:text="${patientHistoryPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (patientHistoryPage.number * patientHistoryPage.size)}"></td>
                 <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.formattedRequestDate()}"></td>
                 <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.formattedContemplationDate()}"></td>
-                <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.canceled ? 'Sim': ''}"></td>
+                <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.statusDescription()}"></td>
                 <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.nullableContemplatedBy()}"></td>
                 <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.priorityRegistered.getDescription()}"></td>
-                <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.contemplationId eq null ? '' : (patientHistory.confirmed ? 'Sim' : 'Não')}"></td>
                 <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.procedureType.getDescription()}"></td>
                 <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.medicalProcedure}"></td>
                 <td class="border-b text-sm py-2 px-4" th:text="${patientHistory.specialty}"></td>
@@ -109,10 +107,9 @@
             <th class="text-sm rounded-l-lg py-2 px-4">Nº</th>
             <th class="text-sm pl-4 text-nowrap">Data da Requisição</th>
             <th class="text-sm pl-4 text-nowrap">Data da Contemplação</th>
-            <th class="text-sm pl-4">Cancelado</th>
+            <th class="text-sm pl-4">Status</th>
             <th class="text-sm pl-4 text-nowrap">Contemplado por</th>
             <th class="text-sm pl-4">Prioridade</th>
-            <th class="text-sm pl-4">Confirmado</th>
             <th class="text-sm pl-4">Marcação</th>
             <th class="text-sm pl-4">Procedimento</th>
             <th class="text-sm pl-4 text-nowrap">Especialidade</th>

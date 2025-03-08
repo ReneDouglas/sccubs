@@ -20,16 +20,15 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class BasicHealthUnitService {
 
     private final BasicHealthUnitRepository basicHealthUnitRepository;
-    private final CityHallService cityHallService;
     private final MedicalProcedureRepository medicalProcedureRepository;
     private SystemUserService systemUserService;
 
-    public BasicHealthUnitService(BasicHealthUnitRepository basicHealthUnitRepository, CityHallService cityHallService, MedicalProcedureRepository medicalProcedureRepository) {
+    public BasicHealthUnitService(BasicHealthUnitRepository basicHealthUnitRepository, MedicalProcedureRepository medicalProcedureRepository) {
         this.basicHealthUnitRepository = basicHealthUnitRepository;
-        this.cityHallService = cityHallService;
         this.medicalProcedureRepository = medicalProcedureRepository;
     }
 
@@ -38,11 +37,18 @@ public class BasicHealthUnitService {
         this.systemUserService = systemUserService;
     }
 
-    public BasicHealthUnit findById(Long id) {
-        return basicHealthUnitRepository.findById(id).orElse(null);
+    //@Transactional(readOnly = true)
+    public BasicHealthUnit findSystemUserUBS(Long id) {
+        return basicHealthUnitRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Nenhuma UBS encontrada para o usuário logado.")
+        );
     }
 
-    public List<BasicHealthUnit> findBasicHealthUnitsByCityHallOfLoggedSystemUser() {
+    public BasicHealthUnit findReferenceById(long id) {
+        return basicHealthUnitRepository.getReferenceById(id);
+    }
+
+    /*public List<BasicHealthUnit> findBasicHealthUnitsByCityHallOfLoggedSystemUser() {
 
         SystemUserDetails systemUserDetails = (SystemUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -50,21 +56,22 @@ public class BasicHealthUnitService {
             return basicHealthUnitRepository.findByCityHallId(systemUserDetails.getCityHallId());
         }
         return basicHealthUnitRepository.findByCityHallId(1L);
-    }
+    }*/
 
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true)
     public List<BasicHealthUnit> findAllUBS() {
         return basicHealthUnitRepository.findAll();
     }
 
+    @Transactional
     public void registerBasicHealthUnit(BasicHealthUnit basicHealthUnit, SystemUserDetails loggedUser) throws Exception{
 
-        basicHealthUnit.setCityHall(cityHallService.findNoFetchCityHallById(loggedUser.getCityHallId()));
         basicHealthUnit.setCreationDate(LocalDateTime.now());
         basicHealthUnit.setCreationUser(loggedUser.getUsername());
         basicHealthUnitRepository.save(basicHealthUnit);
     }
 
+    @Transactional
     public void updateBasicHealthUnit(BasicHealthUnit basicHealthUnit, SystemUserDetails loggedUser) throws Exception{
 
         basicHealthUnit.setUpdateUser(loggedUser.getUsername());
@@ -92,7 +99,7 @@ public class BasicHealthUnitService {
         basicHealthUnitRepository.delete(basicHealthUnit);
     }
 
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true)
     public List<UBSsystemUserDTO> findUBSsystemUsersByUBSid(Long id) {
         BasicHealthUnit basicHealthUnit = basicHealthUnitRepository.findById(id).orElse(null);
 
@@ -114,6 +121,8 @@ public class BasicHealthUnitService {
                 .toList();
     }
 
+
+
     @Transactional
     public void unlinkBasicHealthUnitSystemUser(Long id, SystemUserDetails loggedUser) {
         SystemUser systemUser = systemUserService.findSystemUserById(id);
@@ -132,7 +141,7 @@ public class BasicHealthUnitService {
         systemUserService.updateBasicHealthUnitSystemUsers(List.of(systemUser));
     }
 
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true)
     public MedicalProcedure fetchMedicalProcedure(long medicalProcedureId) {
         return medicalProcedureRepository.findFetchedMedicalProcedure(medicalProcedureId);
     }
@@ -146,4 +155,10 @@ public class BasicHealthUnitService {
         return availableMedicalSlot;
     }
 
+    //@Transactional(readOnly = true)
+    /*public BasicHealthUnit findSystemUserUBS(SystemUserDetails loggedUser) {
+        return basicHealthUnitRepository.findById(loggedUser.getBasicHealthUnitId()).orElseThrow(
+                () -> new RuntimeException("Nenhuma UBS encontrada para o usuário logado.")
+        );
+    }*/
 }

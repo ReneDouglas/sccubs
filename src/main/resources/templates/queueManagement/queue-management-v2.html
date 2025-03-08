@@ -29,8 +29,7 @@
                                         <label for="ubs"
                                                class="inline-flex text-sm font-medium text-gray-700">UBS:</label>
                                         <select id="ubs" th:name="basicHealthUnit"
-                                                class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                                required>
+                                                class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                             <option th:value="${null}">Selecione</option>
                                             <option th:each="ubs : ${basicHealthUnits}"
                                                     th:value="${ubs.id}"
@@ -42,8 +41,7 @@
                                     <div class="mb-4 p-4">
                                         <label for="specialty" class="inline-flex text-sm font-medium text-gray-700">Especialidade:</label>
                                         <select id="specialty" th:name="specialty"
-                                                class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                                required>
+                                                class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                             <option th:value="${null}">Selecione</option>
                                             <option th:each="specialty : ${specialties}"
                                                     th:value="${specialty.id}"
@@ -59,7 +57,7 @@
                                                 hx-include="[name='specialty']"
                                                 hx-swap="outerHTML"
                                                 class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                                th:disabled="${selectedProcedureType == null}" required>
+                                                th:disabled="${selectedProcedureType == null}">
                                             <option th:value="${null}">Selecione</option>
                                             <option th:each="type : ${T(br.com.tecsus.sccubs.enums.ProcedureType).values()}"
                                                     th:value="${type.toString()}"
@@ -76,8 +74,24 @@
                                             Pesquisar
                                         </button>
                                     </div>
+<!--                                    <div class="ml-4 mt-11 flex justify-start h-1/2">-->
+<!--                                        <button type="submit" th:formaction="@{/queue-management/v2/clear}"-->
+<!--                                                class="px-4 p-1.5 bg-blue-600 text-white font-medium rounded-md shadow-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors duration-300">-->
+<!--                                            Limpar-->
+<!--                                        </button>-->
+<!--                                    </div>-->
                                 </div>
                             </form>
+                            <div id="clear-panel" class="w-1/12 grid grid-cols-2">
+                                <div class="ml-4 mt-11 flex justify-start h-1/2">
+                                    <form id="clear-form" th:action="@{/queue-management/v2/clear}">
+                                        <button type="submit"
+                                                class="px-4 p-1.5 bg-blue-600 text-white font-medium rounded-md shadow-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors duration-300">
+                                            Limpar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
 <!--                            <div id="statistics-panel" class="border border-black w-1/2 grid grid-cols-2" th:classappend="${#lists.isEmpty(totalProceduresType)} ? 'hidden' : ''"-->
 <!--                                 onmouseenter="showStatics(event)" onmouseleave="hideStatics()">-->
 <!--                                <th:block th:each="procedureType : ${totalProceduresType}">-->

@@ -221,6 +221,28 @@ ALTER TABLE sccubs.contemplations ADD observation varchar(255) NULL;
 ALTER TABLE sccubs.contemplations CHANGE observation observation varchar(255) NULL AFTER canceled;
 ALTER TABLE sccubs.medical_slots ADD reference_month date NOT NULL;
 ALTER TABLE sccubs.medical_slots CHANGE reference_month reference_month date NOT NULL AFTER id;
+
+
+-- -- -- -- -- --
+-- VERSÃO 1.5.0
+-- Processo de remoção da tabela city_hall
+-- -- -- -- -- --
+ALTER TABLE sccubs.system_users DROP COLUMN id_city_hall;
+ALTER TABLE sccubs.basic_health_units DROP COLUMN id_city_hall;
+DROP TABLE sccubs.city_halls;
+
+ALTER TABLE sccubs.contemplations CHANGE canceled contemplationStatus tinyint(1) NULL;
+ALTER TABLE sccubs.contemplations MODIFY COLUMN contemplationStatus varchar(50) NULL;
+ALTER TABLE sccubs.contemplations DROP COLUMN confirmed;
+
+ALTER TABLE sccubs.appointments CHANGE canceled contemplationStatus varchar(50) DEFAULT 0 NULL;
+ALTER TABLE sccubs.appointments MODIFY COLUMN contemplationStatus varchar(50) DEFAULT 0 NULL;
+
+CREATE FULLTEXT INDEX idx_fulltext_patient ON patients(name, sus_card_number, cpf);
+
+
+
+
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- INSERTS PARA TESTES -- -- -- -- -- -- -- --
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -325,3 +347,5 @@ INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_
 INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(46, 'pE1', 'EXAME', 33, '2024-06-21 14:45:43.763509000', 'sms');
 INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(47, '-', 'CONSULTA', 33, '2024-06-21 14:45:43.763509000', 'sms');
 INSERT INTO medical_procedures (id, description, `type`, id_specialty, creation_date, creation_user) VALUES(48, 'pE2', 'CIRURGIA', 33, '2024-06-21 14:45:43.763509000', 'sms');
+
+

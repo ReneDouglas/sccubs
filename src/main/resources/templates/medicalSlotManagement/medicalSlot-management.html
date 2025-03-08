@@ -22,7 +22,7 @@
                                       th:object="${availableMedicalSlot}"
                                       th:attrappend="hx-post=@{/medicalSlot-management/slots/add}"
                                       hx-target="#availableMedicalSlotsFormTable"
-                                      hx-on::after-request="if(event.detail.elt.tagName != 'SELECT') this.reset()"
+                                      hx-on::after-request="if(event.detail.elt.tagName != 'SELECT') clearFormAndSetCurrentMonth()"
                                       hx-swap="outerHTML"
                                       class="space-y-4 bg-gray-100 p-4 rounded-lg">
 
@@ -148,6 +148,18 @@
             const year = date.getFullYear();
             monthControl.value = `${year}-${month}`;
     });
+
+    function clearFormAndSetCurrentMonth() {
+
+        document.getElementById('availableMedicalSlotAddRow').reset();
+
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const currentMonth = `${year}-${month}`;
+
+        document.getElementById('referenceMonth').value = currentMonth;
+    }
 
     $(document).ready(function () {
 

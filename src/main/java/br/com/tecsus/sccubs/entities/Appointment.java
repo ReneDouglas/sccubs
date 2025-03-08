@@ -1,6 +1,8 @@
 package br.com.tecsus.sccubs.entities;
 
+import br.com.tecsus.sccubs.entities.converters.AppointmentStatusConverter;
 import br.com.tecsus.sccubs.entities.converters.PriorityConverter;
+import br.com.tecsus.sccubs.enums.AppointmentStatus;
 import br.com.tecsus.sccubs.enums.Priorities;
 import java.time.LocalDateTime;
 import jakarta.persistence.Entity;
@@ -37,7 +39,9 @@ public class Appointment {
     private Priorities priority;
 
     private String observation;
-    private boolean canceled;
+
+    @Convert(converter = AppointmentStatusConverter.class)
+    private AppointmentStatus status;
 
     @Column(name = "creation_user", updatable = false)
     private String creationUser;

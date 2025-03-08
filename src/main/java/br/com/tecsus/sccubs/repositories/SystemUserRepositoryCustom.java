@@ -9,6 +9,6 @@ import java.util.List;
 public interface SystemUserRepositoryCustom {
 
     Page<SystemUser> findSystemUsersPaginated(SystemUser systemUser, Pageable pageable);
-    List<UBSsystemUserDTO> findSystemUsersNameByNameContains(String name, Long cityId);
+    List<UBSsystemUserDTO> findSystemUsersNameByNameContains(String name);
 
 }

@@ -54,37 +54,6 @@ public class AppointmentController {
         return "appointmentManagement/appointment-management";
     }
 
-    @GetMapping(value = "/appointment-management/search", produces = MediaType.TEXT_HTML_VALUE)
-    public String searchPatient(@RequestParam("name") String patient,
-                                @RequestParam(value = "autocomplete", defaultValue = "false", required = false) boolean autocomplete,
-                                @AuthenticationPrincipal SystemUserDetails loggedUser,
-                                Model model) {
-
-        if (patient.isEmpty()) {
-            model.addAttribute("patients", List.of());
-            if (autocomplete) {
-                return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
-            }
-            return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatient";
-        }
-
-        final int THRESHOLD = 4;
-        if (patient.length() < THRESHOLD) {
-            model.addAttribute("patients", List.of());
-            if (autocomplete) {
-                return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
-            }
-            return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatient";
-        }
-
-        model.addAttribute("patients", patientService.searchNativePatients(patient, loggedUser.getBasicHealthUnitId()));
-
-        if (autocomplete) {
-            return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
-        }
-
-        return "appointmentManagement/appointmentFragments/patientSearch-dropdown :: dropdownPatient";
-    }
 
     @GetMapping(value = "/appointment-management/load", produces = MediaType.TEXT_HTML_VALUE)
     public String loadPatient(@RequestParam("id") Long idPatient,

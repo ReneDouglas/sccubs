@@ -15,6 +15,8 @@
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Idade</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Situação Social</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Sexo</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">UBS</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Marcação</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
@@ -28,6 +30,8 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${queue.getBirthDateWithAge()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${queue.patientSocialSituationRating.getDescription()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${queue.patientGender}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${queue.ubsName}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${queue.procedureType.getDescription().equals('Consulta') ? 'Consulta'+' ['+ queue.specialty +']' : queue.medicalProcedureDescription}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/queue-management/v2/{id}/load(id = ${queue.appointmentId}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, medicalProcedure = ${selectedMedicalProcedure}, procedureType = ${selectedProcedureType})}"
                        hx-target="#patientAppointment-modal"

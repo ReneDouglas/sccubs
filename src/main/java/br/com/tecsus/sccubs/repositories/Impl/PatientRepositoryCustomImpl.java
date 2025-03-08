@@ -38,7 +38,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 SELECT p.*
                 FROM patients p
                 WHERE MATCH(p.name, p.sus_card_number, p.cpf) AGAINST(:terms IN BOOLEAN MODE)
-                AND p.id_basic_health_unit = :id
+                AND (:id IS NULL OR p.id_basic_health_unit = :id)
                 LIMIT 5
                 """;
 
@@ -56,8 +56,12 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         StringBuilder jpql = new StringBuilder();
 
         jpql.append("SELECT p.id FROM Patient p ");
-        jpql.append("WHERE p.basicHealthUnit.id = :ubsId ");
 
+        if (validationUtils.attrIsNotNull(patient.getBasicHealthUnit().getId())) {
+            jpql.append("WHERE p.basicHealthUnit.id = :ubsId ");
+        } else {
+            jpql.append("WHERE 1=1 ");
+        }
         if (validationUtils.attrIsNotNull(patient.getName())) {
             jpql.append("AND p.name LIKE :name ");
         }
@@ -161,8 +165,8 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                           COALESCE(c.contemplationDate, null),
                           COALESCE(c.contemplatedBy, null),
                           a.priority,
-                          COALESCE(c.confirmed, false),
-                          a.canceled,
+                          a.status,
+                          c.status,
                           mp.procedureType,
                           mp.description,
                           s.title,
@@ -189,8 +193,9 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     private void attachParameters(Query query, Patient patient){
 
-        query.setParameter("ubsId", patient.getBasicHealthUnit().getId());
-
+        if (validationUtils.attrIsNotNull(patient.getBasicHealthUnit().getId())) {
+            query.setParameter("ubsId", patient.getBasicHealthUnit().getId());
+        }
         if (validationUtils.attrIsNotNull(patient.getName())) {
             query.setParameter("name", "%" + patient.getName() + "%");
         }

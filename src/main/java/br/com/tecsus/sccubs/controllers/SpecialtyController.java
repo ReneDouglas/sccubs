@@ -57,6 +57,7 @@ public class SpecialtyController {
         return "specialtyManagement/specialty-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/specialty-management/create")
     public String registerSpecialty(@ModelAttribute SpecialtyDTO specialtyDTO,
                                     @RequestParam("proceduresJson") String proceduresJson,
@@ -77,6 +78,7 @@ public class SpecialtyController {
         return "redirect:/specialty-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/specialty-management/update")
     public String updateSpecialty(@ModelAttribute SpecialtyDTO specialtyDTO,
                                   @RequestParam("proceduresJson") String proceduresJson,

@@ -2,8 +2,10 @@ package br.com.tecsus.sccubs.controllers;
 
 import br.com.tecsus.sccubs.dtos.PatientAppointmentsHistoryDTO;
 import br.com.tecsus.sccubs.entities.Patient;
+import br.com.tecsus.sccubs.enums.Roles;
 import br.com.tecsus.sccubs.enums.SocialSituationRating;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
+import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.PatientService;
 import br.com.tecsus.sccubs.utils.DefaultValues;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,21 +32,19 @@ import java.util.List;
 public class PatientController {
 
     private final PatientService patientService;
+    private final BasicHealthUnitService basicHealthUnitService;
     private Patient patientToSearch;
     private Patient patientToEdit;
     private long patientHistoryId;
 
     @Autowired
-    public PatientController(PatientService patientService) {
+    public PatientController(PatientService patientService, BasicHealthUnitService basicHealthUnitService) {
         this.patientService = patientService;
+        this.basicHealthUnitService = basicHealthUnitService;
         this.patientToSearch = new Patient();
         this.patientToEdit = new Patient();
     }
 
-    /**
-     * TODO: Futuramente, adicionar um atributo 'model' para listar as UBS a fim de migrar o paciente para outra.
-     * TODO: Migração disponível apenas para o usuário da SMS
-      */
     @GetMapping("/patient-management")
     public String getPatientInsertPage(Model model, @AuthenticationPrincipal SystemUserDetails loggedUser) {
 
@@ -53,6 +54,13 @@ public class PatientController {
             model.addAttribute("patient", new Patient());
         }
         model.addAttribute("socialSituations", SocialSituationRating.getDescriptionSortedByRating());
+
+        boolean isAdmin = loggedUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(Roles.ROLE_SMS.toString()));
+        if (isAdmin) {
+            model.addAttribute("basicHealthUnits", basicHealthUnitService.findAllUBS());
+        } else {
+            model.addAttribute("systemUserUBS", basicHealthUnitService.findSystemUserUBS(loggedUser.getBasicHealthUnitId()));
+        }
 
         return "patientManagement/patient-management";
     }
@@ -150,6 +158,38 @@ public class PatientController {
 
         model.addAttribute("patientHistoryPage", patientHistoryPage);
         return "patientManagement/patientFragments/patient-history :: patientHistoryDatatable";
+    }
+
+    @GetMapping(value = "/patient-list/search", produces = MediaType.TEXT_HTML_VALUE)
+    public String searchPatient(@RequestParam("name") String patient,
+                                @RequestParam(value = "autocomplete", defaultValue = "false", required = false) boolean autocomplete,
+                                @AuthenticationPrincipal SystemUserDetails loggedUser,
+                                Model model) {
+
+        if (patient.isEmpty()) {
+            model.addAttribute("patients", List.of());
+            if (autocomplete) {
+                return "patientManagement/patientFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
+            }
+            return "patientManagement/patientFragments/patientSearch-dropdown :: dropdownPatient";
+        }
+
+        final int THRESHOLD = 4;
+        if (patient.length() < THRESHOLD) {
+            model.addAttribute("patients", List.of());
+            if (autocomplete) {
+                return "patientManagement/patientFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
+            }
+            return "patientManagement/patientFragments/patientSearch-dropdown :: dropdownPatient";
+        }
+
+        model.addAttribute("patients", patientService.searchNativePatients(patient, loggedUser.getBasicHealthUnitId()));
+
+        if (autocomplete) {
+            return "patientManagement/patientFragments/patientSearch-dropdown :: dropdownPatientAutocomplete";
+        }
+
+        return "patientManagement/patientFragments/patientSearch-dropdown :: dropdownPatient";
     }
 
     @GetMapping("/patient-list/clear")

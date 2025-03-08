@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +45,7 @@ public class ContemplationController {
         this.specialties = specialtyService.findSpecialties();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/contemplation-management")
     public String getContemplationPage(Model model) {
 
@@ -56,11 +58,12 @@ public class ContemplationController {
         return "contemplationManagement/contemplation-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/contemplation-management/search")
     public String loadSearchContemplations(@RequestParam Long basicHealthUnit,
                                            @RequestParam Long specialty,
                                            @RequestParam String referenceMonth,
-                                           @RequestParam(required = false) String confirmed,
+                                           @RequestParam(required = false) String contemplationStatus,
                                            Model model) {
 
 
@@ -70,7 +73,7 @@ public class ContemplationController {
                         basicHealthUnit,
                         specialty,
                         referenceMonth,
-                        confirmed,
+                        contemplationStatus,
                         PageRequest.of(0, DefaultValues.PAGE_SIZE));
         var exames = contemplationService
                 .findContemplationsByUBSAndSpecialty(
@@ -78,7 +81,7 @@ public class ContemplationController {
                         basicHealthUnit,
                         specialty,
                         referenceMonth,
-                        confirmed,
+                        contemplationStatus,
                         PageRequest.of(0, DefaultValues.PAGE_SIZE));
         var cirurgias = contemplationService
                 .findContemplationsByUBSAndSpecialty(
@@ -86,14 +89,14 @@ public class ContemplationController {
                         basicHealthUnit,
                         specialty,
                         referenceMonth,
-                        confirmed,
+                        contemplationStatus,
                         PageRequest.of(0, DefaultValues.PAGE_SIZE));
 
         model.addAttribute("selectedUBS", basicHealthUnit);
         model.addAttribute("basicHealthUnits", this.basicHealthUnits);
         model.addAttribute("selectedSpecialty", specialty);
         model.addAttribute("selectedMonth", referenceMonth);
-        model.addAttribute("selectedStatus", confirmed);
+        model.addAttribute("selectedStatus", contemplationStatus);
         model.addAttribute("specialties", this.specialties);
         model.addAttribute("consultasPage", consultas);
         model.addAttribute("examesPage", exames);
@@ -111,6 +114,7 @@ public class ContemplationController {
         );*/
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/contemplation-management/paginated")
     public String getMedicalSlotsPaginated(Model model,
                                            @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
@@ -121,12 +125,12 @@ public class ContemplationController {
                                            @RequestParam(value = "specialty") Long specialty,
                                            @RequestParam(value = "month") String referenceMonth,
                                            @RequestParam(value = "type") String procedureType,
-                                           @RequestParam(value = "confirmed") String confirmed) {
+                                           @RequestParam(value = "contemplationStatus") String contemplationStatus) {
 
         model.addAttribute("selectedUBS", ubs);
         model.addAttribute("selectedSpecialty", specialty);
         model.addAttribute("selectedMonth", referenceMonth);
-        model.addAttribute("selectedStatus", confirmed);
+        model.addAttribute("selectedStatus", contemplationStatus);
 
         if (procedureType.equals(ProcedureType.CONSULTA.toString())) {
             model.addAttribute("consultasPage", contemplationService
@@ -135,7 +139,7 @@ public class ContemplationController {
                             ubs,
                             specialty,
                             referenceMonth,
-                            confirmed,
+                            contemplationStatus,
                             PageRequest.of(currentPage, consultasPageSize)));
             return "contemplationManagement/contemplationFragments/contemplation-tabs :: consultas-datatable";
         } else if (procedureType.equals(ProcedureType.EXAME.toString())) {
@@ -145,7 +149,7 @@ public class ContemplationController {
                             ubs,
                             specialty,
                             referenceMonth,
-                            confirmed,
+                            contemplationStatus,
                             PageRequest.of(currentPage, examesPageSize)));
             return "contemplationManagement/contemplationFragments/contemplation-tabs :: exames-datatable";
         } else if (procedureType.equals(ProcedureType.CIRURGIA.toString())) {
@@ -155,7 +159,7 @@ public class ContemplationController {
                             ubs,
                             specialty,
                             referenceMonth,
-                            confirmed,
+                            contemplationStatus,
                             PageRequest.of(currentPage, cirurgiasPageSize)));
             return "contemplationManagement/contemplationFragments/contemplation-tabs :: cirurgias-datatable";
 
@@ -163,6 +167,7 @@ public class ContemplationController {
         return "contemplationManagement/contemplation-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/contemplation-management/{id}/load")
     public String loadContemplated(@PathVariable long id,
                                    @RequestParam Long ubs,
@@ -180,6 +185,7 @@ public class ContemplationController {
         return "queueManagement/queueFragments/patientAppointment-info :: patientAppointmentInfo";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping(value = "/contemplation-management/cancel")
     public String cancelContemplation(@RequestParam("reason") String reason,
                                       @RequestParam Long ubs,
@@ -192,7 +198,7 @@ public class ContemplationController {
 
         try {
             log.info("Cancelando contemplação[id={}] pelo usuário[nome={}].", contemplationId, loggedUser.getName());
-            contemplationService.cancelContemplation(contemplationId, reason, loggedUser);
+            contemplationService.cancelContemplationByAdmin(contemplationId, reason, loggedUser);
             redirectAttributes.addFlashAttribute("error", false);
             redirectAttributes.addFlashAttribute("message", "Contemplação cancelada com sucesso.");
             log.info("Contemplação[id={}] cancelada com sucesso pelo usuário[nome={}].", contemplationId, loggedUser.getName());
@@ -205,6 +211,7 @@ public class ContemplationController {
         return "redirect:/contemplation-management/search?basicHealthUnit=" + ubs + "&specialty=" + specialty + "&referenceMonth=" + month;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping(value = "/contemplation-management/confirm")
     public String confirmContemplation(@RequestParam Long ubs,
                                        @RequestParam Long specialty,
@@ -214,7 +221,7 @@ public class ContemplationController {
                                        RedirectAttributes redirectAttributes) {
 
         try {
-            contemplationService.confirmContemplation(contemplationId, loggedUser);
+            contemplationService.confirmContemplationByAdmin(contemplationId, loggedUser);
             redirectAttributes.addFlashAttribute("error", false);
             redirectAttributes.addFlashAttribute("message", "Contemplação confirmada com sucesso.");
             log.info("Contemplação[id={}] confirmada com sucesso pelo usuário[nome={}].", contemplationId, loggedUser.getName());

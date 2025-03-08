@@ -1,7 +1,9 @@
 package br.com.tecsus.sccubs.entities;
 
 import br.com.tecsus.sccubs.entities.converters.PriorityConverter;
+import br.com.tecsus.sccubs.entities.converters.ContemplationStatusConverter;
 import br.com.tecsus.sccubs.enums.Priorities;
+import br.com.tecsus.sccubs.enums.ContemplationStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -36,8 +38,6 @@ public class Contemplation {
     @Convert(converter = PriorityConverter.class)
     private Priorities contemplatedBy;
 
-    private boolean confirmed;
-
     @OneToOne
     @JoinColumn(name = "id_appointment")
     private Appointment appointment;
@@ -46,7 +46,8 @@ public class Contemplation {
     @JoinColumn(name = "id_available_medical_slot")
     private MedicalSlot medicalSlot;
 
-    private boolean canceled;
+    @Convert(converter = ContemplationStatusConverter.class)
+    private ContemplationStatus status;
 
     private String observation;
 

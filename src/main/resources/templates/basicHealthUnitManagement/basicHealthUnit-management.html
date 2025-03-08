@@ -5,26 +5,8 @@
     <nav th:replace="~{fragments/sidebar :: sidebar}"></nav>
     <main class="flex flex-col w-full mx-auto bg-slate-100">
         <header th:replace="~{fragments/header :: header}"></header>
-        <th:block th:switch="${error}">
-            <div th:case="${false}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
-                <div class="bg-green-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
-                    Sucesso
-                    <button class="ml-auto text-green-800 font-bold" style="font-size: 1.5rem;" onclick="this.parentElement.parentElement.style.display='none'">&#215;</button>
-                </div>
-                <div class="border border-t-0 border-green-400 rounded-b bg-green-100 px-4 py-3 text-green-700">
-                    <p th:text="${message}"></p>
-                </div>
-            </div>
-            <div th:case="${true}" role="alert" class="fixed shadow-gray-700 shadow-lg top-0 right-0 m-4 z-50 w-1/4">
-                <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2 flex items-center">
-                    Erro
-                    <button class="ml-auto text-red-800 font-bold" style="font-size: 1.5rem;" onclick="this.parentElement.parentElement.style.display='none'">&#215;</button>
-                </div>
-                <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                    <p th:text="${message}"></p>
-                </div>
-            </div>
-        </th:block>
+
+        <th:block th:replace="~{fragments/dialogs :: confirmDialog}"></th:block>
 
         <div class="flex flex-1 bg-slate-100 my-8 flex-col space-y-4">
             <div class="w-full">
@@ -46,11 +28,11 @@
                                 <input type="text" id="neighborhood" th:field="*{neighborhood}" name="neighborhood" required>
                             </div>
                             <br>
-                            <div>
-                                <label for="cityHall">Nome:</label>
-                                <input type="text" id="cityHall" th:field="*{cityHall.name}" name="cityHall" disabled
-                                       style="width: 300px">
-                            </div>
+<!--                            <div>-->
+<!--                                <label for="cityHall">Nome:</label>-->
+<!--                                <input type="text" id="cityHall" th:field="*{cityHall.name}" name="cityHall" disabled-->
+<!--                                       style="width: 300px">-->
+<!--                            </div>-->
                             <br>
                             <input type="hidden" id="id" th:field="*{id} "/>
                             <div>

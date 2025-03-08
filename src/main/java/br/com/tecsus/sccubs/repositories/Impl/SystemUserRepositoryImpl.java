@@ -34,19 +34,17 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UBSsystemUserDTO> findSystemUsersNameByNameContains(String name, Long cityId) {
+    public List<UBSsystemUserDTO> findSystemUsersNameByNameContains(String name) {
 
         String jpql = """
                         SELECT su.id, su.name, 'null', 'null' FROM SystemUser su
                         WHERE su.name LIKE CONCAT('%', :name, '%')
-                        AND su.cityHall.id = :cityId
                         AND su.basicHealthUnit IS NULL
                         AND su.active IS TRUE
                """;
 
         TypedQuery<UBSsystemUserDTO> usersQuery = em.createQuery(jpql, UBSsystemUserDTO.class);
         usersQuery.setParameter("name", name);
-        usersQuery.setParameter("cityId", cityId);
         usersQuery.setMaxResults(5);
 
         return usersQuery.getResultList();
@@ -78,6 +76,8 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
             jpql.append("AND su.active = :active ");
         }
 
+        jpql.append("ORDER BY su.creationDate DESC ");
+
         TypedQuery<Long> systemUsersIdQuery = em.createQuery(jpql.toString(), Long.class);
         attachParameters(systemUsersIdQuery, systemUser);
 
@@ -100,6 +100,7 @@ public class SystemUserRepositoryImpl implements SystemUserRepositoryCustom {
                                              LEFT JOIN FETCH su.roles
                                              LEFT JOIN FETCH su.basicHealthUnit
                                          WHERE su.id IN :ids
+                                         ORDER BY su.creationDate DESC
                 """, SystemUser.class);
 
         systemUsersQuery.setParameter("ids", systemUsersIds);

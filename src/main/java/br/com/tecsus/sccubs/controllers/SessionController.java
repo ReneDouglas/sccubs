@@ -86,7 +86,7 @@ public class SessionController {
         model.addAttribute("systemUser", new SystemUser());
         model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotManagement());
         model.addAttribute("basicHealthUnits", basicHealthUnitService
-                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
+                .findAllUBS());
 
         systemUser.setCreationUser(SecurityContextHolder.getContext().getAuthentication().getName());
         systemUser.setName(systemUser.getName() == null || systemUser.getName().isEmpty() ? null : systemUser.getName());
@@ -141,7 +141,7 @@ public class SessionController {
         model.addAttribute("searchUser", new SystemUser());
         model.addAttribute("rolesList", systemUserService.getRolesNotAdminAndNotManagement());
         model.addAttribute("basicHealthUnits", basicHealthUnitService
-                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
+                .findAllUBS());
 
         SystemUser su = new SystemUser();
         su.setCreationUser(loggedUser.getUsername());

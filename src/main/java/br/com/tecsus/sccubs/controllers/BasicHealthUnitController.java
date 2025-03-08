@@ -4,7 +4,6 @@ import br.com.tecsus.sccubs.dtos.UBSsystemUserDTO;
 import br.com.tecsus.sccubs.entities.BasicHealthUnit;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.BasicHealthUnitService;
-import br.com.tecsus.sccubs.services.CityHallService;
 import br.com.tecsus.sccubs.services.SpecialtyService;
 import br.com.tecsus.sccubs.services.SystemUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,17 +28,14 @@ import java.util.List;
 public class BasicHealthUnitController {
 
     private final BasicHealthUnitService basicHealthUnitService;
-    private final CityHallService cityHallService;
     private final SystemUserService systemUserService;
     private final SpecialtyService specialtyService;
 
     @Autowired
     public BasicHealthUnitController(BasicHealthUnitService basicHealthUnitService,
-                                     CityHallService cityHallService,
                                      SystemUserService systemUserService,
                                      SpecialtyService specialtyService) {
         this.basicHealthUnitService = basicHealthUnitService;
-        this.cityHallService = cityHallService;
         this.systemUserService = systemUserService;
         this.specialtyService = specialtyService;
     }
@@ -49,11 +45,10 @@ public class BasicHealthUnitController {
     public String getBasicHealthUnitPage(Model model, @AuthenticationPrincipal SystemUserDetails loggedUser) {
 
         BasicHealthUnit ubs = new BasicHealthUnit();
-        ubs.setCityHall(cityHallService.findNoFetchCityHallById(loggedUser.getCityHallId()));
 
         model.addAttribute("basicHealthUnit", ubs);
         model.addAttribute("basicHealthUnits", basicHealthUnitService
-                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
+                .findAllUBS());
         model.addAttribute("ubsUsers", List.of());
         model.addAttribute("specialties", specialtyService.findSpecialties());
 
@@ -89,9 +84,9 @@ public class BasicHealthUnitController {
             return "redirect:/basicHealthUnit-management";
         }
 
-        model.addAttribute("basicHealthUnit", basicHealthUnitService.findById(basicHealthUnit));
+        model.addAttribute("basicHealthUnit", basicHealthUnitService.findSystemUserUBS(basicHealthUnit));
         model.addAttribute("basicHealthUnits", basicHealthUnitService
-                .findBasicHealthUnitsByCityHallOfLoggedSystemUser());
+                .findAllUBS());
         model.addAttribute("ubsUsers", List.of());
 
         return "basicHealthUnitManagement/basicHealthUnit-management";
@@ -142,7 +137,6 @@ public class BasicHealthUnitController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping(value = "/basicHealthUnit-management/systemUser/search", produces = MediaType.TEXT_HTML_VALUE)
     public String getSystemUsersByLoggedUser(@RequestParam("systemUserSearch") String systemUser,
-                                             @AuthenticationPrincipal SystemUserDetails loggedUser,
                                              Model model) {
 
         if (systemUser.isEmpty()) {
@@ -156,7 +150,7 @@ public class BasicHealthUnitController {
             return "basicHealthUnitManagement/ubsFragments/dropdownUserUBS :: dropdownUser";
         }
 
-        model.addAttribute("users", systemUserService.findSystemUserByNameContaining(systemUser, loggedUser));
+        model.addAttribute("users", systemUserService.findSystemUserByNameContaining(systemUser));
 
         return "basicHealthUnitManagement/ubsFragments/dropdownUserUBS :: dropdownUser";
     }

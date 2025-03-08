@@ -14,6 +14,7 @@ import br.com.tecsus.sccubs.utils.DefaultValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +42,7 @@ public class MedicalSlotController {
         this.appointmentService = appointmentService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/medicalSlot-management")
     public String getMedicalSlotPage(Model model) {
 
@@ -53,6 +55,7 @@ public class MedicalSlotController {
         return "medicalSlotManagement/medicalSlot-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/medicalSlot-management/slots/add")
     public String addAvailableMedicalSlotsRow(@ModelAttribute MedicalSlot availableMedicalSlot,
                                               Model model) {
@@ -67,6 +70,7 @@ public class MedicalSlotController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping("/medicalSlot-management/slots/create")
     public String registerAvailableMedicalSlots(@ModelAttribute AvailableMedicalSlotsFormDTO availableMedicalSlotsFormDTO,
                                                 @AuthenticationPrincipal SystemUserDetails loggedUser,
@@ -87,6 +91,7 @@ public class MedicalSlotController {
         return "redirect:/medicalSlot-management";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/medicalSlot-management/slots/{index}/remove")
     public String removeRowtByIndex(@PathVariable int index,
                                     Model model) {
@@ -95,6 +100,7 @@ public class MedicalSlotController {
         return "medicalSlotManagement/medicalSlotFragments/availableMedicalSlotsForm :: availableMedicalSlotsFormTable";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/medicalSlot-management/paginated")
     public String getMedicalSlotsPaginated(Model model,
                                            @RequestParam(value = "page", defaultValue = "0", required = false) int currentPage,
@@ -104,6 +110,7 @@ public class MedicalSlotController {
         return "medicalSlotManagement/medicalSlotFragments/medicalSlot-datatable :: medicalSlotsDatatable";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping(value = "/medicalSlot-management/procedures", produces = MediaType.TEXT_HTML_VALUE)
     public String loadProcedure(@RequestParam("procedureType") String procedureType,
                                 @RequestParam("specialty") Long specialtyId,

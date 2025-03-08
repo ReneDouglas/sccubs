@@ -22,6 +22,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
                 mp.id,
                 mp.description,
                 s.title,
+                null,
                 COALESCE(a.observation, "Sem observações."),
                 a.id,
                 a.patient.id,
@@ -38,7 +39,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
         WHERE
             a.patient.id = :id
         AND c.appointment IS NULL
-        AND a.canceled = false
+        AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO
         ORDER BY a.requestDate DESC
     """)
     List<PatientOpenAppointmentDTO> findPatientOpenAppointments(@Param("id") Long id);

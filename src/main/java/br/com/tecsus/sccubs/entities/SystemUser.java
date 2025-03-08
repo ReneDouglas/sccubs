@@ -32,8 +32,7 @@ import java.util.Objects;
         attributeNodes =
                 {       // Adicione relacionamentos que devem ser inicializados com esta entidade
                         @NamedAttributeNode("roles"),
-                        @NamedAttributeNode("basicHealthUnit"),
-                        @NamedAttributeNode("cityHall")
+                        @NamedAttributeNode("basicHealthUnit")
                 }
 )
 public class SystemUser implements Serializable {
@@ -53,10 +52,6 @@ public class SystemUser implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_basic_health_unit")
     private BasicHealthUnit basicHealthUnit;
-
-    @ManyToOne
-    @JoinColumn(name = "id_city_hall", updatable = false)
-    private CityHall cityHall;
 
     @ManyToMany
     @JoinTable(name = "system_users_roles",

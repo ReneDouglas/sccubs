@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -62,13 +63,29 @@ public class MedicalSlotService {
         return medicalSlotRepository.findAllAvailableSlotsByReferenceMonth();
     }
 
-    public void addSlot(MedicalSlot medicalSlot) {
-        medicalSlot.setCurrentSlots(medicalSlot.getCurrentSlots() + 1);
-        medicalSlotRepository.save(medicalSlot);
+    @Transactional
+    public MedicalSlot addSlot(MedicalSlot medicalSlot) {
+
+        MedicalSlot ms = medicalSlotRepository.getReferenceById(medicalSlot.getId());
+
+        if (Objects.equals(ms.getCurrentSlots(), ms.getTotalSlots())) {
+            throw new RuntimeException("O limite de slots foi atingido.");
+        }
+
+        ms.setCurrentSlots(ms.getCurrentSlots() + 1);
+        return medicalSlotRepository.save(ms);
     }
 
-    public void removeSlot(MedicalSlot medicalSlot) {
-        medicalSlot.setCurrentSlots(medicalSlot.getCurrentSlots() - 1);
-        medicalSlotRepository.save(medicalSlot);
+    @Transactional
+    public MedicalSlot removeSlot(MedicalSlot medicalSlot) {
+
+        MedicalSlot ms = medicalSlotRepository.getReferenceById(medicalSlot.getId());
+
+        if (ms.getCurrentSlots() == 0) {
+            throw new RuntimeException("Não há mais slots disponíveis.");
+        }
+
+        ms.setCurrentSlots(medicalSlot.getCurrentSlots() - 1);
+        return medicalSlotRepository.save(ms);
     }
 }

@@ -11,13 +11,6 @@ import java.util.List;
 //@Repository
 public interface BasicHealthUnitRepository extends JpaRepository<BasicHealthUnit, Long> {
 
-    @Transactional(readOnly = true)
-    @Query("SELECT ubs " +
-            "FROM BasicHealthUnit ubs " +
-            "LEFT JOIN FETCH ubs.systemUsers " +
-            "WHERE ubs.cityHall.id = :id")
-    List<BasicHealthUnit> findByCityHallId(@Param("id") Long cityHallId);
-
     @Query("FROM BasicHealthUnit")
     @Override
     List<BasicHealthUnit> findAll();

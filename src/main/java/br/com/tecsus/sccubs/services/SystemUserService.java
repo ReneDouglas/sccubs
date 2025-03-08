@@ -34,7 +34,6 @@ public class SystemUserService implements UserDetailsService {
     private final SystemUserRepository systemUserRepository;
     private final SystemRoleRepository systemRoleRepository;
     private final PasswordEncoder passwordEncoder;
-    private CityHallService cityHallService;
 
     @Autowired
     public SystemUserService(SystemUserRepository systemUserRepository, SystemRoleRepository systemRoleRepository, PasswordEncoder passwordEncoder) {
@@ -43,10 +42,6 @@ public class SystemUserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Autowired
-    public void setCityHallService(CityHallService cityHallService) {
-        this.cityHallService = cityHallService;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, BadCredentialsException {
@@ -62,8 +57,6 @@ public class SystemUserService implements UserDetailsService {
                 systemUser.getName(),
                 systemUser.getEmail(),
                 systemUser.getActive(),
-                (systemUser.getCityHall() != null) ? systemUser.getCityHall().getId() : null,
-                (systemUser.getCityHall() != null) ? systemUser.getCityHall().getName() : null,
                 (systemUser.getBasicHealthUnit() != null) ? systemUser.getBasicHealthUnit().getId() : null
                 );
 
@@ -86,7 +79,6 @@ public class SystemUserService implements UserDetailsService {
         systemUser.setRoles(Set.of(role));
         systemUser.setCreationDate(LocalDateTime.now());
         systemUser.setCreationUser(loggedUser.getUsername());
-        systemUser.setCityHall(cityHallService.findNoFetchCityHallById(loggedUser.getCityHallId()));
         systemUser.setActive(true);
 
         systemUserRepository.save(systemUser);
@@ -140,9 +132,9 @@ public class SystemUserService implements UserDetailsService {
         systemUserRepository.delete(systemUser);
     }
 
-    public List<UBSsystemUserDTO> findSystemUserByNameContaining(String username, SystemUserDetails loggedUser) {
+    public List<UBSsystemUserDTO> findSystemUserByNameContaining(String username) {
 
-        return systemUserRepository.findSystemUsersNameByNameContains(username, loggedUser.getCityHallId());
+        return systemUserRepository.findSystemUsersNameByNameContains(username);
     }
 
     public void updateBasicHealthUnitSystemUsers(List<SystemUser> systemUsers) {

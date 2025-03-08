@@ -31,10 +31,6 @@ public class BasicHealthUnit {
     private String name;
     private String neighborhood;
 
-    @ManyToOne
-    @JoinColumn(name = "id_city_hall", updatable = false)
-    private CityHall cityHall;
-
     @OneToMany(mappedBy = "basicHealthUnit"/*, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER*/)
     private List<SystemUser> systemUsers;
 

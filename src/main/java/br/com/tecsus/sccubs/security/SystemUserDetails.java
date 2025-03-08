@@ -13,8 +13,6 @@ public class SystemUserDetails extends User {
     private String name;
     private String email;
     private Boolean active;
-    private Long cityHallId;
-    private String cityHallName;
     private Long basicHealthUnitId;
 
     public SystemUserDetails(String username,
@@ -23,15 +21,11 @@ public class SystemUserDetails extends User {
                              String name,
                              String email,
                              Boolean active,
-                             Long cityHallId,
-                             String cityHallName,
                              Long basicHealthUnitId) {
         super(username, password, authorities);
         this.name = name;
         this.email = email;
         this.active = active;
-        this.cityHallId = cityHallId;
-        this.cityHallName = cityHallName;
         this.basicHealthUnitId = basicHealthUnitId;
     }
 }

@@ -8,7 +8,8 @@
                     <th class="text-sm pl-4">Nome</th>
                     <th class="text-sm pl-4">Contato</th>
                     <th class="text-sm pl-4">CPF</th>
-                    <th class="text-sm pl-4 text-nowrap">Cartão SUS</th>
+<!--                    <th class="text-sm pl-4 text-nowrap">Cartão SUS</th>-->
+                    <th sec:authorize="hasAnyRole('ADMIN','SMS')" class="text-sm pl-4 text-nowrap">UBS</th>
                     <th class="text-sm pl-4 text-nowrap">Data de Nascimento</th>
                     <th class="text-sm pl-4">ACS</th>
                     <th class="text-sm rounded-r-lg py-2">Ações</th>
@@ -27,7 +28,8 @@
                     <td class="border-b text-sm py-2 px-4 text-nowrap" th:text="${patient.name}"></td>
                     <td class="border-b text-sm py-2 px-4" th:text="${patient.phoneNumber}"></td>
                     <td class="border-b text-sm py-2 px-4 text-nowrap" th:text="${patient.cpf}"></td>
-                    <td class="border-b text-sm py-2 px-4 text-nowrap" th:text="${patient.susNumber}"></td>
+<!--                    <td class="border-b text-sm py-2 px-4 text-nowrap" th:text="${patient.susNumber}"></td>-->
+                    <td sec:authorize="hasAnyRole('ADMIN','SMS')" class="border-b text-sm py-2 px-4 text-nowrap" th:text="${patient.basicHealthUnit.name}"></td>
                     <td class="border-b text-sm py-2 px-4" th:text="${patient.getBirthDateWithAge()}"></td>
                     <td class="border-b text-sm py-2 px-4" th:text="${patient.acsName}"></td>
 

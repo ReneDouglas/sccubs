@@ -28,7 +28,7 @@ public class PatientService {
     @Transactional
     public Patient registerPatient(Patient patient, SystemUserDetails loggedUser) throws Exception{
 
-        patient.setBasicHealthUnit(basicHealthUnitService.findById(loggedUser.getBasicHealthUnitId()));
+        patient.setBasicHealthUnit(basicHealthUnitService.findSystemUserUBS(loggedUser.getBasicHealthUnitId()));
         patient.setCreationUser(loggedUser.getName());
         patient.setCreationDate(LocalDateTime.now());
 
@@ -46,10 +46,14 @@ public class PatientService {
        return patientRepository.searchNativePatientsContainingByUBS(terms, id);
     }
 
+    @Transactional(readOnly = true)
     public Patient findByIdAndUBS(Long idPatient, Long idUBS) {
 
-        BasicHealthUnit ubs = new BasicHealthUnit();
-        ubs.setId(idUBS);
+        if (idUBS == null) {
+            return patientRepository.findById(idPatient).orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
+        }
+
+        BasicHealthUnit ubs = basicHealthUnitService.findReferenceById(idUBS);
         return patientRepository.findByIdAndBasicHealthUnit(idPatient, ubs);
     }
 

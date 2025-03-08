@@ -1,5 +1,7 @@
 package br.com.tecsus.sccubs.dtos;
 
+import br.com.tecsus.sccubs.enums.AppointmentStatus;
+import br.com.tecsus.sccubs.enums.ContemplationStatus;
 import br.com.tecsus.sccubs.enums.Priorities;
 import br.com.tecsus.sccubs.enums.ProcedureType;
 
@@ -10,8 +12,8 @@ public record PatientAppointmentsHistoryDTO(LocalDateTime requestDate,
                                             LocalDateTime contemplationDate,
                                             Priorities contemplatedBy,
                                             Priorities priorityRegistered,
-                                            Boolean confirmed,
-                                            Boolean canceled,
+                                            AppointmentStatus appointmentStatus,
+                                            ContemplationStatus contemplationStatus,
                                             ProcedureType procedureType,
                                             String medicalProcedure,
                                             String specialty,
@@ -40,4 +42,13 @@ public record PatientAppointmentsHistoryDTO(LocalDateTime requestDate,
         }
         return contemplatedBy.getDescription();
     }
+
+    public String statusDescription() {
+
+        if (contemplationId == null) {
+            return appointmentStatus.getDescription();
+        }
+        return contemplationStatus.getDescription();
+    }
+
 }

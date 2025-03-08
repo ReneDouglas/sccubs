@@ -27,10 +27,30 @@
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap ">Dashboard</span>
             </a>
 
-            <!--User Item-->
-            <a  th:href="@{/systemUser-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
-                <span class="material-symbols-outlined inline-block align-middle">account_circle</span>
-                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Usuários</span>
+            <!--Queue Item-->
+            <a  th:href="@{/queue-management/v2}" sec:authorize="hasAnyRole('ADMIN','SMS')" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">patient_list</span>
+                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Filas de Espera</span>
+            </a>
+
+            <!--            sec:authorize="hasRole(T(br.com.tecsus.sccubs.utils.Constants).ADMINS)"-->
+            <!--            sec:authorize="${hasRole(#vars.expectedRole)}"  teria q trazer uma var 'expectedRole' no Model -->
+            <!--Contemplation Item-->
+            <a th:href="@{/contemplation-management}" sec:authorize="hasAnyRole('ADMIN','SMS')" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">groups</span>
+                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Contemplados</span>
+            </a>
+
+            <!--MedicalSlot Item-->
+            <a  th:href="@{/medicalSlot-management}" sec:authorize="hasAnyRole('ADMIN','SMS')" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">note_stack_add</span>
+                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Vagas Médicas</span>
+            </a>
+
+            <!--Appointment Item-->
+            <a  th:href="@{/appointment-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle hover:text-red-600">heart_plus</span>
+                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Marcação</span>
             </a>
 
             <!--New Patient Item-->
@@ -48,40 +68,23 @@
             </a>
 
             <!--UBS Item-->
-            <a  th:href="@{/basicHealthUnit-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+            <a  th:href="@{/basicHealthUnit-management}" sec:authorize="hasAnyRole('ADMIN','SMS')" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
                 <span class="material-symbols-outlined inline-block align-middle hover:text-blue-600">apartment</span>
                 <span :class="open ? 'block' : 'hidden'">UBS</span>
             </a>
 
-            <!--Appointment Item-->
-            <a  th:href="@{/appointment-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
-                <span class="material-symbols-outlined inline-block align-middle hover:text-red-600">heart_plus</span>
-                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Marcação</span>
-            </a>
-
             <!--Specialty Item-->
-            <a th:href="@{/specialty-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+            <a th:href="@{/specialty-management}" sec:authorize="hasAnyRole('ADMIN','SMS')" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
                 <span class="material-symbols-outlined inline-block align-middle hover:text-green-600">health_and_safety</span>
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Especialidades</span>
             </a>
 
-            <!--MedicalSlot Item-->
-            <a  th:href="@{/medicalSlot-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
-                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">note_stack_add</span>
-                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Vagas Médicas</span>
+            <!--User Item-->
+            <a  th:href="@{/systemUser-management}" sec:authorize="hasAnyRole('ADMIN','SMS')" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
+                <span class="material-symbols-outlined inline-block align-middle">account_circle</span>
+                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Usuários</span>
             </a>
 
-            <!--Contemplation Item-->
-            <a  th:href="@{/contemplation-management}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
-                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">groups</span>
-                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Contemplados</span>
-            </a>
-
-            <!--Queue Item-->
-            <a  th:href="@{/queue-management/v2}" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">
-                <span class="material-symbols-outlined inline-block align-middle hover:text-amber-500">patient_list</span>
-                <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Filas de Espera</span>
-            </a>
         </div>
         <!--Buttons-Section End----->
     </div>

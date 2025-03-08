@@ -33,11 +33,11 @@
                     <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
                         th:text="${openAppt.priority().getDescription()}"></td>
                     <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
-                        th:text="${openAppt.type().getDescription()}"></td>
+                        th:text="${openAppt.procedureType().getDescription()}"></td>
                     <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
                         th:text="${openAppt.specialty()}"></td>
                     <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
-                        th:text="${openAppt.procedure()}"></td>
+                        th:text="${openAppt.medicalProcedureDescription()}"></td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex gap-2">
 <!--                            <form th:action="@{/appointment-management/{id}/cancel(id=${openAppt.appointmentId}, patientId=${openAppt.patientId})}"-->
