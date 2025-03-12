@@ -45,15 +45,18 @@ public class ContemplationService {
                                                                    String referenceMonth,
                                                                    String contemplationStatus,
                                                                    Pageable page) {
+        YearMonth yearMonth = null;
 
-        YearMonth yearMonth = YearMonth.parse(referenceMonth, DateTimeFormatter.ofPattern("yyyy-MM"));
+        if (referenceMonth != null && !referenceMonth.isEmpty()) {
+            yearMonth = YearMonth.parse(referenceMonth, DateTimeFormatter.ofPattern("yyyy-MM"));
+        }
 
         return contemplationRepository
                 .findConsultationsByUBSAndSpecialtyPaginated(type,
                         ubsId,
                         specialtyId,
                         yearMonth,
-                        contemplationStatus.isEmpty() ? null : ContemplationStatus.getByDescription(contemplationStatus),
+                        contemplationStatus == null || contemplationStatus.isEmpty() ? null : ContemplationStatus.getByDescription(contemplationStatus),
                         page);
     }
 

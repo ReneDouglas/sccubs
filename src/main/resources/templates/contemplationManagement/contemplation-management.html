@@ -22,8 +22,7 @@
                                     <label for="ubs"
                                            class="inline-flex text-sm font-medium text-gray-700">UBS:</label>
                                     <select id="ubs" th:name="basicHealthUnit"
-                                            class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                            required>
+                                            class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                         <option th:value="${null}">Selecione</option>
                                         <option th:each="ubs : ${basicHealthUnits}"
                                                 th:value="${ubs.id}"
@@ -35,8 +34,7 @@
                                 <div class="mb-4 p-4">
                                     <label for="specialty" class="inline-flex text-sm font-medium text-gray-700">Especialidade: </label>
                                     <select id="specialty" th:name="specialty"
-                                            class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                            required>
+                                            class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                         <option th:value="${null}">Selecione</option>
                                         <option th:each="specialty : ${specialties}"
                                                 th:value="${specialty.id}"
@@ -47,7 +45,7 @@
                                 <div class="mb-4 p-4">
                                     <label class="inline-flex text-sm font-medium text-gray-700" for="month">Mês de Referência:</label>
                                     <input class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                           type="month" id="month" name="referenceMonth" required>
+                                           type="month" id="month" name="referenceMonth">
                                     <input type="hidden" id="selectedMonth" th:value="${selectedMonth}">
                                 </div>
                                 <div class="mb-4 p-4">
@@ -112,7 +110,7 @@
                 </div>
             </div>
         </div>
-        <div id="default-modal"></div>
+        <div id="patientAppointment-modal"></div>
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </main>
 </body>

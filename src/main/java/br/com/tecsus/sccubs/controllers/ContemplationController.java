@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.YearMonth;
 import java.util.List;
 
 
@@ -49,20 +51,45 @@ public class ContemplationController {
     @GetMapping("/contemplation-management")
     public String getContemplationPage(Model model) {
 
+        var consultas = contemplationService
+                .findContemplationsByUBSAndSpecialty(
+                        ProcedureType.CONSULTA,
+                        null,
+                        null,
+                        "",
+                        "",
+                        PageRequest.of(0, DefaultValues.PAGE_SIZE));
+        var exames = contemplationService
+                .findContemplationsByUBSAndSpecialty(
+                        ProcedureType.EXAME,
+                        null,
+                        null,
+                        "",
+                        "",
+                        PageRequest.of(0, DefaultValues.PAGE_SIZE));
+        var cirurgias = contemplationService
+                .findContemplationsByUBSAndSpecialty(
+                        ProcedureType.CIRURGIA,
+                        null,
+                        null,
+                        YearMonth.now().toString(),
+                        "",
+                        PageRequest.of(0, DefaultValues.PAGE_SIZE));
+
         model.addAttribute("basicHealthUnits", this.basicHealthUnits);
         model.addAttribute("specialties", this.specialties);
-        model.addAttribute("consultasPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
-        model.addAttribute("examesPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
-        model.addAttribute("cirurgiasPage", new PageImpl<Contemplation>(List.of(), PageRequest.of(0, DefaultValues.PAGE_SIZE), 0));
+        model.addAttribute("consultasPage", consultas);
+        model.addAttribute("examesPage", exames);
+        model.addAttribute("cirurgiasPage", cirurgias);
         model.addAttribute("hide", "hidden");
         return "contemplationManagement/contemplation-management";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/contemplation-management/search")
-    public String loadSearchContemplations(@RequestParam Long basicHealthUnit,
-                                           @RequestParam Long specialty,
-                                           @RequestParam String referenceMonth,
+    public String loadSearchContemplations(@RequestParam(required = false) Long basicHealthUnit,
+                                           @RequestParam(required = false) Long specialty,
+                                           @RequestParam(required = false) String referenceMonth,
                                            @RequestParam(required = false) String contemplationStatus,
                                            Model model) {
 
@@ -121,11 +148,11 @@ public class ContemplationController {
                                            @RequestParam(value = "consultasPageSize", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int consultasPageSize,
                                            @RequestParam(value = "examesPageSize", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int examesPageSize,
                                            @RequestParam(value = "cirurgiasPageSize", defaultValue = "" + DefaultValues.PAGE_SIZE, required = false) int cirurgiasPageSize,
-                                           @RequestParam(value = "ubs") Long ubs,
-                                           @RequestParam(value = "specialty") Long specialty,
-                                           @RequestParam(value = "month") String referenceMonth,
+                                           @RequestParam(value = "ubs", required = false) Long ubs,
+                                           @RequestParam(value = "specialty", required = false) Long specialty,
+                                           @RequestParam(value = "month", required = false) String referenceMonth,
                                            @RequestParam(value = "type") String procedureType,
-                                           @RequestParam(value = "contemplationStatus") String contemplationStatus) {
+                                           @RequestParam(value = "contemplationStatus", required = false) String contemplationStatus) {
 
         model.addAttribute("selectedUBS", ubs);
         model.addAttribute("selectedSpecialty", specialty);
@@ -170,9 +197,9 @@ public class ContemplationController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/contemplation-management/{id}/load")
     public String loadContemplated(@PathVariable long id,
-                                   @RequestParam Long ubs,
-                                   @RequestParam Long specialty,
-                                   @RequestParam String month,
+                                   @RequestParam(required = false) Long ubs,
+                                   @RequestParam(required = false) Long specialty,
+                                   @RequestParam(required = false) String month,
                                    Model model) {
 
         model.addAttribute("selectedUBS", ubs);
@@ -188,9 +215,9 @@ public class ContemplationController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping(value = "/contemplation-management/cancel")
     public String cancelContemplation(@RequestParam("reason") String reason,
-                                      @RequestParam Long ubs,
-                                      @RequestParam Long specialty,
-                                      @RequestParam String month,
+                                      @RequestParam(required = false) Long ubs,
+                                      @RequestParam(required = false) Long specialty,
+                                      @RequestParam(required = false) String month,
                                       @RequestParam Long contemplationId,
                                       @AuthenticationPrincipal SystemUserDetails loggedUser,
                                       RedirectAttributes redirectAttributes) {
@@ -208,14 +235,20 @@ public class ContemplationController {
             log.error("Erro ao cancelar contemplação: {}", e.getMessage());
         }
 
-        return "redirect:/contemplation-management/search?basicHealthUnit=" + ubs + "&specialty=" + specialty + "&referenceMonth=" + month;
+        UriComponentsBuilder redirectURL = UriComponentsBuilder.fromPath("/contemplation-management/search");
+
+        if (ubs != null) redirectURL.queryParam("basicHealthUnit", ubs);
+        if (specialty != null) redirectURL.queryParam("specialty", specialty);
+        if (month != null && !month.isEmpty()) redirectURL.queryParam("referenceMonth", month);
+
+        return "redirect:" + redirectURL.toUriString();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @PostMapping(value = "/contemplation-management/confirm")
-    public String confirmContemplation(@RequestParam Long ubs,
-                                       @RequestParam Long specialty,
-                                       @RequestParam String month,
+    public String confirmContemplation(@RequestParam(required = false) Long ubs,
+                                       @RequestParam(required = false) Long specialty,
+                                       @RequestParam(required = false) String month,
                                        @RequestParam Long contemplationId,
                                        @AuthenticationPrincipal SystemUserDetails loggedUser,
                                        RedirectAttributes redirectAttributes) {
@@ -231,7 +264,13 @@ public class ContemplationController {
             log.error("Erro ao confirmar contemplação: {}", e.getMessage());
         }
 
-        return "redirect:/contemplation-management/search?basicHealthUnit=" + ubs + "&specialty=" + specialty + "&referenceMonth=" + month;
+        UriComponentsBuilder redirectURL = UriComponentsBuilder.fromPath("/contemplation-management/search");
+
+        if (ubs != null) redirectURL.queryParam("basicHealthUnit", ubs);
+        if (specialty != null) redirectURL.queryParam("specialty", specialty);
+        if (month != null && !month.isEmpty()) redirectURL.queryParam("referenceMonth", month);
+
+        return "redirect:" + redirectURL.toUriString();
     }
 
 

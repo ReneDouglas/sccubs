@@ -12,11 +12,15 @@
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">N.</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Paciente</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">CPF</th>
+                <th:block th:if="${selectedSpecialty == null}">
+                    <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Esp.</th>
+                </th:block>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplado por</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
+<!--                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>-->
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplação</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Status</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">UBS</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
@@ -27,14 +31,18 @@
                     th:text="${consultasPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (consultasPage.number * consultasPage.size)}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.patient.name}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.patient.cpf}"></td>
+                <th:block th:if="${selectedSpecialty == null}">
+                    <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.medicalProcedure.specialty.title}"></td>
+                </th:block>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.priority.getDescription()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.contemplatedBy.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
+<!--                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>-->
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.contemplationDate, 'dd/MM/yyyy')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.status.description}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${cp.medicalSlot.basicHealthUnit.name}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${cp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
-                       hx-target="#default-modal"
+                       hx-target="#patientAppointment-modal"
                        hx-swap="outerHTML"
                        href=""
                        class="flex items-center bg-indigo-500 text-white px-2 py-1 rounded-md hover:bg-indigo-400 focus:outline-none transition-colors duration-300"
@@ -100,9 +108,10 @@
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Exame</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplado por</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
+<!--                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>-->
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplação</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Presença Confirmada</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Status</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">UBS</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
@@ -113,15 +122,21 @@
                     th:text="${examesPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (examesPage.number * examesPage.size)}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.patient.name}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.patient.cpf}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.medicalProcedure.description}"></td>
+                <th:block th:if="${selectedSpecialty != null}">
+                    <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.medicalProcedure.description}"></td>
+                </th:block>
+                <th:block th:unless="${selectedSpecialty != null}">
+                    <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.medicalProcedure.description} + ' [' + ${exp.appointment.medicalProcedure.specialty.title} + ']'"></td>
+                </th:block>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.priority.getDescription()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.contemplatedBy.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
+<!--                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>-->
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.contemplationDate, 'dd/MM/yyyy')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.status.description}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${exp.medicalSlot.basicHealthUnit.name}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${exp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
-                       hx-target="#default-modal"
+                       hx-target="#patientAppointment-modal"
                        hx-swap="outerHTML"
                        href=""
                        class="flex items-center bg-indigo-500 text-white px-2 py-1 rounded-md hover:bg-indigo-400 focus:outline-none transition-colors duration-300"
@@ -187,9 +202,10 @@
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Cirurgia</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Prioridade</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplado por</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>
+<!--                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Agendamento</th>-->
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Contemplação</th>
-                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Presença Confirmada</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Status</th>
+                <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">UBS</th>
                 <th class="px-4 py-2 text-left text-sm font-medium uppercase tracking-wider">Ações</th>
             </tr>
             </thead>
@@ -200,15 +216,21 @@
                     th:text="${cirurgiasPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (cirurgiasPage.number * cirurgiasPage.size)}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.patient.name}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.patient.cpf}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.medicalProcedure.description}"></td>
+                <th:block th:if="${selectedSpecialty != null}">
+                    <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.medicalProcedure.description}"></td>
+                </th:block>
+                <th:block th:unless="${selectedSpecialty != null}">
+                    <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.medicalProcedure.description} + ' [' + ${crp.appointment.medicalProcedure.specialty.title} + ']'"></td>
+                </th:block>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.priority.getDescription()}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.contemplatedBy.getDescription()}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
+<!--                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>-->
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.contemplationDate, 'dd/MM/yyyy')}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.status.description}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${crp.medicalSlot.basicHealthUnit.name}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${crp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
-                       hx-target="#default-modal"
+                       hx-target="#patientAppointment-modal"
                        hx-swap="outerHTML"
                        href=""
                        class="flex items-center bg-indigo-500 text-white px-2 py-1 rounded-md hover:bg-indigo-400 focus:outline-none transition-colors duration-300"

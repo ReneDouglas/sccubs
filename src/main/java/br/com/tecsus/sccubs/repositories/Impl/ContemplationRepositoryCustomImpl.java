@@ -33,7 +33,33 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
                                                                            ContemplationStatus status,
                                                                            Pageable pageable) {
 
-        TypedQuery<Long> contemplationIdsQueryPaginated = em.createQuery("""
+        StringBuilder queryBuilder = new StringBuilder();
+
+        queryBuilder.append("SELECT c.id ");
+        queryBuilder.append("FROM Contemplation c ");
+        queryBuilder.append("JOIN c.medicalSlot ms ");
+        queryBuilder.append("JOIN ms.basicHealthUnit ubs ");
+        queryBuilder.append("JOIN ms.medicalProcedure mp ");
+        queryBuilder.append("JOIN c.appointment a ");
+        queryBuilder.append("JOIN a.patient p ");
+        queryBuilder.append("JOIN mp.specialty s ");
+        if (referenceMonth == null) queryBuilder.append("WHERE 1=1 ");
+        if (referenceMonth != null) queryBuilder.append("WHERE MONTH(ms.referenceMonth) = :month ");
+        if (referenceMonth != null) queryBuilder.append("AND YEAR(ms.referenceMonth) = :year ");
+        if (ubsId != null) queryBuilder.append("AND ubs.id = :ubsId ");
+        if (specialtyId != null) queryBuilder.append("AND s.id = :specialtyId ");
+        queryBuilder.append("AND mp.procedureType = :type ");
+        queryBuilder.append("AND (:status IS NULL OR c.status = :status) ");
+        queryBuilder.append("ORDER BY ");
+        queryBuilder.append("c.contemplationDate DESC, ");
+        if (ubsId == null) queryBuilder.append("ubs.name, ");
+        if (specialtyId == null) queryBuilder.append("s.title, ");
+        queryBuilder.append("mp.description, ");
+        queryBuilder.append("p.name ");
+
+        TypedQuery<Long> contemplationIdsQueryPaginated = em.createQuery(queryBuilder.toString(), Long.class);
+
+        /*TypedQuery<Long> contemplationIdsQueryPaginated = em.createQuery("""
             SELECT c.id
             FROM Contemplation c
             JOIN c.medicalSlot ms
@@ -49,14 +75,14 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
             AND MONTH(ms.referenceMonth) = :month
             AND YEAR(ms.referenceMonth) = :year
             ORDER BY mp.description, p.name
-        """, Long.class);
+        """, Long.class);*/
 
-        contemplationIdsQueryPaginated.setParameter("ubsId", ubsId);
-        contemplationIdsQueryPaginated.setParameter("specialtyId", specialtyId);
+        if (ubsId != null) contemplationIdsQueryPaginated.setParameter("ubsId", ubsId);
+        if (specialtyId != null) contemplationIdsQueryPaginated.setParameter("specialtyId", specialtyId);
         contemplationIdsQueryPaginated.setParameter("type", type);
         contemplationIdsQueryPaginated.setParameter("status", status);
-        contemplationIdsQueryPaginated.setParameter("month", referenceMonth.getMonthValue());
-        contemplationIdsQueryPaginated.setParameter("year", referenceMonth.getYear());
+        if (referenceMonth != null) contemplationIdsQueryPaginated.setParameter("month", referenceMonth.getMonthValue());
+        if (referenceMonth != null) contemplationIdsQueryPaginated.setParameter("year", referenceMonth.getYear());
 
         contemplationIdsQueryPaginated.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
         contemplationIdsQueryPaginated.setMaxResults(pageable.getPageSize());
@@ -65,7 +91,28 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
         long totalCountContemplations = contemplationIdsPaginated.size();
 
         if (contemplationIdsPaginated.size() >= pageable.getPageSize()) {
-            TypedQuery<Long> count = em.createQuery("""
+
+            StringBuilder countBuilder = new StringBuilder();
+
+            countBuilder.append("SELECT COUNT(c.id) ");
+            countBuilder.append("FROM Contemplation c ");
+            countBuilder.append("JOIN c.medicalSlot ms ");
+            countBuilder.append("JOIN ms.basicHealthUnit ubs ");
+            countBuilder.append("JOIN ms.medicalProcedure mp ");
+            countBuilder.append("JOIN c.appointment a ");
+            countBuilder.append("JOIN a.patient p ");
+            countBuilder.append("JOIN mp.specialty s ");
+            if (referenceMonth == null) countBuilder.append("WHERE 1=1 ");
+            if (referenceMonth != null) countBuilder.append("WHERE MONTH(ms.referenceMonth) = :month ");
+            if (referenceMonth != null) countBuilder.append("AND YEAR(ms.referenceMonth) = :year ");
+            if (ubsId != null) countBuilder.append("AND ubs.id = :ubsId ");
+            if (specialtyId != null) countBuilder.append("AND s.id = :specialtyId ");
+            countBuilder.append("AND mp.procedureType = :type ");
+            countBuilder.append("AND (:status IS NULL OR c.status = :status) ");
+
+            TypedQuery<Long> count = em.createQuery(countBuilder.toString(), Long.class);
+
+            /*TypedQuery<Long> count = em.createQuery("""
                 SELECT COUNT(c.id)
                 FROM Contemplation c
                 JOIN c.medicalSlot ms
@@ -80,19 +127,39 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
                 AND (:status IS NULL OR c.status = :status)
                 AND MONTH(ms.referenceMonth) = :month
                 AND YEAR(ms.referenceMonth) = :year
-            """, Long.class);
+            """, Long.class);*/
 
-            count.setParameter("ubsId", ubsId);
-            count.setParameter("specialtyId", specialtyId);
+            if (ubsId != null) count.setParameter("ubsId", ubsId);
+            if (specialtyId != null) count.setParameter("specialtyId", specialtyId);
             count.setParameter("type", type);
             count.setParameter("status", status);
-            count.setParameter("month", referenceMonth.getMonthValue());
-            count.setParameter("year", referenceMonth.getYear());
+            if (referenceMonth != null) count.setParameter("month", referenceMonth.getMonthValue());
+            if (referenceMonth != null) count.setParameter("year", referenceMonth.getYear());
 
             totalCountContemplations = count.getSingleResult();
         }
 
-        TypedQuery<Contemplation> contemplationsQuery = em.createQuery("""
+        StringBuilder cBuilder = new StringBuilder();
+
+        cBuilder.append("SELECT c ");
+        cBuilder.append("FROM Contemplation c ");
+        cBuilder.append("JOIN FETCH c.medicalSlot ms ");
+        cBuilder.append("JOIN FETCH ms.basicHealthUnit ubs ");
+        cBuilder.append("JOIN FETCH ms.medicalProcedure mp ");
+        cBuilder.append("JOIN FETCH c.appointment a ");
+        cBuilder.append("JOIN FETCH a.patient p ");
+        cBuilder.append("JOIN FETCH mp.specialty s ");
+        cBuilder.append("WHERE c.id IN :contemplationIds ");
+        cBuilder.append("ORDER BY ");
+        cBuilder.append("c.contemplationDate DESC, ");
+        if (ubsId == null) cBuilder.append("ubs.name, ");
+        if (specialtyId == null) cBuilder.append("s.title, ");
+        cBuilder.append("mp.description, ");
+        cBuilder.append("p.name ");
+
+        TypedQuery<Contemplation> contemplationsQuery = em.createQuery(cBuilder.toString(), Contemplation.class);
+
+        /*TypedQuery<Contemplation> contemplationsQuery = em.createQuery("""
             SELECT c
             FROM Contemplation c
             JOIN FETCH c.medicalSlot ms
@@ -102,7 +169,7 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
             JOIN FETCH a.patient p
             JOIN FETCH mp.specialty s
             WHERE c.id IN :contemplationIds
-        """, Contemplation.class);
+        """, Contemplation.class);*/
 
         contemplationsQuery.setParameter("contemplationIds", contemplationIdsPaginated);
         var contemplations = contemplationsQuery.getResultList();
