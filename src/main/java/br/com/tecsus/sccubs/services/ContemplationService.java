@@ -70,7 +70,7 @@ public class ContemplationService {
     public void cancelContemplationByAdmin(Long contemplatedId, String reason, SystemUserDetails loggedUser) throws CancelContemplationException {
 
         Contemplation contemplated = contemplationRepository.getReferenceById(contemplatedId);
-        contemplated.getAppointment().setStatus(AppointmentStatus.CONTEMPLACAO_CANCELADA_SMS);
+        contemplated.getAppointment().setStatus(AppointmentStatus.CONTEMPLACAO_CANCELADA);
         contemplated.setUpdateUser(loggedUser.getName());
         contemplated.setUpdateDate(LocalDateTime.now());
 
@@ -92,7 +92,7 @@ public class ContemplationService {
     public void confirmContemplationByAdmin(Long contemplationId, SystemUserDetails loggedUser) throws ConfirmContemplationException {
 
         Contemplation contemplated = contemplationRepository.getReferenceById(contemplationId);
-        contemplated.getAppointment().setStatus(AppointmentStatus.CONTEMPLACAO_CONFIRMACAO_SMS);
+        contemplated.getAppointment().setStatus(AppointmentStatus.PRESENCA_CONFIRMADA);
         contemplated.setUpdateUser(loggedUser.getName());
         contemplated.setUpdateDate(LocalDateTime.now());
         contemplated.setObservation("Confirmado por " + loggedUser.getName() + " em " + LocalDateTime.now().format(formatter));
@@ -105,7 +105,7 @@ public class ContemplationService {
     public void contemplateAppointmentByAdmin(Long appointmentId, String reason, Long medicalSlotId, SystemUserDetails loggedUser) {
 
         Appointment appt = appointmentService.findReferenceById(appointmentId);
-        appt.setStatus(AppointmentStatus.CONTEMPLACAO_CONFIRMACAO_SMS);
+        appt.setStatus(AppointmentStatus.PRESENCA_CONFIRMADA);
 
         MedicalSlot medicalSlot = new MedicalSlot();
         medicalSlot.setId(medicalSlotId);

@@ -7,14 +7,13 @@ import java.util.List;
 
 @Getter
 public enum AppointmentStatus {
-    AGUARDANDO("Aguardando Contemplação", false),
-    CANCELADO("Marcação Cancelada/Desistiu", false),
-    CONTEMPLACAO_AGUARDANDO_CONFIRMACAO("Aguardando Confirmação", true),
-    CONTEMPLACAO_CONFIRMACAO_PACIENTE("Confirmado pelo paciente", true),
-    CONTEMPLACAO_CONFIRMACAO_SMS("Confirmado pela SMS", true),
-    CONTEMPLACAO_CANCELADA_PACIENTE("Cancelado pelo paciente", true),
-    CONTEMPLACAO_CANCELADA_SMS("Cancelado pela SMS", true),
-    FINALIZADO("Finalizado", true);
+
+    AGUARDANDO_CONTEMPLACAO("Aguardando Contemplação", false),
+    DESISTENCIA_PACIENTE("Desistência do Paciente", false),
+    PACIENTE_CONTEMPLADO("Paciente Contemplado", true),
+    PRESENCA_CONFIRMADA("Presença Confirmada", true),
+    CONTEMPLACAO_CANCELADA("Contemplação Cancelada", true),
+    ATENDIMENTO_CONCLUIDO("Atendimento Concluído", true);
 
     private final String description;
     private final boolean contemplationFilter;

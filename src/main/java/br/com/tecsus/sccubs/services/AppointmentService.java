@@ -66,7 +66,7 @@ public class AppointmentService {
         //appointment.setPatient(patient);
         //appointment.setMedicalProcedure(medicalProcedure);
         appointment.setContemplation(null);
-        appointment.setStatus(AppointmentStatus.AGUARDANDO);
+        appointment.setStatus(AppointmentStatus.AGUARDANDO_CONTEMPLACAO);
         appointment.setCreationUser(loggedUser.getName());
         appointment.setRequestDate(LocalDateTime.now());
 
@@ -82,7 +82,7 @@ public class AppointmentService {
 
         Appointment appt = appointmentRepository.getReferenceById(id);
 
-        appt.setStatus(AppointmentStatus.CANCELADO);
+        appt.setStatus(AppointmentStatus.DESISTENCIA_PACIENTE);
         appt.setUpdateUser(loggedUser.getName());
         appt.setUpdateDate(LocalDateTime.now());
 

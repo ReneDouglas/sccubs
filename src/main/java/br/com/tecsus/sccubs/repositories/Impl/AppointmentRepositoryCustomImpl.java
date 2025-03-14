@@ -43,7 +43,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 AND s.id = :specialtyId
                 AND mp.procedureType = :type
                 AND ubs.id = :ubsId
-                AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO
+                AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO_CONTEMPLACAO
             ORDER BY
                     a.priority ASC,
                     p.birthDate ASC,
@@ -78,7 +78,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                     AND s.id = :specialtyId
                     AND mp.procedureType = :type
                     AND ubs.id = :ubsId
-                    AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO
+                    AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO_CONTEMPLACAO
             """, Long.class);
 
             count.setParameter("specialtyId", specialtyId);

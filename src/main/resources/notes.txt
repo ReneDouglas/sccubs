@@ -130,3 +130,11 @@ id, agendamento, contemplado
 
 - Gráficos de pizza: perfis dos pacientes cadastrados (sexo, situação social)
 - Gráfico de pizza: perfil dos agendamentos cadastrados (classificação de risco)
+
+### STATUS ###
+- Aguardando
+- Contemplado
+- Confirmado
+- Cancelado
+- Desistência
+- Finalizado

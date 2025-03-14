@@ -1,7 +1,6 @@
 package br.com.tecsus.sccubs.jobs;
 
 import br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO;
-import br.com.tecsus.sccubs.entities.Appointment;
 import br.com.tecsus.sccubs.entities.BasicHealthUnit;
 import br.com.tecsus.sccubs.entities.Contemplation;
 import br.com.tecsus.sccubs.entities.MedicalSlot;
@@ -34,17 +33,19 @@ import static br.com.tecsus.sccubs.utils.DefaultValues.QUATRO_MESES;
 
 @Slf4j
 @Component
-public class ContemplationSchedule {
+public class ContemplationScheduleV2 {
 
     private final MedicalSlotService medicalSlotService;
     private final AppointmentService appointmentService;
     private final ContemplationService contemplationService;
     private final AppointmentStatusHistoryService appointmentStatusHistoryService;
+
+    private static final int NEXT_CONTEMPLATED = 1;
     private static final int MAX_ATTEMPTS = 4;
-    private final String USERNAME_JOB = "Rotina de Contemplação";
+    private static final String USERNAME_JOB = "Rotina de Contemplação";
 
     @Autowired
-    public ContemplationSchedule(MedicalSlotService medicalSlotService, AppointmentService appointmentService, ContemplationService contemplationService, AppointmentStatusHistoryService appointmentStatusHistoryService) {
+    public ContemplationScheduleV2(MedicalSlotService medicalSlotService, AppointmentService appointmentService, ContemplationService contemplationService, AppointmentStatusHistoryService appointmentStatusHistoryService) {
         this.medicalSlotService = medicalSlotService;
         this.appointmentService = appointmentService;
         this.contemplationService = contemplationService;
@@ -72,10 +73,9 @@ public class ContemplationSchedule {
 
         ContemplationScheduleStatus.status = ContemplationScheduleStatus.Status.RUNNING;
         ContemplationScheduleStatus.startTime = LocalDateTime.now();
-        final int NEXT_CONTEMPLATED = 1;
 
         YearMonth referenceMonth = YearMonth.now();
-        List<MedicalSlot> availableSlots = medicalSlotService.findAvailableSlotsByReferenceMonth();
+        var availableSlots = medicalSlotService.findAvailableSlotsByReferenceMonth();
 
         log.info("==> Carregando vagas disponíveis");
         log.info("> Mês de Referência: {}", referenceMonth.getMonth().name().toUpperCase());
@@ -87,68 +87,12 @@ public class ContemplationSchedule {
             log.info("========================================");
             return;
         }
+
         log.info("> Total de Vagas: {}", availableSlots.stream().mapToInt(MedicalSlot::getCurrentSlots).sum());
 
         Map<BasicHealthUnit, List<MedicalSlot>> slotsByUBS = availableSlots.stream().collect(Collectors.groupingBy(MedicalSlot::getBasicHealthUnit));
 
-        log.info(" ");
-        log.info("======== INICIANDO CONTEMPLAÇÕES POR UBS ========");
-        log.info(" ");
-        for (Map.Entry<BasicHealthUnit, List<MedicalSlot>> ubsSlots : slotsByUBS.entrySet()) {
-
-            log.info(":::::::::::::::::::::::::::: [{}] ::::::::::::::::::::::::::::", ubsSlots.getKey().getName());
-            for (MedicalSlot slotsByProcedure : ubsSlots.getValue()) {
-                log.info(" ");
-                log.info(">>> Vagas disponíveis para {}[{}][{}]: {}",
-                        slotsByProcedure.getMedicalProcedure().getDescription(),
-                        slotsByProcedure.getMedicalProcedure().getProcedureType().name(),
-                        slotsByProcedure.getMedicalProcedure().getSpecialty().getDescription(),
-                        slotsByProcedure.getCurrentSlots());
-
-                log.info(">> Carregando fila de espera...");
-                Page<PatientOpenAppointmentDTO> queue = appointmentService
-                        .findOpenAppointmentsQueuePaginatedV2(
-                                ubsSlots.getKey().getId(),
-                                null,
-                                slotsByProcedure.getMedicalProcedure().getId(),
-                                PageRequest.of(0, slotsByProcedure.getCurrentSlots() + NEXT_CONTEMPLATED));
-                log.info(">> [{}] pacientes carregados da fila de espera.", queue.getContent().size());
-                log.info(">> Iniciando contemplação...");
-                log.info("::::::::: [NOME DO PACIENTE] ::::::::: [CPF] ::::::::: [CONTEMPLADO POR] :::::::::");
-                for (int slot = 0; slot < slotsByProcedure.getCurrentSlots(); slot++) {
-
-                    Appointment appt = appointmentService.findReferenceById(queue.getContent().get(slot).appointmentId());
-                    appt.setStatus(AppointmentStatus.PACIENTE_CONTEMPLADO);
-
-                    Contemplation contemplated = new Contemplation();
-
-                    //appt.setId(queue.getContent().get(slot).appointmentId());
-                    contemplated.setMedicalSlot(slotsByProcedure);
-                    contemplated.setAppointment(appt);
-                    contemplated.setContemplatedBy(contemplatedBy(queue.getContent().get(slot), queue.getContent().get(slot + NEXT_CONTEMPLATED)));
-                    contemplated.setContemplationDate(LocalDateTime.now());
-                    contemplated.setCreationDate(LocalDateTime.now());
-                    contemplated.setCreationUser("Rotina de Contemplação");
-
-
-                    appt = appointmentService.updateAppointment(appt);
-                    contemplationService.registerContemplation(contemplated);
-                    appointmentStatusHistoryService.registerAppointmentStatusHistory(
-                            appt,
-                            USERNAME_JOB);
-                    medicalSlotService.removeSlot(slotsByProcedure);
-
-                    log.info("> Contemplado: [{}] [{}] [{}]",
-                            queue.getContent().get(slot).patientName(),
-                            queue.getContent().get(slot).patientCPF(),
-                            contemplated.getContemplatedBy().getDescription());
-                }
-
-                log.info("[X]------[X]------[X]------[X]------[X]------[X]------[X]");
-
-            }
-            log.info("::::::::::::::::::: FIM DA CONTEMPLAÇÃO[{}] :::::::::::::::::::", ubsSlots.getKey().getName());
-        }
+        processSlotsByUBS(slotsByUBS);
 
         ContemplationScheduleStatus.status = ContemplationScheduleStatus.Status.DONE;
         ContemplationScheduleStatus.endTime = LocalDateTime.now();
@@ -157,6 +101,81 @@ public class ContemplationSchedule {
         log.info("========================================");
         log.info("=== ROTINA DE CONTEMPLAÇÃO FINALIZADA ===");
         log.info("========================================");
+    }
+
+    private void processSlotsByUBS(Map<BasicHealthUnit, List<MedicalSlot>> slotsByUBS) {
+
+        log.info(" ");
+        log.info("======== INICIANDO CONTEMPLAÇÕES POR UBS ========");
+        log.info(" ");
+
+        slotsByUBS.forEach((ubs, slots) -> {
+            log.info("::::::::::::::::::INICIO DA CONTEMPLAÇÃO [{}] ::::::::::::::::::", ubs.getName());
+            slots.forEach(this::processSlotsByProcedure);
+            log.info("::::::::::::::::::: FIM DA CONTEMPLAÇÃO [{}] :::::::::::::::::::", ubs.getName());
+        });
+
+        log.info(" ");
+        log.info("========================================");
+        log.info("=== ROTINA DE CONTEMPLAÇÃO FINALIZADA ===");
+        log.info("========================================");
+    }
+
+    private void processSlotsByProcedure(MedicalSlot slotsByProcedure) {
+
+        log.info(" ");
+        log.info(">>> Vagas disponíveis para {}[{}][{}]: {}",
+                slotsByProcedure.getMedicalProcedure().getDescription(),
+                slotsByProcedure.getMedicalProcedure().getProcedureType().name(),
+                slotsByProcedure.getMedicalProcedure().getSpecialty().getDescription(),
+                slotsByProcedure.getCurrentSlots());
+
+        var queue = loadAppointmentQueue(slotsByProcedure);
+        log.info(">> [{}] pacientes carregados da fila de espera.", queue.getContent().size());
+        log.info(">> Iniciando contemplação...");
+        log.info("::::::::: [NOME DO PACIENTE] ::::::::: [CPF] ::::::::: [CONTEMPLADO POR] :::::::::");
+
+        for (int slot = 0; slot < slotsByProcedure.getCurrentSlots(); slot++) {
+            contemplatePatient(
+                    queue.getContent().get(slot),
+                    queue.getContent().get(slot + NEXT_CONTEMPLATED),
+                    slotsByProcedure
+            );
+        }
+
+        log.info("[X]------[X]------[X]------[X]------[X]------[X]------[X]");
+    }
+
+    private Page<PatientOpenAppointmentDTO> loadAppointmentQueue(MedicalSlot slotsByProcedure) {
+        return appointmentService.findOpenAppointmentsQueuePaginatedV2(
+                slotsByProcedure.getBasicHealthUnit().getId(),
+                null,
+                slotsByProcedure.getMedicalProcedure().getId(),
+                PageRequest.of(0, slotsByProcedure.getCurrentSlots() + NEXT_CONTEMPLATED));
+    }
+
+    private void contemplatePatient(PatientOpenAppointmentDTO currentContemplated, PatientOpenAppointmentDTO nextContemplated, MedicalSlot slotsByProcedure) {
+
+        var appt = appointmentService.findReferenceById(currentContemplated.appointmentId());
+        appt.setStatus(AppointmentStatus.PACIENTE_CONTEMPLADO);
+
+        var contemplated = new Contemplation();
+        contemplated.setMedicalSlot(slotsByProcedure);
+        contemplated.setAppointment(appt);
+        contemplated.setContemplatedBy(contemplatedBy(currentContemplated, nextContemplated));
+        contemplated.setContemplationDate(LocalDateTime.now());
+        contemplated.setCreationDate(LocalDateTime.now());
+        contemplated.setCreationUser(USERNAME_JOB);
+
+        appt = appointmentService.updateAppointment(appt);
+        contemplationService.registerContemplation(contemplated);
+        appointmentStatusHistoryService.registerAppointmentStatusHistory(appt, USERNAME_JOB);
+        medicalSlotService.removeSlot(slotsByProcedure);
+
+        log.info("> Contemplado: [{}] [{}] [{}]",
+                currentContemplated.patientName(),
+                currentContemplated.patientCPF(),
+                contemplated.getContemplatedBy().getDescription());
     }
 
     @Recover
