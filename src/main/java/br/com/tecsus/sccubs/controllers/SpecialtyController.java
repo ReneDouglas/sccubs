@@ -46,7 +46,7 @@ public class SpecialtyController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/specialty-management/specialty")
-    public String getSpecialtyToEdit(Model model, @RequestParam("id") long id) {
+    public String getSpecialtyToEdit(Model model, @RequestParam("id") Long id) {
 
         SpecialtyDTO specialtyDTO = specialtyService.findFetchedSpecialty(id);
 

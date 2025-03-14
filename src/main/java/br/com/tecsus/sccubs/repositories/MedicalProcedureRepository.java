@@ -24,7 +24,7 @@ public interface MedicalProcedureRepository extends JpaRepository<MedicalProcedu
         JOIN FETCH mp.specialty
         WHERE mp.id = :id
     """)
-    MedicalProcedure findFetchedMedicalProcedure(long id);
+    MedicalProcedure findFetchedMedicalProcedure(Long id);
 
     @Transactional(readOnly = true)
     @Query("""

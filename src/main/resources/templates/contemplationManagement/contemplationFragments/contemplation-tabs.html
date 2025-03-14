@@ -26,7 +26,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200">
             <tr th:each="cp, iStat : ${consultasPage}"
-                th:classappend="${cp.status == T(br.com.tecsus.sccubs.enums.ContemplationStatus).CONTEMPLACAO_CONFIRMACAO_PACIENTE} ? 'bg-green-300 hover:bg-green-400 transition-colors duration-200' : 'hover:bg-gray-200 transition-colors duration-200'">
+                class="hover:bg-gray-200 transition-colors duration-200">
                 <td class="px-4 py-2 text-gray-700"
                     th:text="${consultasPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (consultasPage.number * consultasPage.size)}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.patient.name}"></td>
@@ -38,7 +38,7 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.contemplatedBy.getDescription()}"></td>
 <!--                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>-->
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(cp.contemplationDate, 'dd/MM/yyyy')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${cp.status.description}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${cp.appointment.status.description}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${cp.medicalSlot.basicHealthUnit.name}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${cp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
@@ -60,7 +60,7 @@
             <div class="flex items-center space-x-2">
                 <label for="consultasPageSize" class="text-sm font-medium text-gray-700">Linhas por página:</label>
                 <select id="consultasPageSize" name="consultasPageSize"
-                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', contemplationStatus = ${selectedStatus})}"
+                        th:attrappend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', status = ${selectedStatus})}"
                         hx-target="#consultas"
                         hx-swap="outerHTML"
                         class="border-gray-300 rounded-md shadow-md focus:ring-gray-500 focus:border-gray-500 p-2">
@@ -72,7 +72,7 @@
             <div class="flex items-center space-x-4">
                 <button id="consultasPrevPage"
                         th:disabled="${!consultasPage.hasPrevious()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', contemplationStatus = ${selectedStatus})}"
+                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number - 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', status = ${selectedStatus})}"
                         hx-target="#consultas"
                         hx-include="[name='consultasPageSize']"
                         hx-trigger="click"
@@ -86,7 +86,7 @@
                 </span>
                 <button id="consultasNextPage"
                         th:disabled="${!consultasPage.hasNext()}"
-                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', contemplationStatus = ${selectedStatus})}"
+                        th:attrprepend="hx-get=@{/contemplation-management/paginated(page = ${consultasPage.number + 1}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth}, type = 'CONSULTA', status = ${selectedStatus})}"
                         hx-target="#consultas"
                         hx-include="[name='consultasPageSize']"
                         hx-trigger="click"
@@ -117,7 +117,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200">
             <tr th:each="exp, iStat : ${examesPage}"
-                th:classappend="${exp.status == T(br.com.tecsus.sccubs.enums.ContemplationStatus).CONTEMPLACAO_CONFIRMACAO_PACIENTE} ? 'bg-green-300 hover:bg-green-400 transition-colors duration-200' : 'hover:bg-gray-200 transition-colors duration-200'">
+                class="hover:bg-gray-200 transition-colors duration-200">
                 <td class="px-4 py-2 text-gray-700"
                     th:text="${examesPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (examesPage.number * examesPage.size)}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.patient.name}"></td>
@@ -132,7 +132,7 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.contemplatedBy.getDescription()}"></td>
 <!--                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>-->
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(exp.contemplationDate, 'dd/MM/yyyy')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${exp.status.description}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${exp.appointment.status.description}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${exp.medicalSlot.basicHealthUnit.name}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${exp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"
@@ -211,7 +211,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200">
             <tr th:each="crp, iStat : ${cirurgiasPage}"
-                th:classappend="${crp.status == T(br.com.tecsus.sccubs.enums.ContemplationStatus).CONTEMPLACAO_CONFIRMACAO_PACIENTE} ? 'bg-green-300 hover:bg-green-400 transition-colors duration-200' : 'hover:bg-gray-200 transition-colors duration-200'">
+                class="hover:bg-gray-200 transition-colors duration-200">
                 <td class="px-4 py-2 text-gray-700"
                     th:text="${cirurgiasPage.number eq 0 ? iStat.index + 1 : (iStat.index + 1) + (cirurgiasPage.number * cirurgiasPage.size)}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.patient.name}"></td>
@@ -226,7 +226,7 @@
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.contemplatedBy.getDescription()}"></td>
 <!--                <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.appointment.requestDate, 'dd/MM/yyyy HH:mm')}"></td>-->
                 <td class="px-4 py-2 text-gray-700" th:text="${#temporals.format(crp.contemplationDate, 'dd/MM/yyyy')}"></td>
-                <td class="px-4 py-2 text-gray-700" th:text="${crp.status.description}"></td>
+                <td class="px-4 py-2 text-gray-700" th:text="${crp.appointment.status.description}"></td>
                 <td class="px-4 py-2 text-gray-700" th:text="${crp.medicalSlot.basicHealthUnit.name}"></td>
                 <td class="px-4 py-2 text-gray-700">
                     <a th:attrappend="hx-get=@{/contemplation-management/{id}/load(id = ${crp.id}, ubs = ${selectedUBS}, specialty = ${selectedSpecialty}, month = ${selectedMonth})}"

@@ -38,7 +38,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
         LEFT JOIN mp.specialty s
         WHERE
             a.patient.id = :id
-        AND c.appointment IS NULL
+        AND a.contemplation IS NULL
         AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO
         ORDER BY a.requestDate DESC
     """)

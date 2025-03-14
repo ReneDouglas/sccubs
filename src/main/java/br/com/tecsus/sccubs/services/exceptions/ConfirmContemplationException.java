@@ -7,7 +7,7 @@ import java.io.Serial;
 public class ConfirmContemplationException extends HibernateException {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final Long serialVersionUID = 1L;
 
     public ConfirmContemplationException(String message) {
         super(message);

@@ -239,7 +239,7 @@ public class QueueController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/{id}/load")
-    public String loadOpenAppointment(@PathVariable long id,
+    public String loadOpenAppointment(@PathVariable Long id,
                                       @RequestParam Long ubs,
                                       @RequestParam Long specialty,
                                       Model model) {
@@ -268,7 +268,7 @@ public class QueueController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/queue-management/v2/{id}/load")
-    public String loadOpenAppointmentV2(@PathVariable long id,
+    public String loadOpenAppointmentV2(@PathVariable Long id,
                                       @RequestParam(required = false) Long ubs,
                                       @RequestParam(required = false) Long specialty,
                                       @RequestParam(required = false) Long medicalProcedure,

@@ -5,14 +5,12 @@ import br.com.tecsus.sccubs.dtos.PatientOpenAppointmentDTO;
 import br.com.tecsus.sccubs.dtos.ProcedureTypeTotalDTO;
 import br.com.tecsus.sccubs.entities.*;
 import br.com.tecsus.sccubs.enums.AppointmentStatus;
-import br.com.tecsus.sccubs.enums.Priorities;
 import br.com.tecsus.sccubs.enums.ProcedureType;
 import br.com.tecsus.sccubs.repositories.*;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.exceptions.AppointmentRegistrationFailureException;
 import br.com.tecsus.sccubs.services.exceptions.CancelAppointmentException;
 import br.com.tecsus.sccubs.services.exceptions.DuplicateAppointmentRegistrationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,10 +25,12 @@ public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final MedicalProcedureRepository medicalProcedureRepository;
+    private final AppointmentStatusHistoryService appointmentStatusHistoryService;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, MedicalProcedureRepository medicalProcedureRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, MedicalProcedureRepository medicalProcedureRepository, AppointmentStatusHistoryService appointmentStatusHistoryService) {
         this.appointmentRepository = appointmentRepository;
         this.medicalProcedureRepository = medicalProcedureRepository;
+        this.appointmentStatusHistoryService = appointmentStatusHistoryService;
     }
 
 
@@ -50,9 +50,10 @@ public class AppointmentService {
         List<PatientOpenAppointmentDTO> patientOpenAppointments = appointmentRepository.findPatientOpenAppointments(appointment.getPatient().getId());
         MedicalProcedure medicalProcedure;
 
+        final Appointment finalAppointment = appointment;
         boolean isDuplicated = patientOpenAppointments
                 .stream()
-                .anyMatch(patientOpenAppointment -> Objects.equals(patientOpenAppointment.medicalProcedureId(), appointment.getMedicalProcedure().getId()));
+                .anyMatch(patientOpenAppointment -> Objects.equals(patientOpenAppointment.medicalProcedureId(), finalAppointment.getMedicalProcedure().getId()));
 
         if (isDuplicated) {
             throw new DuplicateAppointmentRegistrationException("Existe, pelo menos, uma consulta marcada para este procedimento em aberto.");
@@ -69,7 +70,10 @@ public class AppointmentService {
         appointment.setCreationUser(loggedUser.getName());
         appointment.setRequestDate(LocalDateTime.now());
 
-        appointmentRepository.save(appointment);
+        appointment = appointmentRepository.save(appointment);
+
+        appointmentStatusHistoryService.registerAppointmentStatusHistory(appointment, loggedUser.getName());
+
 
     }
 
@@ -82,7 +86,8 @@ public class AppointmentService {
         appt.setUpdateUser(loggedUser.getName());
         appt.setUpdateDate(LocalDateTime.now());
 
-        appointmentRepository.save(appt);
+        appt = appointmentRepository.save(appt);
+        appointmentStatusHistoryService.registerAppointmentStatusHistory(appt, loggedUser.getName());
 
     }
 
@@ -115,8 +120,8 @@ public class AppointmentService {
     }
 
     @Transactional
-    public void updateAppointment(Appointment appointment) {
-        appointmentRepository.save(appointment);
+    public Appointment updateAppointment(Appointment appointment) {
+        return appointmentRepository.save(appointment);
     }
 
 

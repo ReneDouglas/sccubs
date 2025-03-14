@@ -35,7 +35,7 @@ public class PatientController {
     private final BasicHealthUnitService basicHealthUnitService;
     private Patient patientToSearch;
     private Patient patientToEdit;
-    private long patientHistoryId;
+    private Long patientHistoryId;
 
     @Autowired
     public PatientController(PatientService patientService, BasicHealthUnitService basicHealthUnitService) {
@@ -199,7 +199,7 @@ public class PatientController {
     }
 
     @GetMapping("/patient-list/edit")
-    public String editSelectedPatient(@RequestParam(value = "id") long patientId) throws RuntimeException{
+    public String editSelectedPatient(@RequestParam(value = "id") Long patientId) throws RuntimeException{
         patientToEdit = patientService.findPatientToEdit(patientId);
         return "redirect:/patient-management";
     }

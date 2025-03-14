@@ -166,7 +166,6 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                           COALESCE(c.contemplatedBy, null),
                           a.priority,
                           a.status,
-                          c.status,
                           mp.procedureType,
                           mp.description,
                           s.title,

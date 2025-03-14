@@ -79,7 +79,7 @@ public class PatientService {
         return patientRepository.findPatientAppointmentsHistoryPaginated(patient, pageRequest);
     }
 
-    public Patient findPatientToEdit(long id) throws RuntimeException {
+    public Patient findPatientToEdit(Long id) throws RuntimeException {
         return patientRepository.findById(id).orElseThrow(() -> {
             log.error("Paciente [id = {}] não encontrado.", id);
             return new RuntimeException("Paciente não encontrado. Contate o TI.");

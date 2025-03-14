@@ -6,7 +6,6 @@ import br.com.tecsus.sccubs.entities.MedicalSlot;
 import br.com.tecsus.sccubs.enums.AppointmentStatus;
 import br.com.tecsus.sccubs.enums.Priorities;
 import br.com.tecsus.sccubs.enums.ProcedureType;
-import br.com.tecsus.sccubs.enums.ContemplationStatus;
 import br.com.tecsus.sccubs.repositories.ContemplationRepository;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
 import br.com.tecsus.sccubs.services.exceptions.CancelContemplationException;
@@ -30,11 +29,13 @@ public class ContemplationService {
     private final DateTimeFormatter formatter;
     private final MedicalSlotService medicalSlotService;
     private final AppointmentService appointmentService;
+    private final AppointmentStatusHistoryService appointmentStatusHistoryService;
 
     @Autowired
-    public ContemplationService(ContemplationRepository contemplationRepository, MedicalSlotService medicalSlotService, AppointmentService appointmentService) {
+    public ContemplationService(ContemplationRepository contemplationRepository, MedicalSlotService medicalSlotService, AppointmentService appointmentService, AppointmentStatusHistoryService appointmentStatusHistoryService) {
         this.contemplationRepository = contemplationRepository;
         this.medicalSlotService = medicalSlotService;
+        this.appointmentStatusHistoryService = appointmentStatusHistoryService;
         this.formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         this.appointmentService = appointmentService;
     }
@@ -43,7 +44,7 @@ public class ContemplationService {
                                                                    Long ubsId,
                                                                    Long specialtyId,
                                                                    String referenceMonth,
-                                                                   String contemplationStatus,
+                                                                   String status,
                                                                    Pageable page) {
         YearMonth yearMonth = null;
 
@@ -56,12 +57,12 @@ public class ContemplationService {
                         ubsId,
                         specialtyId,
                         yearMonth,
-                        contemplationStatus == null || contemplationStatus.isEmpty() ? null : ContemplationStatus.getByDescription(contemplationStatus),
+                        status == null || status.isEmpty() ? null : AppointmentStatus.getByDescription(status),
                         page);
     }
 
     @Transactional(readOnly = true)
-    public Contemplation loadContemplatedById(long contemplationId) {
+    public Contemplation loadContemplatedById(Long contemplationId) {
         return contemplationRepository.loadFetchedContemplationById(contemplationId);
     }
 
@@ -69,7 +70,7 @@ public class ContemplationService {
     public void cancelContemplationByAdmin(Long contemplatedId, String reason, SystemUserDetails loggedUser) throws CancelContemplationException {
 
         Contemplation contemplated = contemplationRepository.getReferenceById(contemplatedId);
-        contemplated.setStatus(ContemplationStatus.CONTEMPLACAO_CANCELADA_SMS);
+        contemplated.getAppointment().setStatus(AppointmentStatus.CONTEMPLACAO_CANCELADA_SMS);
         contemplated.setUpdateUser(loggedUser.getName());
         contemplated.setUpdateDate(LocalDateTime.now());
 
@@ -80,6 +81,7 @@ public class ContemplationService {
         }
 
         contemplationRepository.save(contemplated);
+        appointmentStatusHistoryService.registerAppointmentStatusHistory(contemplated.getAppointment(), loggedUser.getName());
 
         log.info("Recuperando slot disponível.");
         medicalSlotService.addSlot(contemplated.getMedicalSlot());
@@ -90,19 +92,20 @@ public class ContemplationService {
     public void confirmContemplationByAdmin(Long contemplationId, SystemUserDetails loggedUser) throws ConfirmContemplationException {
 
         Contemplation contemplated = contemplationRepository.getReferenceById(contemplationId);
-        contemplated.setStatus(ContemplationStatus.CONTEMPLACAO_CONFIRMACAO_SMS);
+        contemplated.getAppointment().setStatus(AppointmentStatus.CONTEMPLACAO_CONFIRMACAO_SMS);
         contemplated.setUpdateUser(loggedUser.getName());
         contemplated.setUpdateDate(LocalDateTime.now());
         contemplated.setObservation("Confirmado por " + loggedUser.getName() + " em " + LocalDateTime.now().format(formatter));
 
         contemplationRepository.save(contemplated);
+        appointmentStatusHistoryService.registerAppointmentStatusHistory(contemplated.getAppointment(), loggedUser.getName());
     }
 
     @Transactional
     public void contemplateAppointmentByAdmin(Long appointmentId, String reason, Long medicalSlotId, SystemUserDetails loggedUser) {
 
         Appointment appt = appointmentService.findReferenceById(appointmentId);
-        appt.setStatus(AppointmentStatus.CONTEMPLADO);
+        appt.setStatus(AppointmentStatus.CONTEMPLACAO_CONFIRMACAO_SMS);
 
         MedicalSlot medicalSlot = new MedicalSlot();
         medicalSlot.setId(medicalSlotId);
@@ -114,7 +117,6 @@ public class ContemplationService {
 
         contemplation.setContemplationDate(LocalDateTime.now());
         contemplation.setContemplatedBy(Priorities.ADMINISTRATIVO);
-        contemplation.setStatus(ContemplationStatus.CONTEMPLACAO_CONFIRMACAO_SMS);
         contemplation.setCreationDate(LocalDateTime.now());
         contemplation.setCreationUser(loggedUser.getUsername());
         contemplation.setAppointment(appt);
@@ -122,8 +124,9 @@ public class ContemplationService {
         contemplation.setObservation("Paciente contemplado por " + loggedUser.getName() + " em " + LocalDateTime.now().format(formatter) + " -- Motivo: " + reason);
 
         log.info("Salvando contemplação via administrativo.");
-        appointmentService.updateAppointment(appt);
+        appt = appointmentService.updateAppointment(appt);
         contemplationRepository.save(contemplation);
+        appointmentStatusHistoryService.registerAppointmentStatusHistory(appt, loggedUser.getName());
 
     }
 

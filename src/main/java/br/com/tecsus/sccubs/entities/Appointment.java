@@ -5,17 +5,10 @@ import br.com.tecsus.sccubs.entities.converters.PriorityConverter;
 import br.com.tecsus.sccubs.enums.AppointmentStatus;
 import br.com.tecsus.sccubs.enums.Priorities;
 import java.time.LocalDateTime;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -43,6 +36,9 @@ public class Appointment {
     @Convert(converter = AppointmentStatusConverter.class)
     private AppointmentStatus status;
 
+    @OneToMany(mappedBy = "appointment")
+    private Set<AppointmentStatusHistory> appointmentStatusHistory = new HashSet<>();
+
     @Column(name = "creation_user", updatable = false)
     private String creationUser;
 
@@ -60,7 +56,8 @@ public class Appointment {
     @JoinColumn(name = "id_patient", updatable = false)
     private Patient patient;
 
-    @OneToOne(mappedBy = "appointment")
+    @OneToOne
+    @JoinColumn(name = "id_contemplation")
     private Contemplation contemplation;
 
     public Appointment() {

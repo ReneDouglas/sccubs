@@ -1,9 +1,7 @@
 package br.com.tecsus.sccubs.entities;
 
 import br.com.tecsus.sccubs.entities.converters.PriorityConverter;
-import br.com.tecsus.sccubs.entities.converters.ContemplationStatusConverter;
 import br.com.tecsus.sccubs.enums.Priorities;
-import br.com.tecsus.sccubs.enums.ContemplationStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -29,7 +27,7 @@ public class Contemplation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "contemplation_date")
     private LocalDateTime contemplationDate;
@@ -38,16 +36,12 @@ public class Contemplation {
     @Convert(converter = PriorityConverter.class)
     private Priorities contemplatedBy;
 
-    @OneToOne
-    @JoinColumn(name = "id_appointment")
+    @OneToOne(mappedBy = "contemplation")
     private Appointment appointment;
 
     @ManyToOne
     @JoinColumn(name = "id_available_medical_slot")
     private MedicalSlot medicalSlot;
-
-    @Convert(converter = ContemplationStatusConverter.class)
-    private ContemplationStatus status;
 
     private String observation;
 

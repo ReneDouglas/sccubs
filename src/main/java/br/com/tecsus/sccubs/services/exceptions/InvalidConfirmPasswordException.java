@@ -5,7 +5,7 @@ import java.io.Serial;
 public class InvalidConfirmPasswordException extends Exception{
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final Long serialVersionUID = 1L;
 
     public InvalidConfirmPasswordException(String message) {
         super(message);

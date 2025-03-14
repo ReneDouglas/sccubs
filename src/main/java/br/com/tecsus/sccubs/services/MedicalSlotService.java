@@ -29,7 +29,7 @@ public class MedicalSlotService {
     @Transactional
     public void registerAvailableMedicalSlotsBatch(AvailableMedicalSlotsFormDTO availableMedicalSlotsFormDTO, SystemUserDetails loggedUser) throws DistinctAvailableMedicalSlotException {
 
-        long referenceUbsId = availableMedicalSlotsFormDTO.getAvailableMedicalSlots().get(0).getBasicHealthUnit().getId();
+        Long referenceUbsId = availableMedicalSlotsFormDTO.getAvailableMedicalSlots().get(0).getBasicHealthUnit().getId();
         boolean isDistinct = availableMedicalSlotsFormDTO.getAvailableMedicalSlots().stream().anyMatch(slotUbs -> !slotUbs.getBasicHealthUnit().getId().equals(referenceUbsId));
 
         if (isDistinct) {

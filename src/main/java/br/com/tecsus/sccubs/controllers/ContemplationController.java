@@ -90,7 +90,7 @@ public class ContemplationController {
     public String loadSearchContemplations(@RequestParam(required = false) Long basicHealthUnit,
                                            @RequestParam(required = false) Long specialty,
                                            @RequestParam(required = false) String referenceMonth,
-                                           @RequestParam(required = false) String contemplationStatus,
+                                           @RequestParam(required = false) String status,
                                            Model model) {
 
 
@@ -100,7 +100,7 @@ public class ContemplationController {
                         basicHealthUnit,
                         specialty,
                         referenceMonth,
-                        contemplationStatus,
+                        status,
                         PageRequest.of(0, DefaultValues.PAGE_SIZE));
         var exames = contemplationService
                 .findContemplationsByUBSAndSpecialty(
@@ -108,7 +108,7 @@ public class ContemplationController {
                         basicHealthUnit,
                         specialty,
                         referenceMonth,
-                        contemplationStatus,
+                        status,
                         PageRequest.of(0, DefaultValues.PAGE_SIZE));
         var cirurgias = contemplationService
                 .findContemplationsByUBSAndSpecialty(
@@ -116,14 +116,14 @@ public class ContemplationController {
                         basicHealthUnit,
                         specialty,
                         referenceMonth,
-                        contemplationStatus,
+                        status,
                         PageRequest.of(0, DefaultValues.PAGE_SIZE));
 
         model.addAttribute("selectedUBS", basicHealthUnit);
         model.addAttribute("basicHealthUnits", this.basicHealthUnits);
         model.addAttribute("selectedSpecialty", specialty);
         model.addAttribute("selectedMonth", referenceMonth);
-        model.addAttribute("selectedStatus", contemplationStatus);
+        model.addAttribute("selectedStatus", status);
         model.addAttribute("specialties", this.specialties);
         model.addAttribute("consultasPage", consultas);
         model.addAttribute("examesPage", exames);
@@ -152,12 +152,12 @@ public class ContemplationController {
                                            @RequestParam(value = "specialty", required = false) Long specialty,
                                            @RequestParam(value = "month", required = false) String referenceMonth,
                                            @RequestParam(value = "type") String procedureType,
-                                           @RequestParam(value = "contemplationStatus", required = false) String contemplationStatus) {
+                                           @RequestParam(value = "status", required = false) String status) {
 
         model.addAttribute("selectedUBS", ubs);
         model.addAttribute("selectedSpecialty", specialty);
         model.addAttribute("selectedMonth", referenceMonth);
-        model.addAttribute("selectedStatus", contemplationStatus);
+        model.addAttribute("selectedStatus", status);
 
         if (procedureType.equals(ProcedureType.CONSULTA.toString())) {
             model.addAttribute("consultasPage", contemplationService
@@ -166,7 +166,7 @@ public class ContemplationController {
                             ubs,
                             specialty,
                             referenceMonth,
-                            contemplationStatus,
+                            status,
                             PageRequest.of(currentPage, consultasPageSize)));
             return "contemplationManagement/contemplationFragments/contemplation-tabs :: consultas-datatable";
         } else if (procedureType.equals(ProcedureType.EXAME.toString())) {
@@ -176,7 +176,7 @@ public class ContemplationController {
                             ubs,
                             specialty,
                             referenceMonth,
-                            contemplationStatus,
+                            status,
                             PageRequest.of(currentPage, examesPageSize)));
             return "contemplationManagement/contemplationFragments/contemplation-tabs :: exames-datatable";
         } else if (procedureType.equals(ProcedureType.CIRURGIA.toString())) {
@@ -186,7 +186,7 @@ public class ContemplationController {
                             ubs,
                             specialty,
                             referenceMonth,
-                            contemplationStatus,
+                            status,
                             PageRequest.of(currentPage, cirurgiasPageSize)));
             return "contemplationManagement/contemplationFragments/contemplation-tabs :: cirurgias-datatable";
 
@@ -196,7 +196,7 @@ public class ContemplationController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'SMS')")
     @GetMapping("/contemplation-management/{id}/load")
-    public String loadContemplated(@PathVariable long id,
+    public String loadContemplated(@PathVariable Long id,
                                    @RequestParam(required = false) Long ubs,
                                    @RequestParam(required = false) Long specialty,
                                    @RequestParam(required = false) String month,

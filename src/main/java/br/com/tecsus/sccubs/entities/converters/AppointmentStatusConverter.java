@@ -1,7 +1,6 @@
 package br.com.tecsus.sccubs.entities.converters;
 
 import br.com.tecsus.sccubs.enums.AppointmentStatus;
-import br.com.tecsus.sccubs.enums.ContemplationStatus;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

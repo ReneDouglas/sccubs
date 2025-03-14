@@ -44,7 +44,7 @@ public class BasicHealthUnitService {
         );
     }
 
-    public BasicHealthUnit findReferenceById(long id) {
+    public BasicHealthUnit findReferenceById(Long id) {
         return basicHealthUnitRepository.getReferenceById(id);
     }
 
@@ -142,7 +142,7 @@ public class BasicHealthUnitService {
     }
 
     //@Transactional(readOnly = true)
-    public MedicalProcedure fetchMedicalProcedure(long medicalProcedureId) {
+    public MedicalProcedure fetchMedicalProcedure(Long medicalProcedureId) {
         return medicalProcedureRepository.findFetchedMedicalProcedure(medicalProcedureId);
     }
 

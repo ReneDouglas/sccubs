@@ -7,8 +7,8 @@ import br.com.tecsus.sccubs.entities.Contemplation;
 import br.com.tecsus.sccubs.entities.MedicalSlot;
 import br.com.tecsus.sccubs.enums.AppointmentStatus;
 import br.com.tecsus.sccubs.enums.Priorities;
-import br.com.tecsus.sccubs.enums.ContemplationStatus;
 import br.com.tecsus.sccubs.services.AppointmentService;
+import br.com.tecsus.sccubs.services.AppointmentStatusHistoryService;
 import br.com.tecsus.sccubs.services.ContemplationService;
 import br.com.tecsus.sccubs.services.MedicalSlotService;
 import br.com.tecsus.sccubs.utils.ContemplationScheduleStatus;
@@ -39,13 +39,16 @@ public class ContemplationSchedule {
     private final MedicalSlotService medicalSlotService;
     private final AppointmentService appointmentService;
     private final ContemplationService contemplationService;
+    private final AppointmentStatusHistoryService appointmentStatusHistoryService;
     private static final int MAX_ATTEMPTS = 4;
+    private final String USERNAME_JOB = "Rotina de Contemplação";
 
     @Autowired
-    public ContemplationSchedule(MedicalSlotService medicalSlotService, AppointmentService appointmentService, ContemplationService contemplationService) {
+    public ContemplationSchedule(MedicalSlotService medicalSlotService, AppointmentService appointmentService, ContemplationService contemplationService, AppointmentStatusHistoryService appointmentStatusHistoryService) {
         this.medicalSlotService = medicalSlotService;
         this.appointmentService = appointmentService;
         this.contemplationService = contemplationService;
+        this.appointmentStatusHistoryService = appointmentStatusHistoryService;
     }
 
     @Transactional
@@ -114,9 +117,8 @@ public class ContemplationSchedule {
                 log.info("::::::::: [NOME DO PACIENTE] ::::::::: [CPF] ::::::::: [CONTEMPLADO POR] :::::::::");
                 for (int slot = 0; slot < slotsByProcedure.getCurrentSlots(); slot++) {
 
-
                     Appointment appt = appointmentService.findReferenceById(queue.getContent().get(slot).appointmentId());
-                    appt.setStatus(AppointmentStatus.CONTEMPLADO);
+                    appt.setStatus(AppointmentStatus.CONTEMPLACAO_AGUARDANDO_CONFIRMACAO);
 
                     Contemplation contemplated = new Contemplation();
 
@@ -127,10 +129,13 @@ public class ContemplationSchedule {
                     contemplated.setContemplationDate(LocalDateTime.now());
                     contemplated.setCreationDate(LocalDateTime.now());
                     contemplated.setCreationUser("Rotina de Contemplação");
-                    contemplated.setStatus(ContemplationStatus.CONTEMPLACAO_AGUARDANDO_CONFIRMACAO);
 
-                    appointmentService.updateAppointment(appt);
+
+                    appt = appointmentService.updateAppointment(appt);
                     contemplationService.registerContemplation(contemplated);
+                    appointmentStatusHistoryService.registerAppointmentStatusHistory(
+                            appt,
+                            USERNAME_JOB);
                     medicalSlotService.removeSlot(slotsByProcedure);
 
                     log.info("> Contemplado: [{}] [{}] [{}]",

@@ -35,12 +35,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 a.id
             FROM
                 Appointment a
-            LEFT JOIN a.contemplation c
             LEFT JOIN a.medicalProcedure mp
             LEFT JOIN mp.specialty s
             LEFT JOIN a.patient p
             LEFT JOIN p.basicHealthUnit ubs
-            WHERE c.appointment IS NULL
+            WHERE a.contemplation IS NULL
                 AND s.id = :specialtyId
                 AND mp.procedureType = :type
                 AND ubs.id = :ubsId
@@ -71,12 +70,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                     COUNT(a.id)
                 FROM
                     Appointment a
-                LEFT JOIN a.contemplation c
                 LEFT JOIN a.medicalProcedure mp
                 LEFT JOIN mp.specialty s
                 LEFT JOIN a.patient p
                 LEFT JOIN p.basicHealthUnit ubs
-                WHERE c.appointment IS NULL
+                WHERE a.contemplation IS NULL
                     AND s.id = :specialtyId
                     AND mp.procedureType = :type
                     AND ubs.id = :ubsId
@@ -128,12 +126,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT a.id FROM Appointment a ");
-        queryBuilder.append("LEFT JOIN a.contemplation c ");
         queryBuilder.append("LEFT JOIN a.medicalProcedure mp ");
         queryBuilder.append("LEFT JOIN mp.specialty s ");
         queryBuilder.append("LEFT JOIN a.patient p ");
         queryBuilder.append("LEFT JOIN p.basicHealthUnit ubs ");
-        queryBuilder.append("WHERE c.appointment IS NULL ");
+        queryBuilder.append("WHERE a.contemplation IS NULL ");
 
         if (ubsId != null) queryBuilder.append("AND ubs.id = :ubsId ");
         if (specialtyId != null) queryBuilder.append("AND s.id = :specialtyId ");
@@ -194,12 +191,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
             StringBuilder countBuilder = new StringBuilder();
             countBuilder.append("SELECT COUNT(a.id) FROM Appointment a ");
-            countBuilder.append("LEFT JOIN a.contemplation c ");
             countBuilder.append("LEFT JOIN a.medicalProcedure mp ");
             countBuilder.append("LEFT JOIN mp.specialty s ");
             countBuilder.append("LEFT JOIN a.patient p ");
             countBuilder.append("LEFT JOIN p.basicHealthUnit ubs ");
-            countBuilder.append("WHERE c.appointment IS NULL ");
+            countBuilder.append("WHERE a.contemplation IS NULL ");
             countBuilder.append("AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO ");
             if (ubsId != null) countBuilder.append("AND ubs.id = :ubsId ");
             if (specialtyId != null) countBuilder.append("AND s.id = :specialtyId ");

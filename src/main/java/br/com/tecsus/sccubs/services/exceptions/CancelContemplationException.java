@@ -6,7 +6,7 @@ import java.io.Serial;
 public class CancelContemplationException extends HibernateException {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final Long serialVersionUID = 1L;
 
     public CancelContemplationException(String message) {
         super(message);

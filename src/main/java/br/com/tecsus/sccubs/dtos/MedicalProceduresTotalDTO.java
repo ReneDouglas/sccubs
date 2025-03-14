@@ -4,5 +4,5 @@ import br.com.tecsus.sccubs.enums.ProcedureType;
 
 public record MedicalProceduresTotalDTO(String description,
                                         ProcedureType type,
-                                        long total) {
+                                        Long total) {
 }

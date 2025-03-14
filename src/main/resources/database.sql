@@ -240,7 +240,25 @@ ALTER TABLE sccubs.appointments MODIFY COLUMN contemplationStatus varchar(50) DE
 
 CREATE FULLTEXT INDEX idx_fulltext_patient ON patients(name, sus_card_number, cpf);
 
+-- -- -- -- -- --
+-- VERSÃO 1.6.0 (12/3/25)
+-- -- -- -- -- --
+create table appointment_status_history(
+                                       id bigint(20) not null auto_increment,
+                                       status varchar(100) not null,
+                                       id_appointment bigint(20) not null,
+                                       creation_date datetime(6) not null,
+                                       creation_user varchar(100) not null,
+                                       primary key (id),
+                                       foreign key (id_appointment) references appointments(id)
+);
 
+ALTER TABLE sccubs.contemplations DROP COLUMN status;
+ALTER TABLE sccubs.appointments ADD id_contemplation bigint(20) NULL;
+ALTER TABLE sccubs.appointments CHANGE id_contemplation id_contemplation bigint(20) NULL AFTER id_patient;
+ALTER TABLE sccubs.appointments ADD CONSTRAINT appointments_FK FOREIGN KEY (id_contemplation) REFERENCES sccubs.contemplations(id);
+ALTER TABLE sccubs.contemplations DROP FOREIGN KEY contemplations_ibfk_1;
+ALTER TABLE sccubs.contemplations DROP COLUMN id_appointment;
 
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

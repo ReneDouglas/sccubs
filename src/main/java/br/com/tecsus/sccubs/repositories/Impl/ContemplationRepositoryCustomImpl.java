@@ -1,7 +1,7 @@
 package br.com.tecsus.sccubs.repositories.Impl;
 
 import br.com.tecsus.sccubs.entities.Contemplation;
-import br.com.tecsus.sccubs.enums.ContemplationStatus;
+import br.com.tecsus.sccubs.enums.AppointmentStatus;
 import br.com.tecsus.sccubs.enums.ProcedureType;
 import br.com.tecsus.sccubs.repositories.ContemplationRepositoryCustom;
 import jakarta.persistence.EntityManager;
@@ -30,7 +30,7 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
                                                                            Long ubsId,
                                                                            Long specialtyId,
                                                                            YearMonth referenceMonth,
-                                                                           ContemplationStatus status,
+                                                                           AppointmentStatus status,
                                                                            Pageable pageable) {
 
         StringBuilder queryBuilder = new StringBuilder();
@@ -49,7 +49,16 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
         if (ubsId != null) queryBuilder.append("AND ubs.id = :ubsId ");
         if (specialtyId != null) queryBuilder.append("AND s.id = :specialtyId ");
         queryBuilder.append("AND mp.procedureType = :type ");
-        queryBuilder.append("AND (:status IS NULL OR c.status = :status) ");
+
+        if (status == null) {
+            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO ");
+            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.CANCELADO ");
+            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.FINALIZADO ");
+        }
+        else {
+            queryBuilder.append("AND a.status = :status ");
+        }
+
         queryBuilder.append("ORDER BY ");
         queryBuilder.append("c.contemplationDate DESC, ");
         if (ubsId == null) queryBuilder.append("ubs.name, ");
@@ -80,7 +89,7 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
         if (ubsId != null) contemplationIdsQueryPaginated.setParameter("ubsId", ubsId);
         if (specialtyId != null) contemplationIdsQueryPaginated.setParameter("specialtyId", specialtyId);
         contemplationIdsQueryPaginated.setParameter("type", type);
-        contemplationIdsQueryPaginated.setParameter("status", status);
+        if (status != null) contemplationIdsQueryPaginated.setParameter("status", status);
         if (referenceMonth != null) contemplationIdsQueryPaginated.setParameter("month", referenceMonth.getMonthValue());
         if (referenceMonth != null) contemplationIdsQueryPaginated.setParameter("year", referenceMonth.getYear());
 
@@ -108,7 +117,14 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
             if (ubsId != null) countBuilder.append("AND ubs.id = :ubsId ");
             if (specialtyId != null) countBuilder.append("AND s.id = :specialtyId ");
             countBuilder.append("AND mp.procedureType = :type ");
-            countBuilder.append("AND (:status IS NULL OR c.status = :status) ");
+            if (status == null) {
+                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO ");
+                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.CANCELADO ");
+                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.FINALIZADO ");
+            }
+            else {
+                queryBuilder.append("AND a.status = :status ");
+            }
 
             TypedQuery<Long> count = em.createQuery(countBuilder.toString(), Long.class);
 
@@ -132,7 +148,7 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
             if (ubsId != null) count.setParameter("ubsId", ubsId);
             if (specialtyId != null) count.setParameter("specialtyId", specialtyId);
             count.setParameter("type", type);
-            count.setParameter("status", status);
+            if (status != null) count.setParameter("status", status);
             if (referenceMonth != null) count.setParameter("month", referenceMonth.getMonthValue());
             if (referenceMonth != null) count.setParameter("year", referenceMonth.getYear());
 

@@ -18,6 +18,6 @@ public interface ContemplationRepository extends JpaRepository<Contemplation, Lo
             JOIN FETCH mp.specialty s
             WHERE c.id = :id
     """)
-    public Contemplation loadFetchedContemplationById(long id);
+    public Contemplation loadFetchedContemplationById(Long id);
 
 }
