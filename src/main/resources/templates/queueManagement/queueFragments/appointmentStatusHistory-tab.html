@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div th:fragment="status-details" class="p-4">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Histórico de Status</h3>
+
+        <div class=" max-h-[400px] overflow-y-auto overflow-x-auto shadow-md rounded-lg">
+            <table class="min-w-full bg-white">
+                <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">N.</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Data</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Usuário</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                <tr th:each="st, iStat : ${contemplated.appointment.appointmentStatusHistory}" class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
+                        th:text="${iStat.count}"></td>
+                    <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
+                        th:text="${st.status.getDescription()}"></td>
+                    <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
+                        th:text="${#temporals.format(st.creationDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
+                        th:text="${st.creationUser}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</body>
+</html>

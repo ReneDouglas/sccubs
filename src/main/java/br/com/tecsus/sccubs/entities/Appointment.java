@@ -5,7 +5,9 @@ import br.com.tecsus.sccubs.entities.converters.PriorityConverter;
 import br.com.tecsus.sccubs.enums.AppointmentStatus;
 import br.com.tecsus.sccubs.enums.Priorities;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -37,7 +39,7 @@ public class Appointment {
     private AppointmentStatus status;
 
     @OneToMany(mappedBy = "appointment")
-    private Set<AppointmentStatusHistory> appointmentStatusHistory = new HashSet<>();
+    private List<AppointmentStatusHistory> appointmentStatusHistory = new ArrayList<>();
 
     @Column(name = "creation_user", updatable = false)
     private String creationUser;

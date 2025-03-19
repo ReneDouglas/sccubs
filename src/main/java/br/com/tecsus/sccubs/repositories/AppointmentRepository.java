@@ -39,7 +39,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
         WHERE
             a.patient.id = :id
         AND a.contemplation IS NULL
-        AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO
+        AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO_CONTEMPLACAO
         ORDER BY a.requestDate DESC
     """)
     List<PatientOpenAppointmentDTO> findPatientOpenAppointments(@Param("id") Long id);

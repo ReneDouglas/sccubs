@@ -136,7 +136,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         if (specialtyId != null) queryBuilder.append("AND s.id = :specialtyId ");
         if (medicalProcedureId != null) queryBuilder.append("AND mp.id = :medicalProcedureId ");
 
-        queryBuilder.append("AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO ");
+        queryBuilder.append("AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO_CONTEMPLACAO ");
         queryBuilder.append("ORDER BY ");
 
         if (ubsId == null) queryBuilder.append("ubs.name, ");
@@ -196,7 +196,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             countBuilder.append("LEFT JOIN a.patient p ");
             countBuilder.append("LEFT JOIN p.basicHealthUnit ubs ");
             countBuilder.append("WHERE a.contemplation IS NULL ");
-            countBuilder.append("AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO ");
+            countBuilder.append("AND a.status = br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO_CONTEMPLACAO ");
             if (ubsId != null) countBuilder.append("AND ubs.id = :ubsId ");
             if (specialtyId != null) countBuilder.append("AND s.id = :specialtyId ");
             if (medicalProcedureId != null) countBuilder.append("AND mp.id = :medicalProcedureId ");

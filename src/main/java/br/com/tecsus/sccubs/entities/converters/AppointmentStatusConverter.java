@@ -26,6 +26,6 @@ public class AppointmentStatusConverter implements AttributeConverter<Appointmen
         return Stream.of(AppointmentStatus.values())
                 .filter(status -> status.getDescription().equals(dbData))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("Status de agendamento não encontrado para: " + dbData));
     }
 }

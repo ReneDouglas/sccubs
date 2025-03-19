@@ -5,6 +5,7 @@ import br.com.tecsus.sccubs.entities.Contemplation;
 import br.com.tecsus.sccubs.entities.Specialty;
 import br.com.tecsus.sccubs.enums.ProcedureType;
 import br.com.tecsus.sccubs.security.SystemUserDetails;
+import br.com.tecsus.sccubs.services.AppointmentStatusHistoryService;
 import br.com.tecsus.sccubs.services.BasicHealthUnitService;
 import br.com.tecsus.sccubs.services.ContemplationService;
 import br.com.tecsus.sccubs.services.SpecialtyService;

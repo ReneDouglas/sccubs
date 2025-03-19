@@ -63,7 +63,12 @@ public class ContemplationService {
 
     @Transactional(readOnly = true)
     public Contemplation loadContemplatedById(Long contemplationId) {
-        return contemplationRepository.loadFetchedContemplationById(contemplationId);
+
+        Contemplation contemplated = contemplationRepository.loadFetchedContemplationById(contemplationId);
+        var statusList = appointmentStatusHistoryService.findAllAppointmentHistory(contemplated.getAppointment());
+        contemplated.getAppointment().setAppointmentStatusHistory(statusList);
+
+        return contemplated;
     }
 
     @Transactional

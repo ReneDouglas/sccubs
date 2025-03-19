@@ -51,9 +51,9 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
         queryBuilder.append("AND mp.procedureType = :type ");
 
         if (status == null) {
-            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO ");
-            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.CANCELADO ");
-            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.FINALIZADO ");
+            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO_CONTEMPLACAO ");
+            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.CONTEMPLACAO_CANCELADA ");
+            queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.ATENDIMENTO_CONCLUIDO ");
         }
         else {
             queryBuilder.append("AND a.status = :status ");
@@ -118,9 +118,9 @@ public class ContemplationRepositoryCustomImpl implements ContemplationRepositor
             if (specialtyId != null) countBuilder.append("AND s.id = :specialtyId ");
             countBuilder.append("AND mp.procedureType = :type ");
             if (status == null) {
-                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO ");
-                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.CANCELADO ");
-                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.FINALIZADO ");
+                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.AGUARDANDO_CONTEMPLACAO ");
+                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.CONTEMPLACAO_CANCELADA ");
+                queryBuilder.append("AND a.status <> br.com.tecsus.sccubs.enums.AppointmentStatus.ATENDIMENTO_CONCLUIDO ");
             }
             else {
                 queryBuilder.append("AND a.status = :status ");
