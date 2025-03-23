@@ -1,5 +1,4 @@
 <div th:fragment="systemUser-search">
-
     <form id="searchForm" th:action="@{/systemUser-management}" th:object="${searchUser}" th:method="get"
           class="grid grid-flow-row grid-cols-1 sm:grid-cols-4 md:grid-cols-12 lg:grid-cols-12 xl:grid-cols-12 2xl:grid-cols-12 gap-2 rounded-lg gap-x-4 py-4 px-4 w-full">
 
@@ -53,11 +52,15 @@
 
         <div class="inline-flex col-span-2 justify-center lg:justify-start sm:justify-start md:justify-center items-end gap-x-2 mt-2 sm:col-span-2 md:col-span-12 lg:col-span-4 xl:col-span-3 2xl:col-span-3">
             <button type="submit"
-                    class="text-sm inline-block rounded-lg bg-slate-900 py-2.5 px-6 text-white cursor-pointer active:bg-blue-400 hover:bg-blue-500 transition transition-300">Pesquisar</button>
-            <button type="button" id="clearButton"
-                    class="text-sm inline-block rounded-lg bg-slate-900 py-2.5 px-6 text-white cursor-pointer active:bg-blue-400 hover:bg-red-500 transition transition-300">Limpar</button>
-        </div>
+                    class="inline-flex text-sm items-center rounded-lg bg-slate-900 p-2 text-white cursor-pointer active:bg-blue-400 hover:bg-blue-500 transition transition-300">
+                <span class="-ml-1 material-symbols-outlined mx-1">search</span>Buscar
+            </button>
 
+            <button type="button" id="clearButton"
+                    class="inline-flex text-sm items-center rounded-lg bg-slate-900 p-2 text-white cursor-pointer active:bg-blue-400 hover:bg-red-500 transition duration-300">
+                <span class="-ml-1 material-symbols-outlined mx-1">close</span>Limpar
+            </button>
+        </div>
         <hr class="col-span-2 sm:col-span-4 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-12 mt-2 ">
     </form>
 </div>

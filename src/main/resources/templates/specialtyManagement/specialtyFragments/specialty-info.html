@@ -1,24 +1,34 @@
-<div th:fragment="specialtyInfo" style="max-height: 300px; overflow-y: auto">
-    <table style="width: 100%; border-collapse: collapse">
-        <thead>
-        <tr>
-            <th></th>
-            <th>Nome</th>
-            <th>Descrição</th>
-            <th>Ativo</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="specialty : ${specialties}">
-            <td th:text="${specialtyStat.index} + 1"></td>
-            <td th:text="${specialty.title}"></td>
-            <td th:text="${specialty.description}"></td>
-            <td th:text="${specialty.active} ? 'Sim' : 'Não'"></td>
-            <td>
-                <a th:href="@{/specialty-management/specialty(id=${specialty.id})}">Editar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div th:fragment="specialtyInfo">
+    <div class="overflow-auto">
+
+        <!--Main Table Start-->
+        <table class="table-auto w-full text-base" id="systemUserDatatable">
+            <thead class="font-light text-sm text-slate-600 text-left tracking-wide">
+            <tr class="bg-slate-200">
+                <th class="text-sm rounded-l-lg py-2 px-4">N°</th>
+                <th class="text-sm pl-4">Nome</th>
+                <th class="text-sm pl-4">Descrição</th>
+                <th class="text-sm pl-4">Ativo</th>
+                <th class="text-sm rounded-r-lg py-2 px-4">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr class="overflow-hidden border-slate-200 text-slate-600 w-full hover:bg-slate-50 active:bg-slate-200" th:each="specialty : ${specialties}">
+                <td class="border-b text-sm py-4 px-4" th:text="${specialtyStat.index} + 1"></td>
+                <td class="border-b text-sm pl-4" th:text="${specialty.title}"></td>
+                <td class="border-b text-sm pl-4 py-2" th:text="${specialty.description}"></td>
+
+                <td class="border-b text-sm pl-4">
+                    <div th:classappend="${specialty.active ? 'bg-green-400' : 'bg-red-400'}"
+                         class="inline-block px-4  rounded-xl" th:text="${specialty.active ? 'Sim' : 'Não'}"></div>
+                </td>
+
+                <td class="border-b text-sm px-4">
+                    <a th:href="@{/specialty-management/specialty(id=${specialty.id})}">Editar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

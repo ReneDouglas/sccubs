@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org"
+<html lang="pt-br" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head th:replace="~{fragments/template :: head}"></head>
@@ -91,7 +91,7 @@
 
                             <div class="flex flex-col w-full col-span-2 sm:col-span-1" th:if="*{id}">
                                 <label for="active">Ativo:</label>
-                                <select id="active" name="active"
+                                <select  id="active" name="active"
                                         class="text-sm w-full rounded-lg border border-stroke py-2 pl-4 mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200">
                                     <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
                                     <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
@@ -126,7 +126,6 @@
                                 <div th:replace="~{sessionManagement/sessionFragments/systemUserList-datatable :: systemUser-datatable}"></div>
                             </div>
                         </div>
-
                     </div>
 
                 </div>

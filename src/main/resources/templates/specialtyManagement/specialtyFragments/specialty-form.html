@@ -1,55 +1,80 @@
 <div th:fragment="specialtyForm">
     <form th:action="${specialtyDTO.id == null} ? @{/specialty-management/create} : @{/specialty-management/update}"
           method="post"
-          th:object="${specialtyDTO}">
+          th:object="${specialtyDTO}"
+          class="grid grid-flow-row grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 xl:grid-cols-5 gap-2 rounded-lg gap-x-4 py-4 px-4 w-full">
+
+            <div class="flex flex-col w-full col-span-4 sm:col-span-2 md:col-span-6 lg:col-span-6 2xl:col-span-3">
+                <label class="text-sm" for="title">Nome: </label>
+                <input class="text-sm w-full rounded-lg border border-stroke py-2 pl-4 mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200"
+                       placeholder="Especialidade" type="text" id="title" th:field="*{title}">
+            </div>
+
+            <div class="flex flex-col w-full col-span-4 sm:col-span-2 md:col-span-6 lg:col-span-6 2xl:col-span-3">
+                <label class="text-sm" for="description">Descrição: </label>
+                <input class="text-sm w-full rounded-lg border border-stroke py-2 pl-4 mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200"
+                       placeholder="Descrição" type="text" id="description" th:field="*{description}">
+            </div>
+
+            <div class="flex flex-col w-full col-span-2 sm:col-span-1 md:col-span-4 lg:col-span-2 xl:col-span-3 2xl:col-span-2" th:if="*{id}">
+                <label class="text-sm text-nowrap overflow-hidden overflow-ellipsis" for="active">Ativo: </label>
+                <select class="text-sm w-full rounded-lg border border-stroke py-2 pl-4 mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200"
+                        id="active" name="active">
+                    <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
+                    <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
+                </select>
+            </div>
+
+            <div class="flex flex-col w-full col-span-2 sm:col-span-2 md:col-span-8 lg:col-span-6 2xl:col-span-3">
+                <label class="text-sm" for="procedure">Procedimento: </label>
+                <input class="text-sm w-full rounded-lg border border-stroke py-2 pl-4 mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200"
+                       placeholder="Nome Procedimento" type="text" id="procedure">
+            </div>
+
+            <div class="flex flex-col w-full col-span-2 sm:col-span-1 md:col-span-4 lg:col-span-2 xl:col-span-3 2xl:col-span-2">
+                <label class="text-sm text-nowrap overflow-hidden overflow-ellipsis" for="procedureType">Tipo de procedimento:</label>
+                <select class="text-sm w-full rounded-lg border border-stroke py-2 pl-4 mt-1 outline-none focus:ring-2 hover:ring-gray-400 hover:ring-2 hover:border-white focus:border-white focus:ring-blue-500 transition duration-200"
+                        id="procedureType">
+
+                    <option th:value="${null}">Selecione</option>
+                    <option th:each="type : ${T(br.com.tecsus.sccubs.enums.ProcedureType).values()}"
+                            th:value="${type.description}"
+                            th:text="${type.description}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="inline-flex col-span-2 justify-center lg:justify-start sm:justify-start md:justify-center items-end gap-x-2 mt-2 sm:col-span-1 md:col-span-12 lg:col-span-4 xl:col-span-3 2xl:col-span-3">
+                <button type="button" id="addProcedureBtn"
+                        class="text-sm inline-block rounded-lg bg-slate-900 py-2.5 px-6 text-white cursor-pointer active:bg-blue-400 hover:bg-blue-500 transition transition-300">
+                    Adicionar
+                </button>
+            </div>
+
         <div>
-            <label for="title">Nome: </label>
-            <input type="text" id="title" th:field="*{title}">
+            <table class="table-auto w-full text-base">
+                <thead class="font-light text-sm text-slate-600 text-left tracking-wide">
+                <tr class="bg-slate-200">
+                    <th class="text-sm rounded-l-lg py-2 px-4">Nome</th>
+                    <th class="text-sm rounded-r-lg py-2 px-4">Procedimentos</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="procedure : ${procedures}">
+                    <td class="border-b text-sm py-2 pl-4" th:text="${procedure.description}"></td>
+                    <td class="border-b text-sm py-2 pl-4" th:text="${procedure.procedureType}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <input type="hidden" id="proceduresJson" name="proceduresJson"/>
+            <input type="hidden" id="id" th:field="*{id}"/>
+
+            <div class="inline-flex col-span-2 justify-center lg:justify-start sm:justify-start md:justify-center items-end gap-x-2 mt-2 sm:col-span-1 md:col-span-12 lg:col-span-4 xl:col-span-3 2xl:col-span-3">
+                <button type="button" th:text="*{id} == null ? 'Salvar' : 'Editar'"
+                        class="text-sm inline-block rounded-lg bg-slate-900 py-2.5 px-6 text-white cursor-pointer active:bg-blue-400 hover:bg-blue-500 transition transition-300">
+                </button>
+            </div>
         </div>
-        <div>
-            <label for="description">Descrição: </label>
-            <input type="text" id="description" th:field="*{description}">
-        </div>
-        <div th:if="*{id}">
-            <label for="active">Ativo: </label>
-            <select id="active" name="active">
-                <option th:value="true" th:text="'Sim'" th:selected="*{active == true}"></option>
-                <option th:value="false" th:text="'Não'" th:selected="*{active == false}"></option>
-            </select>
-        </div>
-        <div>
-            <label for="procedure">Nome do procedimento: </label>
-            <input type="text" id="procedure">
-        </div>
-        <div>
-            <label for="procedureType">Tipo de procedimento: </label>
-            <select id="procedureType">
-                <option th:value="${null}">Selecione</option>
-                <option th:each="type : ${T(br.com.tecsus.sccubs.enums.ProcedureType).values()}"
-                        th:value="${type.description}"
-                        th:text="${type.description}">
-                </option>
-            </select>
-        </div>
-        <button type="button" id="addProcedureBtn">Adicionar procedimento</button>
-        <br>
-        <h1>Procedimentos</h1>
-        <table id="procedureTable">
-            <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Procedimento</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="procedure : ${procedures}">
-                <td th:text="${procedure.description}"></td>
-                <td th:text="${procedure.procedureType}"></td>
-            </tr>
-            </tbody>
-        </table>
-        <input type="hidden" id="proceduresJson" name="proceduresJson"/>
-        <input type="hidden" id="id" th:field="*{id}"/>
-        <button th:text="*{id} == null ? 'Salvar' : 'Editar'"></button>
     </form>
 </div>
