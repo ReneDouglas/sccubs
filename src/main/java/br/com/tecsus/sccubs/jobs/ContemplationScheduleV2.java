@@ -42,7 +42,7 @@ public class ContemplationScheduleV2 {
 
     private static final int NEXT_CONTEMPLATED = 1;
     private static final int MAX_ATTEMPTS = 4;
-    private static final String USERNAME_JOB = "Rotina de Contemplação";
+    private static final String USERNAME_JOB = "ROTINA";
 
     @Autowired
     public ContemplationScheduleV2(MedicalSlotService medicalSlotService, AppointmentService appointmentService, ContemplationService contemplationService, AppointmentStatusHistoryService appointmentStatusHistoryService) {
