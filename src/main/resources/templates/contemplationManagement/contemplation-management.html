@@ -54,7 +54,7 @@
                                     <select id="status" th:name="status"
                                             class="w-full mt-1 inline-flex p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                         <option th:value="${null}">Todos</option>
-                                        <option th:each="status : ${T(br.com.tecsus.sccubs.enums.AppointmentStatus).getContemplationValues()}"
+                                        <option th:each="status : ${T(br.com.tecsus.sigaubs.enums.AppointmentStatus).getContemplationValues()}"
                                                 th:value="${status.description}"
                                                 th:text="${status.description}"></option>
                                     </select>

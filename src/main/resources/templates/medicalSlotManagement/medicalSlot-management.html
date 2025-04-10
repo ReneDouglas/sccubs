@@ -71,7 +71,7 @@
                                                 class="w-full mt-1 block p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                                 disabled required>
                                             <option th:value="${null}">Selecione</option>
-                                            <option th:each="type : ${T(br.com.tecsus.sccubs.enums.ProcedureType).values()}"
+                                            <option th:each="type : ${T(br.com.tecsus.sigaubs.enums.ProcedureType).values()}"
                                                     th:value="${type.toString()}"
                                                     th:text="${type.description}"></option>
                                         </select>

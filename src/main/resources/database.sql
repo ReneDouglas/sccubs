@@ -1,8 +1,8 @@
 -- VERSÃO 1.0.0
 
-create database sccubs;
+create database sigaubs;
 
-use sccubs;
+use sigaubs;
 
 create table system_users(
                              id bigint primary key auto_increment,
@@ -191,52 +191,52 @@ create table patient_history(
 
 ALTER TABLE patients ADD FULLTEXT(name, sus_card_number, cpf);
 
-ALTER TABLE sccubs.appointments ADD canceled TINYINT DEFAULT 0 NULL;
-ALTER TABLE sccubs.appointments CHANGE canceled canceled TINYINT DEFAULT 0 NULL AFTER id_patient;
-ALTER TABLE sccubs.appointments ADD update_date datetime(6) NULL;
-ALTER TABLE sccubs.appointments ADD update_user varchar(255) NULL;
-ALTER TABLE sccubs.contemplations CHANGE priority contemplated_by int(11) NOT NULL;
+ALTER TABLE sigaubs.appointments ADD canceled TINYINT DEFAULT 0 NULL;
+ALTER TABLE sigaubs.appointments CHANGE canceled canceled TINYINT DEFAULT 0 NULL AFTER id_patient;
+ALTER TABLE sigaubs.appointments ADD update_date datetime(6) NULL;
+ALTER TABLE sigaubs.appointments ADD update_user varchar(255) NULL;
+ALTER TABLE sigaubs.contemplations CHANGE priority contemplated_by int(11) NOT NULL;
 
 -- -- -- -- -- --
 -- VERSÃO 1.4.0
 -- -- -- -- -- --
 
-RENAME TABLE sccubs.available_appointments TO sccubs.available_medical_slots;
-ALTER TABLE sccubs.available_medical_slots CHANGE quantity total_slots int(11) NOT NULL;
-ALTER TABLE sccubs.available_medical_slots ADD filled_slots INT DEFAULT 0 NULL;
-ALTER TABLE sccubs.available_medical_slots CHANGE filled_slots filled_slots INT DEFAULT 0 NULL AFTER total_slots;
-ALTER TABLE sccubs.available_medical_slots CHANGE reference_month reference_month date NOT NULL AFTER id;
-ALTER TABLE sccubs.available_medical_slots CHANGE filled_slots current_slots int(11) DEFAULT 0 NULL;
-ALTER TABLE sccubs.contemplations ADD id_available_medical_slot bigint(20) NOT NULL;
-ALTER TABLE sccubs.contemplations CHANGE id_available_medical_slot id_available_medical_slot bigint(20) NOT NULL AFTER id_appointment;
+RENAME TABLE sigaubs.available_appointments TO sigaubs.available_medical_slots;
+ALTER TABLE sigaubs.available_medical_slots CHANGE quantity total_slots int(11) NOT NULL;
+ALTER TABLE sigaubs.available_medical_slots ADD filled_slots INT DEFAULT 0 NULL;
+ALTER TABLE sigaubs.available_medical_slots CHANGE filled_slots filled_slots INT DEFAULT 0 NULL AFTER total_slots;
+ALTER TABLE sigaubs.available_medical_slots CHANGE reference_month reference_month date NOT NULL AFTER id;
+ALTER TABLE sigaubs.available_medical_slots CHANGE filled_slots current_slots int(11) DEFAULT 0 NULL;
+ALTER TABLE sigaubs.contemplations ADD id_available_medical_slot bigint(20) NOT NULL;
+ALTER TABLE sigaubs.contemplations CHANGE id_available_medical_slot id_available_medical_slot bigint(20) NOT NULL AFTER id_appointment;
 alter table contemplations add foreign key (id_available_medical_slot) references available_medical_slots(id);
-ALTER TABLE sccubs.available_medical_slots ADD id_basic_health_unit bigint NOT NULL;
-ALTER TABLE sccubs.available_medical_slots CHANGE id_basic_health_unit id_basic_health_unit bigint NOT NULL AFTER id_medical_procedure;
-ALTER TABLE sccubs.available_medical_slots ADD CONSTRAINT available_medical_slots_FK FOREIGN KEY (id_basic_health_unit) REFERENCES sccubs.basic_health_units(id);
-RENAME TABLE sccubs.available_medical_slots TO sccubs.medical_slots;
-ALTER TABLE sccubs.medical_slots DROP COLUMN reference_month;
-ALTER TABLE sccubs.contemplations ADD canceled TINYINT(1) NULL;
-ALTER TABLE sccubs.contemplations CHANGE canceled canceled TINYINT(1) NULL AFTER id_available_medical_slot;
-ALTER TABLE sccubs.contemplations ADD observation varchar(255) NULL;
-ALTER TABLE sccubs.contemplations CHANGE observation observation varchar(255) NULL AFTER canceled;
-ALTER TABLE sccubs.medical_slots ADD reference_month date NOT NULL;
-ALTER TABLE sccubs.medical_slots CHANGE reference_month reference_month date NOT NULL AFTER id;
+ALTER TABLE sigaubs.available_medical_slots ADD id_basic_health_unit bigint NOT NULL;
+ALTER TABLE sigaubs.available_medical_slots CHANGE id_basic_health_unit id_basic_health_unit bigint NOT NULL AFTER id_medical_procedure;
+ALTER TABLE sigaubs.available_medical_slots ADD CONSTRAINT available_medical_slots_FK FOREIGN KEY (id_basic_health_unit) REFERENCES sigaubs.basic_health_units(id);
+RENAME TABLE sigaubs.available_medical_slots TO sigaubs.medical_slots;
+ALTER TABLE sigaubs.medical_slots DROP COLUMN reference_month;
+ALTER TABLE sigaubs.contemplations ADD canceled TINYINT(1) NULL;
+ALTER TABLE sigaubs.contemplations CHANGE canceled canceled TINYINT(1) NULL AFTER id_available_medical_slot;
+ALTER TABLE sigaubs.contemplations ADD observation varchar(255) NULL;
+ALTER TABLE sigaubs.contemplations CHANGE observation observation varchar(255) NULL AFTER canceled;
+ALTER TABLE sigaubs.medical_slots ADD reference_month date NOT NULL;
+ALTER TABLE sigaubs.medical_slots CHANGE reference_month reference_month date NOT NULL AFTER id;
 
 
 -- -- -- -- -- --
 -- VERSÃO 1.5.0
 -- Processo de remoção da tabela city_hall
 -- -- -- -- -- --
-ALTER TABLE sccubs.system_users DROP COLUMN id_city_hall;
-ALTER TABLE sccubs.basic_health_units DROP COLUMN id_city_hall;
-DROP TABLE sccubs.city_halls;
+ALTER TABLE sigaubs.system_users DROP COLUMN id_city_hall;
+ALTER TABLE sigaubs.basic_health_units DROP COLUMN id_city_hall;
+DROP TABLE sigaubs.city_halls;
 
-ALTER TABLE sccubs.contemplations CHANGE canceled contemplationStatus tinyint(1) NULL;
-ALTER TABLE sccubs.contemplations MODIFY COLUMN contemplationStatus varchar(50) NULL;
-ALTER TABLE sccubs.contemplations DROP COLUMN confirmed;
+ALTER TABLE sigaubs.contemplations CHANGE canceled contemplationStatus tinyint(1) NULL;
+ALTER TABLE sigaubs.contemplations MODIFY COLUMN contemplationStatus varchar(50) NULL;
+ALTER TABLE sigaubs.contemplations DROP COLUMN confirmed;
 
-ALTER TABLE sccubs.appointments CHANGE canceled contemplationStatus varchar(50) DEFAULT 0 NULL;
-ALTER TABLE sccubs.appointments MODIFY COLUMN contemplationStatus varchar(50) DEFAULT 0 NULL;
+ALTER TABLE sigaubs.appointments CHANGE canceled contemplationStatus varchar(50) DEFAULT 0 NULL;
+ALTER TABLE sigaubs.appointments MODIFY COLUMN contemplationStatus varchar(50) DEFAULT 0 NULL;
 
 CREATE FULLTEXT INDEX idx_fulltext_patient ON patients(name, sus_card_number, cpf);
 
@@ -253,12 +253,12 @@ create table appointment_status_history(
                                        foreign key (id_appointment) references appointments(id)
 );
 
-ALTER TABLE sccubs.contemplations DROP COLUMN status;
-ALTER TABLE sccubs.appointments ADD id_contemplation bigint(20) NULL;
-ALTER TABLE sccubs.appointments CHANGE id_contemplation id_contemplation bigint(20) NULL AFTER id_patient;
-ALTER TABLE sccubs.appointments ADD CONSTRAINT appointments_FK FOREIGN KEY (id_contemplation) REFERENCES sccubs.contemplations(id);
-ALTER TABLE sccubs.contemplations DROP FOREIGN KEY contemplations_ibfk_1;
-ALTER TABLE sccubs.contemplations DROP COLUMN id_appointment;
+ALTER TABLE sigaubs.contemplations DROP COLUMN status;
+ALTER TABLE sigaubs.appointments ADD id_contemplation bigint(20) NULL;
+ALTER TABLE sigaubs.appointments CHANGE id_contemplation id_contemplation bigint(20) NULL AFTER id_patient;
+ALTER TABLE sigaubs.appointments ADD CONSTRAINT appointments_FK FOREIGN KEY (id_contemplation) REFERENCES sigaubs.contemplations(id);
+ALTER TABLE sigaubs.contemplations DROP FOREIGN KEY contemplations_ibfk_1;
+ALTER TABLE sigaubs.contemplations DROP COLUMN id_appointment;
 
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

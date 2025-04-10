@@ -97,7 +97,7 @@
                         </goals>
                         <configuration>
                             <classifier>dev</classifier>
-                            <mainClass>br.com.tecsus.sccubs.SccubsApplication</mainClass>
+                            <mainClass>br.com.tecsus.sigaubs.SigaubsApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>
@@ -118,7 +118,7 @@
 <!--                                                     "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
 <!--                                    <manifestEntries>-->
 <!--                                        <Main-Class>org.springframework.boot.loader.launch.JarLauncher</Main-Class>-->
-<!--                                        <Start-Class>br.com.tecsus.sccubs.SccubsApplication</Start-Class>-->
+<!--                                        <Start-Class>br.com.tecsus.sigaubs.SigaubsApplication</Start-Class>-->
 <!--                                        <X-Compile-Source-JDK>17</X-Compile-Source-JDK>-->
 <!--                                        <X-Compile-Target-JDK>17</X-Compile-Target-JDK>-->
 <!--                                    </manifestEntries>-->

@@ -139,7 +139,7 @@
                     <div class="grid grid-cols-2">
                         <!-- Lista de exames será inserida aqui -->
                         <th:block th:each="exame : ${totalMedicalProcedures}">
-                            <th:block th:if="${exame.type().equals(T(br.com.tecsus.sccubs.enums.ProcedureType).EXAME)}">
+                            <th:block th:if="${exame.type().equals(T(br.com.tecsus.sigaubs.enums.ProcedureType).EXAME)}">
                                 <span class="text-gray-700 flex-1" th:text="${exame.description}"></span>
                                 <span class="text-gray-700 flex-1 text-right" th:text="${exame.total}"></span>
                             </th:block>
@@ -152,7 +152,7 @@
                     <div class="grid grid-cols-2">
                         <!-- Lista de cirurgias será inserida aqui -->
                         <th:block th:each="cirurgia : ${totalMedicalProcedures}">
-                            <th:block th:if="${cirurgia.type().equals(T(br.com.tecsus.sccubs.enums.ProcedureType).CIRURGIA)}">
+                            <th:block th:if="${cirurgia.type().equals(T(br.com.tecsus.sigaubs.enums.ProcedureType).CIRURGIA)}">
                                 <span class="text-gray-700 flex-1" th:text="${cirurgia.description}"></span>
                                 <span class="text-gray-700 flex-1 text-right" th:text="${cirurgia.total}"></span>
                             </th:block>

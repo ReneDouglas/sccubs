@@ -22,7 +22,7 @@
             </p>
 
             <th:block th:if="${isContemplated}">
-                <th:block th:if="*{appointment.medicalProcedure.procedureType.getDescription() != T(br.com.tecsus.sccubs.enums.ProcedureType).CONSULTA.getDescription()}">
+                <th:block th:if="*{appointment.medicalProcedure.procedureType.getDescription() != T(br.com.tecsus.sigaubs.enums.ProcedureType).CONSULTA.getDescription()}">
                     <p class="flex flex-col">
                         <span class="font-semibold text-gray-700">Procedimento:</span>
                         <span class="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg">[[*{appointment.medicalProcedure.description}]]</span>
@@ -30,7 +30,7 @@
                 </th:block>
             </th:block>
             <th:block th:unless="${isContemplated}">
-                <th:block th:if="*{medicalProcedure.procedureType.getDescription() != T(br.com.tecsus.sccubs.enums.ProcedureType).CONSULTA.getDescription()}">
+                <th:block th:if="*{medicalProcedure.procedureType.getDescription() != T(br.com.tecsus.sigaubs.enums.ProcedureType).CONSULTA.getDescription()}">
                     <p class="flex flex-col">
                         <span class="font-semibold text-gray-700">Procedimento:</span>
                         <span class="px-4 py-2 text-gray-700 bg-gray-300 rounded-lg">[[*{medicalProcedure.description}]]</span>

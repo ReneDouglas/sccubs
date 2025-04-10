@@ -33,7 +33,7 @@
                 <span :class="open ? 'block' : 'hidden'" class="text-nowrap">Filas de Espera</span>
             </a>
 
-            <!--            sec:authorize="hasRole(T(br.com.tecsus.sccubs.utils.Constants).ADMINS)"-->
+            <!--            sec:authorize="hasRole(T(br.com.tecsus.sigaubs.utils.Constants).ADMINS)"-->
             <!--            sec:authorize="${hasRole(#vars.expectedRole)}"  teria q trazer uma var 'expectedRole' no Model -->
             <!--Contemplation Item-->
             <a th:href="@{/contemplation-management}" sec:authorize="hasAnyRole('ADMIN','SMS')" class="text-sm inline-flex flex-nowrap items-center p-2.5 gap-x-2 tracking-wide rounded-lg text-white hover:bg-white hover:text-slate-900 overflow-hidden flex-shrink-0 min-h-10">

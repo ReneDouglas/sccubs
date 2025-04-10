@@ -87,7 +87,7 @@
                                     <option th:value="${null}" th:selected="${patient.socialSituationRating == null}">
                                         Selecione
                                     </option>
-                                    <option th:each="situation : ${T(br.com.tecsus.sccubs.enums.SocialSituationRating).values()}"
+                                    <option th:each="situation : ${T(br.com.tecsus.sigaubs.enums.SocialSituationRating).values()}"
                                             th:value="${situation}"
                                             th:text="${situation.description}"
                                             th:selected="*{socialSituationRating == null} ? ${situation} == null  : ${situation} == *{socialSituationRating}">

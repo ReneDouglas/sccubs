@@ -71,7 +71,7 @@
                                         hx-target="#selectProcedureAndPriority"
                                         hx-include="[name='specialty']" disabled required>
                                     <option th:value="${null}">Selecione</option>
-                                    <option th:each="type : ${T(br.com.tecsus.sccubs.enums.ProcedureType).values()}"
+                                    <option th:each="type : ${T(br.com.tecsus.sigaubs.enums.ProcedureType).values()}"
                                             th:value="${type.toString()}"
                                             th:text="${type.description}"></option>
                                 </select>
