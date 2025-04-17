@@ -11,6 +11,8 @@ npm run build:postcss
 Utilizar para desenvolvimento local:
 npm run watch:postcss
 
+-- instalar: npm install -D tailwindcss postcss postcss-cli autoprefixer
+
 ************************************************************************
 ************************************************************************
 

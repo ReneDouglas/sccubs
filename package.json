@@ -12,10 +12,10 @@
   "description": "",
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.13",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
-    "postcss-cli": "^11.0.0",
-    "tailwindcss": "^3.4.3"
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^3.4.17"
   },
   "dependencies": {
     "sccubs": "file:"
