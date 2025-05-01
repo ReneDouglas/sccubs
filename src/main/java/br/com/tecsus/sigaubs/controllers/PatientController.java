@@ -116,7 +116,6 @@ public class PatientController {
         return "patientManagement/patientFragments/patient-info :: patientToEdit";
     }
 
-
     @GetMapping("/patient-list")
     public String getPatientsPage(Model model,
                                   @ModelAttribute Patient patient,
