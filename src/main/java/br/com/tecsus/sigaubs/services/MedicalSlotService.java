@@ -69,11 +69,11 @@ public class MedicalSlotService {
         MedicalSlot ms = medicalSlotRepository.getReferenceById(medicalSlot.getId());
 
         if (Objects.equals(ms.getCurrentSlots(), ms.getTotalSlots())) {
-            throw new RuntimeException("O limite de slots foi atingido.");
+            throw new RuntimeException("O limite máximo de slots já foi atingido.");
         }
 
         ms.setCurrentSlots(ms.getCurrentSlots() + 1);
-        return medicalSlotRepository.save(ms);
+        return medicalSlotRepository.saveAndFlush(ms);
     }
 
     @Transactional
@@ -86,6 +86,6 @@ public class MedicalSlotService {
         }
 
         ms.setCurrentSlots(medicalSlot.getCurrentSlots() - 1);
-        return medicalSlotRepository.save(ms);
+        return medicalSlotRepository.saveAndFlush(ms);
     }
 }

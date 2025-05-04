@@ -136,8 +136,8 @@ public class ContemplationService {
     }
 
     @Transactional
-    public void registerContemplation(Contemplation contemplation) {
-        contemplationRepository.save(contemplation);
+    public Contemplation registerContemplation(Contemplation contemplation) {
+        return contemplationRepository.save(contemplation);
     }
 
 }

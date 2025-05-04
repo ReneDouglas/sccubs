@@ -107,7 +107,7 @@ public class AppointmentController {
             log.info("Marcação agendada com sucesso.");
         } catch (AppointmentRegistrationFailureException e) {
             log.error("Erro ao registrar consulta: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("message", "Erro ao agendar marcação. Tente novamente.");
+            redirectAttributes.addFlashAttribute("message", "Erro ao agendar marcação. Tente novamente ou contate o TI.");
             redirectAttributes.addFlashAttribute("error", true);
         } catch (DuplicateAppointmentRegistrationException e) {
             log.error("Marcação de consulta duplicada: {}", e.getMessage());
